@@ -1,6 +1,7 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,12 +15,12 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        title: 'Biblio',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
         ),
-        home: MyHomePage(),
+        home: HomePage(),
       ),
     );
   }
@@ -29,7 +30,16 @@ class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
 }
 
-class MyHomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String result = '';
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -37,8 +47,67 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
+          ElevatedButton(
+            onPressed: () async {
+              String? res = await SimpleBarcodeScanner.scanBarcode(
+                context,
+                barcodeAppBar: const BarcodeAppBar(
+                  appBarTitle: 'Test',
+                  centerTitle: false,
+                  enableBackButton: true,
+                  backButtonIcon: Icon(Icons.arrow_back_ios),
+                ),
+                isShowFlashIcon: true,
+                delayMillis: 500,
+                cameraFace: CameraFace.back,
+                scanFormat: ScanFormat.ONLY_BARCODE,
+              );
+              setState(() {
+                result = res as String;
+              });
+            },
+            child: const Text('Scan Barcode'),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text('Scan Barcode Result: $result'),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              SimpleBarcodeScanner.streamBarcode(
+                context,
+                barcodeAppBar: const BarcodeAppBar(
+                  appBarTitle: 'Test',
+                  centerTitle: false,
+                  enableBackButton: true,
+                  backButtonIcon: Icon(Icons.arrow_back_ios),
+                ),
+                isShowFlashIcon: true,
+                delayMillis: 2000,
+              ).listen((event) {
+                print("Stream Barcode Result: $event");
+              });
+            },
+            child: const Text('Stream Barcode'),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+              //   return const BarcodeWidgetPage();
+              // }));
+            },
+            child: const Text('Barcode Scanner Widget(Android Only)')
+          ),
           Text('A random idea:'),
           Text(appState.current.asLowerCase),
+          Text('Hello'),
+          Text('Hello World'),
         ],
       ),
     );
