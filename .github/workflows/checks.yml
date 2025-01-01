@@ -14,6 +14,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          # sdk: ">=3.5.0 <4.0.0"
           flutter-version: 3.19.0
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -22,20 +23,29 @@ jobs:
           distribution: 'adopt'
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-      - name: Start Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 33
-          target: default
-          arch: x86_64
-          profile: Nexus 4
-          emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
-          script: |
-            adb devices
-            adb shell input keyevent 82
-          #   adb kill-server
-          #   adb wait-for-device
-          #   ./gradlew connectedAndroidTest --continue
+      # - name: Start Android Emulator
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 33
+      #     target: default
+      #     arch: x86_64
+      #     profile: Nexus 4
+      #     emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
+      #     script: |
+      #       adb devices
+      #       adb shell input keyevent 82
+      #     #   adb kill-server
+      #     #   adb wait-for-device
+      #     #   ./gradlew connectedAndroidTest --continue
+      - name: Install
+        run: |
+          flutter pub get
+      - name: Tests
+        run: |
+          flutter test
+      - name: Build
+        run: |
+          flutter build
       - name: Upload Test Reports
         if: failure()
         uses: actions/upload-artifact@v4
