@@ -82,8 +82,8 @@ class _NavigationExampleState extends State<Navigation> {
                   margin: const EdgeInsets.all(8.0),
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(8.0),
+                    color: theme.colorScheme.primary,
                   ),
                   child: Text(
                     'Hello',
