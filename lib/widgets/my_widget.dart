@@ -3,7 +3,7 @@ import '../services/title.dart';
 
 class MyWidget extends StatelessWidget {
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     return FutureBuilder<String>(
       future: getleader(),
       builder: (context, AsyncSnapshot<String> snapshot) {
