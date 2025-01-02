@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import '../widgets/main_drawer.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text('Hello'),
+          Text(AppLocalizations.of(context)!.helloWorld),
           MyWidget(),
           Column(
             children: [
