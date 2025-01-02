@@ -4,15 +4,22 @@ class MainDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Color.fromARGB(255, 248, 248, 248),
+      shape: LinearBorder(),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.rectangle,
+          SizedBox(
+            height: 100.0,
+            child: const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 15, 136, 60),
+                shape: BoxShape.rectangle,
+              ),
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
+              child: Text('Drawer Header'),
             ),
-            child: Text('Drawer Header'),
           ),
           ListTile(
             title: const Text('Item 1'),

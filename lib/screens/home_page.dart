@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(AppLocalizations.of(context)!.helloWorld),
+          Text(AppLocalizations.of(context)!.home),
           MyWidget(),
           Column(
             children: [
