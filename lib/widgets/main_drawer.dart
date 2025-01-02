@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -10,6 +10,7 @@ class MainDrawer extends StatelessWidget {
           const DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.blue,
+              shape: BoxShape.rectangle,
             ),
             child: Text('Drawer Header'),
           ),
