@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
-import '../widgets/main_drawer.dart';
-import '../widgets/my_widget.dart';
+import 'package:uuid/uuid.dart';
+
+import 'package:biblio/models/book.dart';
+import 'package:biblio/widgets/main_drawer.dart';
+import 'package:biblio/widgets/my_widget.dart';
+
+var uuid = Uuid();
 
 class MyAppState extends ChangeNotifier {
   var current = 'samdouble';
@@ -75,8 +80,18 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 10,
               ),
-              Text('A random idea:'),
               Text(appState.current),
+              ElevatedButton(
+                onPressed: () async {
+                  var everyFallingStar = Book(
+                    id: uuid.v4(),
+                    title: 'Every Falling Star',
+                    author: 'Sungju Lee',
+                  );
+                  await insertBook(everyFallingStar);
+                },
+                child: const Text('Create Book'),
+              ),
             ],
           ),
           Text('Hello'),
