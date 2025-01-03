@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/title.dart';
+
+import 'package:biblio/services/title.dart';
 
 class MyWidget extends StatelessWidget {
   @override
