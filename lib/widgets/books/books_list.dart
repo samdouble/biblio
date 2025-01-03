@@ -27,15 +27,13 @@ class _BooksListState extends State<BooksList> {
         DataRow(
           color: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
-              // All rows will have the same selected color.
               if (states.contains(WidgetState.selected)) {
                 return Theme.of(context).colorScheme.primary.withValues(alpha: 0.08);
               }
-              // Even rows will have a grey color.
               if (index.isEven) {
                 return Colors.grey.withValues(alpha: 0.3);
               }
-              return null; // Use default value for other states and odd rows.
+              return null;
             }
           ),
           cells: <DataCell>[

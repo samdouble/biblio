@@ -1,6 +1,7 @@
 import 'package:biblio/screens/home_page.dart';
-import 'package:biblio/screens/notifications_page.dart';
 import 'package:biblio/screens/messages_page.dart';
+import 'package:biblio/screens/mybooks_page.dart';
+import 'package:biblio/screens/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -40,6 +41,10 @@ class _NavigationExampleState extends State<Navigation> {
               label: Text('2'),
               child: Icon(Icons.messenger_sharp),
             ),
+            label: AppLocalizations.of(context)!.messages,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings),
             label: AppLocalizations.of(context)!.settings,
           ),
         ],
@@ -48,6 +53,7 @@ class _NavigationExampleState extends State<Navigation> {
         HomePage(),
         NotificationsPage(),
         MessagesPage(),
+        SettingsPage(),
       ][currentPageIndex],
     );
   }
