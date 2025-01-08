@@ -1,5 +1,4 @@
 import 'package:biblio/screens/home_page.dart';
-import 'package:biblio/screens/messages_page.dart';
 import 'package:biblio/screens/mybooks_page.dart';
 import 'package:biblio/screens/settings_page.dart';
 import 'package:flutter/material.dart';
@@ -28,31 +27,25 @@ class _NavigationExampleState extends State<Navigation> {
         selectedIndex: currentPageIndex,
         destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
             icon: Icon(Icons.home_outlined),
             label: AppLocalizations.of(context)!.home,
+            selectedIcon: Icon(Icons.home),
           ),
           NavigationDestination(
-            icon: Icon(Icons.menu_book),
+            icon: Icon(Icons.menu_book_outlined),
             label: AppLocalizations.of(context)!.myBooks,
+            selectedIcon: Icon(Icons.menu_book),
           ),
           NavigationDestination(
-            icon: Badge(
-              label: Text('2'),
-              child: Icon(Icons.messenger_sharp),
-            ),
-            label: AppLocalizations.of(context)!.messages,
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.settings_outlined),
             label: AppLocalizations.of(context)!.settings,
+            selectedIcon: Icon(Icons.settings),
           ),
         ],
       ),
       body: <Widget>[
         HomePage(),
         NotificationsPage(),
-        MessagesPage(),
         SettingsPage(),
       ][currentPageIndex],
     );
