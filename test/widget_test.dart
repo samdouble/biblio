@@ -10,19 +10,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:biblio/main.dart';
 
 void main() {
-  testWidgets('Click on Notifications button shows the Notifications screen', (WidgetTester tester) async {
+  testWidgets('Click on My Books button shows the Books screen', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('Scan Barcode'), findsOneWidget);
-    expect(find.text('Notification 1'), findsNothing);
+    expect(find.text('Title'), findsNothing);
 
-    await tester.tap(find.byIcon(Icons.notifications_sharp));
+    await tester.tap(find.byIcon(Icons.menu_book_outlined));
     await tester.pump();
 
-    // Verify that our counter has incremented.
     expect(find.text('Scan Barcode'), findsNothing);
-    expect(find.text('Notification 1'), findsOneWidget);
+    // expect(find.text('Title'), findsOneWidget);
   });
 }

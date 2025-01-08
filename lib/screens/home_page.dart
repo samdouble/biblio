@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:biblio/models/book.dart';
+import 'package:biblio/widgets/books/add_book_button.dart';
 import 'package:biblio/widgets/main_drawer.dart';
 import 'package:biblio/widgets/my_widget.dart';
 
@@ -15,7 +15,7 @@ class MyAppState extends ChangeNotifier {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -45,7 +45,6 @@ class _HomePageState extends State<HomePage> {
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(AppLocalizations.of(context)!.home),
           MyWidget(),
           Column(
             children: [
@@ -74,12 +73,6 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               Text('Scan Barcode Result: $result'),
-              const SizedBox(
-                height: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
               Text(appState.current),
               ElevatedButton(
                 onPressed: () async {
@@ -94,10 +87,10 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          Text('Hello'),
         ],
       ),
       drawer: MainDrawer(),
+      floatingActionButton: FloatingButton(),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:biblio/models/book.dart';
+import 'package:biblio/widgets/books/add_book_button.dart';
 import 'package:biblio/widgets/books/books_list.dart';
 import 'package:biblio/widgets/main_drawer.dart';
 
@@ -39,6 +40,7 @@ class NotificationsPage extends StatelessWidget {
         ],
       ),
       drawer: MainDrawer(),
+      floatingActionButton: FloatingButton(),
     );
   }
 }
