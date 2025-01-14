@@ -26,15 +26,24 @@ class _FloatingButtonState extends State<FloatingButton> {
           index = (index + 1) % customizations.length;
         });
 
-        const isbn = "0735619670";
-        const url = "https://faas-tor1-70ca848e.doserverless.co/api/v1/web/fn-21b31321-952b-469e-8ef0-79a5954fa817/books/getBookByIsbn?isbn=$isbn";
-        final response = await http.get(Uri.parse(url));
+        const isbn = '9782253250005';
+
+        const biblioApiUrl = String.fromEnvironment('BIBLIO_API_URL');
+        const digitalOceanWebsecureToken = String.fromEnvironment('DIGITALOCEAN_WEBSECURE_TOKEN');
+        const url = '$biblioApiUrl/books/getBookByIsbn?isbn=$isbn';
+        final response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Require-Whisk-Auth': digitalOceanWebsecureToken,
+          },
+        );
         if (response.statusCode == 200) {
           print(response.body.toString());
           // return Album.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
         } else {
           print(response.body.toString());
-          throw Exception('Failed to load book with isbn 0735619670');
+          // throw Exception('Failed to load book with isbn $isbn');
         }
       },
       foregroundColor: customizations[index].$1,
