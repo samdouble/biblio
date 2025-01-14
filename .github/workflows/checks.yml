@@ -23,20 +23,6 @@ jobs:
           distribution: 'adopt'
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-      # - name: Start Android Emulator
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 33
-      #     target: default
-      #     arch: x86_64
-      #     profile: Nexus 4
-      #     emulator-options: -no-window -no-boot-anim -no-audio -no-snapshot-load
-      #     script: |
-      #       adb devices
-      #       adb shell input keyevent 82
-      #     #   adb kill-server
-      #     #   adb wait-for-device
-      #     #   ./gradlew connectedAndroidTest --continue
       - name: Install
         run: |
           flutter pub get
@@ -48,7 +34,12 @@ jobs:
           flutter test
       - name: Build
         run: |
-          flutter build
+          touch .env
+          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "DIGITALOCEAN_WEBSECURE_TOKEN=${{ secrets.DIGITALOCEAN_WEBSECURE_TOKEN }}" >> .env
+          flutter build apk --dart-define-from-file=.env
+          flutter build appbundle --dart-define-from-file=.env
+          flutter build ios --dart-define-from-file=.env
       - name: Upload Test Reports
         if: failure()
         uses: actions/upload-artifact@v4
