@@ -1,5 +1,7 @@
 {
   "author": "Author",
+  "books": "Books",
+  "categories": "Categories",
   "home": "Home",
   "myBooks": "My Books",
   "settings": "Settings",

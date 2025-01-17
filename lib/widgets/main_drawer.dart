@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainDrawer extends StatelessWidget {
   @override
@@ -18,18 +19,18 @@ class MainDrawer extends StatelessWidget {
               ),
               margin: EdgeInsets.zero,
               padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 8.0),
-              child: Text('Drawer Header'),
+              child: Image(image: AssetImage('assets/logo.png'), height: 20),
             ),
           ),
           ListTile(
-            title: const Text('Item 1'),
+            title: Text(AppLocalizations.of(context)!.books),
             onTap: () {
               // Update the state of the app.
               // ...
             },
           ),
           ListTile(
-            title: const Text('Item 2'),
+            title: Text(AppLocalizations.of(context)!.categories),
             onTap: () {
               // Update the state of the app
               // ...

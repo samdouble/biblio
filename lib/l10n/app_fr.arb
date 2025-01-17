@@ -1,5 +1,7 @@
 {
   "author": "Auteur",
+  "books": "Livres",
+  "categories": "Catégories",
   "home": "Accueil",
   "myBooks": "Mes livres",
   "settings": "Paramètres",
