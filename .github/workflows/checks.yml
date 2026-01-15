@@ -6,6 +6,7 @@ jobs:
   android_test:
      name: Test on Android
      runs-on: macos-latest
+     timeout-minutes: 10
      continue-on-error: true
      steps:
       - name: Checkout

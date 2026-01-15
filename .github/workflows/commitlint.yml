@@ -6,6 +6,7 @@ jobs:
   commitlint:
      name: Commitlint
      runs-on: ubuntu-latest
+     timeout-minutes: 1
      continue-on-error: true
      steps:
       - name: Commitlint
