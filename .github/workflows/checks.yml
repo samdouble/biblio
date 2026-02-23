@@ -6,8 +6,10 @@ jobs:
   android_test:
      name: Test on Android
      runs-on: macos-latest
-     timeout-minutes: 10
-     continue-on-error: true
+     timeout-minutes: 20
+     defaults:
+       run:
+         working-directory: app
      steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,7 +18,7 @@ jobs:
         with:
           channel: stable
           # sdk: ">=3.5.0 <4.0.0"
-          flutter-version: 3.24.3
+          flutter-version: 3.27.4
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:

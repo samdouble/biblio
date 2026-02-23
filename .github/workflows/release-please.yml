@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  release-please:
+  release-please-app:
     runs-on: ubuntu-latest
     timeout-minutes: 1
     steps:
@@ -21,3 +21,4 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           target-branch: master
+          path: app
