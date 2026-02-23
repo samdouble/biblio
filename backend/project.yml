@@ -1,0 +1,16 @@
+environment:
+  DIGITALOCEAN_WEBSECURE_TOKEN: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
+  GOOGLE_BOOKS_API_TOKEN: "${GOOGLE_BOOKS_API_TOKEN}"
+  MONGO_DBNAME: "${MONGO_DBNAME}"
+  MONGO_URL: "${MONGO_URL}"
+
+packages:
+  - name: books
+    functions: 
+      - name: getBookByIsbn
+        runtime: go:1.20
+        limits:
+          timeout: 5000
+          memory: 256
+        web: true
+        webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
