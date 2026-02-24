@@ -13,6 +13,7 @@ import (
 	"biblio-api/models"
 	"biblio-api/db"
 	"biblio-api/types"
+	"biblio-api/utils"
 )
 
 func Main(ctx context.Context, event types.Event) (types.Response, error) {
@@ -43,7 +44,7 @@ func Main(ctx context.Context, event types.Event) (types.Response, error) {
 		searchId := uuid.New().String()
 		if len(existingBooks) == 0 {
 			fmt.Println("No existing books found. Fetching from Google Books API.")
-			isbnSearchResponse, err := models.SearchBooksByIsbnFromGoogle(event.Isbn)
+			isbnSearchResponse, err := utils.SearchBooksByIsbn(event.Isbn)
 			if err != nil {
 				return nil, err
 			}
@@ -63,10 +64,11 @@ func Main(ctx context.Context, event types.Event) (types.Response, error) {
 						Isbn: event.Isbn,
 						SearchId: searchId,
 						VolumeInfo: searchItem.VolumeInfo,
+						ApiProvider: "googleBooks",
 					},
 				)
 			}
-			_, err = searchesCollection.InsertOne(context.TODO(), search)
+			_, err = models.InsertSearch(database, search)
 			if err != nil {
 				return nil, err
 			}

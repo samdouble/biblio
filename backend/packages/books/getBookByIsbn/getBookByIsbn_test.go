@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"biblio-api/models"
 	"biblio-api/types"
+	"biblio-api/utils"
 )
 
 func TestSimpleReturn(t *testing.T) {
@@ -31,9 +31,9 @@ func TestSimpleReturn(t *testing.T) {
 		}`))
 	}))
 	defer mockServer.Close()
-	originalURL := models.GoogleBooksAPIBaseURL
-	models.GoogleBooksAPIBaseURL = mockServer.URL
-	defer func() { models.GoogleBooksAPIBaseURL = originalURL }()
+	originalURL := utils.GoogleBooksAPIBaseURL
+	utils.GoogleBooksAPIBaseURL = mockServer.URL
+	defer func() { utils.GoogleBooksAPIBaseURL = originalURL }()
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "function_version", "Test")
