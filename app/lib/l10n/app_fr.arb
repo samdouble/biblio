@@ -1,6 +1,9 @@
 {
   "author": "Auteur",
   "home": "Accueil",
+  "language": "Langue",
+  "languageEnglish": "Anglais",
+  "languageFrench": "Français",
   "myBooks": "Mes livres",
   "settings": "Paramètres",
   "title": "Titre"
