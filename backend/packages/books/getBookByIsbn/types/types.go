@@ -11,6 +11,7 @@ type Book struct {
 	Isbn string `json:"isbn" bson:"isbn"`
 	SearchId string `json:"searchId" bson:"searchId"`
 	VolumeInfo isbnSearch.VolumeInfo `json:"volumeInfo" bson:"volumeInfo"`
+	ApiProvider string `json:"apiProvider" bson:"apiProvider"`
 }
 
 type Search struct {
