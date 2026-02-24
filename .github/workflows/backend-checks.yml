@@ -1,0 +1,38 @@
+name: Backend Checks
+
+on: [pull_request]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: backend
+    strategy:
+      matrix:
+        go-version: ["1.20", "1.21", "1.22", "1.23", "1.24", "1.25"]
+        mongodb-version: ["8.0"]
+        dir:
+          - backend/packages/books/getBookByIsbn
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Set up MongoDB
+        uses: supercharge/mongodb-github-action@1.12.1
+        with:
+          mongodb-version: ${{ matrix.mongodb-version }}
+          mongodb-replica-set: rs
+          mongodb-port: 27017
+      - name: Lint and Test
+        working-directory: ${{ matrix.dir }}
+        run: |
+          export MONGO_DBNAME=db
+          export MONGO_URL=mongodb://localhost:27017
+          go get .
+          go mod tidy
+          go test

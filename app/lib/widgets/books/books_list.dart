@@ -28,10 +28,10 @@ class _BooksListState extends State<BooksList> {
           color: WidgetStateProperty.resolveWith<Color?>(
             (Set<WidgetState> states) {
               if (states.contains(WidgetState.selected)) {
-                return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+                return Theme.of(context).colorScheme.primary.withValues(alpha: 0.08);
               }
               if (index.isEven) {
-                return Colors.grey.withOpacity(0.3);
+                return Colors.grey.withValues(alpha: 0.3);
               }
               return null;
             }

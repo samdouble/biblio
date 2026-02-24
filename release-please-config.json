@@ -3,6 +3,9 @@
   "packages": {
     "app": {
       "release-type": "dart"
+    },
+    "backend": {
+      "release-type": "go"
     }
   }
 }
