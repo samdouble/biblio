@@ -1,6 +1,9 @@
 {
   "author": "Author",
   "home": "Home",
+  "language": "Language",
+  "languageEnglish": "English",
+  "languageFrench": "French",
   "myBooks": "My Books",
   "settings": "Settings",
   "title": "Title"
