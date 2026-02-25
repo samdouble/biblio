@@ -50,6 +50,9 @@ class FloatingButton extends StatelessWidget {
             },
           );
         } catch (error) {
+          if (!context.mounted) {
+            return;
+          }
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error: ${error.toString()}')),
           );
@@ -84,7 +87,7 @@ class FloatingButton extends StatelessWidget {
           ),
         );
       },
-      child: const Icon(Icons.add),
+      child: const Icon(Icons.qr_code_scanner),
     );
   }
 }
