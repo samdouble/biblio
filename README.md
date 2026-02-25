@@ -68,6 +68,7 @@ Create a `.env` file with the following variables:
 
 ```
 GOOGLE_BOOKS_API_TOKEN=
+ISBNDB_API_KEY=
 MONGO_DBNAME=
 MONGO_URL=
 ```
