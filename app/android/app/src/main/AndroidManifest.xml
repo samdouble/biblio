@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Required to fetch data from the internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Required for mobile_scanner (barcode scanning). -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <application
         android:label="biblio"
         android:name="${applicationName}"
