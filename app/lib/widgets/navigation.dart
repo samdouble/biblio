@@ -2,7 +2,7 @@ import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/screens/mybooks_page.dart';
 import 'package:biblio/screens/settings_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:biblio/l10n/app_localizations.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});

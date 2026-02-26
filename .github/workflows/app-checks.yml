@@ -29,6 +29,12 @@ jobs:
       - name: Install
         run: |
           flutter pub get
+          flutter gen-l10n --verbose
+      - name: Create .env for build
+        run: |
+          touch .env
+          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "DIGITALOCEAN_WEBSECURE_TOKEN=${{ secrets.DIGITALOCEAN_WEBSECURE_TOKEN }}" >> .env
       - name: Lint
         run: |
           flutter analyze
@@ -37,12 +43,8 @@ jobs:
           flutter test
       - name: Build
         run: |
-          touch .env
-          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
-          echo "DIGITALOCEAN_WEBSECURE_TOKEN=${{ secrets.DIGITALOCEAN_WEBSECURE_TOKEN }}" >> .env
-          flutter build apk --dart-define-from-file=.env
-          flutter build appbundle --dart-define-from-file=.env
-      # flutter build ios --dart-define-from-file=.env
+          flutter build apk
+          flutter build appbundle
       - name: Upload Test Reports
         if: failure()
         uses: actions/upload-artifact@v4

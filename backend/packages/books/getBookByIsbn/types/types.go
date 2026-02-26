@@ -2,23 +2,25 @@ package types
 
 import (
 	"time"
-	"biblio-api/utils/googleBooks/types/isbnSearch"
+
+	"biblio-api/utils/googleBooks/isbnSearch"
+	googleBooksTypes "biblio-api/utils/googleBooks"
 )
 
 type Book struct {
-	Id string `json:"id" bson:"id"`
-	CreatedAt time.Time `json:"createdAt" bson:"createdAt"`
-	Isbn string `json:"isbn" bson:"isbn"`
-	SearchId string `json:"searchId" bson:"searchId"`
-	VolumeInfo isbnSearch.VolumeInfo `json:"volumeInfo" bson:"volumeInfo"`
-	ApiProvider string `json:"apiProvider" bson:"apiProvider"`
+	Id          string                `json:"id" bson:"id"`
+	CreatedAt   time.Time             `json:"createdAt" bson:"createdAt"`
+	Isbn        string                `json:"isbn" bson:"isbn"`
+	SearchId    string                `json:"searchId" bson:"searchId"`
+	VolumeInfo  isbnSearch.VolumeInfo `json:"volumeInfo" bson:"volumeInfo"`
+	ApiProvider string                `json:"apiProvider" bson:"apiProvider"`
 }
 
 type Search struct {
-    Id string `json:"id" bson:"id"`
-	CreatedAt time.Time `json:"createdAt" bson:"createdAt"`
-	Isbn string `json:"isbn" bson:"isbn"`
-	Result *IsbnSearchResponse `json:"result,omitempty" bson:"result,omitempty"`
+	Id        string                          `json:"id" bson:"id"`
+	CreatedAt time.Time                       `json:"createdAt" bson:"createdAt"`
+	Isbn      string                          `json:"isbn" bson:"isbn"`
+	Result    *googleBooksTypes.IsbnSearchResponse `json:"result,omitempty" bson:"result,omitempty"`
 }
 
 type Event struct {

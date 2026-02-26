@@ -7,12 +7,13 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"biblio-api/utils/isbnDb/types"
+
+	isbnDbTypes "biblio-api/utils/isbnDb"
 )
 
 const isbnDbBaseURL = "https://api2.isbndb.com"
 
-func SearchBooksByIsbn(isbn string) (*IsbnDbSearchBooksResponse, error) {
+func SearchBooksByIsbn(isbn string) (*isbnDbTypes.IsbnDbSearchBooksResponse, error) {
 	key := os.Getenv("ISBNDB_API_KEY")
 	if key == "" {
 		return nil, fmt.Errorf("ISBNDB_API_KEY is not set")
@@ -42,7 +43,7 @@ func SearchBooksByIsbn(isbn string) (*IsbnDbSearchBooksResponse, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNotFound {
-		return &IsbnDbSearchBooksResponse{Data: nil}, nil
+		return &isbnDbTypes.IsbnDbSearchBooksResponse{Data: nil}, nil
 	}
 	if resp.StatusCode == http.StatusTooManyRequests {
 		log.Printf("ISBNdb rate limit exceeded (429)")
@@ -52,7 +53,7 @@ func SearchBooksByIsbn(isbn string) (*IsbnDbSearchBooksResponse, error) {
 		return nil, fmt.Errorf("ISBNdb: unexpected status %d", resp.StatusCode)
 	}
 
-	var out IsbnDbSearchBooksResponse
+	var out isbnDbTypes.IsbnDbSearchBooksResponse
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		return nil, err
 	}

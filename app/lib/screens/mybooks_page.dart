@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:biblio/l10n/app_localizations.dart';
 
 import 'package:biblio/models/book.dart';
 import 'package:biblio/widgets/books/add_book_button.dart';
