@@ -2,7 +2,7 @@ package types
 
 import (
 	"time"
-	"biblio-api/types/isbnSearch"
+	"biblio-api/utils/googleBooks/types/isbnSearch"
 )
 
 type Book struct {
