@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
@@ -36,9 +37,15 @@ class FloatingButton extends StatelessWidget {
           const SnackBar(content: Text('Looking up book…')),
         );
 
-        const biblioApiUrl = String.fromEnvironment('BIBLIO_API_URL');
-        const digitalOceanWebsecureToken =
-            String.fromEnvironment('DIGITALOCEAN_WEBSECURE_TOKEN');
+        final biblioApiUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+        final digitalOceanWebsecureToken =
+            dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
+        if (biblioApiUrl.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('BIBLIO_API_URL is not set in .env')),
+          );
+          return;
+        }
         final url = '$biblioApiUrl/books/getBookByIsbn?isbn=$isbn';
         http.Response? response;
         try {
