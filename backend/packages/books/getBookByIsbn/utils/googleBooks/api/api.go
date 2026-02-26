@@ -1,17 +1,18 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
-	"log"
-	"encoding/json"
-	"biblio-api/types"
+
+	googleBooksTypes "biblio-api/utils/googleBooks"
 )
 
 var GoogleBooksAPIBaseURL = "https://www.googleapis.com/books/v1/volumes"
 
-func SearchBooksByIsbn(isbn string) (*types.IsbnSearchResponse, error) {
+func SearchBooksByIsbn(isbn string) (*googleBooksTypes.IsbnSearchResponse, error) {
 	response, err := http.Get(
 		fmt.Sprintf(
 			"%s?q=isbn:%s&key=%s",
@@ -23,7 +24,7 @@ func SearchBooksByIsbn(isbn string) (*types.IsbnSearchResponse, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	isbnSearchResponse := &types.IsbnSearchResponse{}
+	isbnSearchResponse := &googleBooksTypes.IsbnSearchResponse{}
 	json.NewDecoder(response.Body).Decode(isbnSearchResponse)
 	return isbnSearchResponse, nil
 }

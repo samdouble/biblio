@@ -4,9 +4,11 @@ import (
 	"context"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
+
 	"biblio-api/types"
-	"biblio-api/utils"
+	googleBooksApi "biblio-api/utils/googleBooks/api"
 )
 
 func TestSimpleReturn(t *testing.T) {
@@ -31,9 +33,10 @@ func TestSimpleReturn(t *testing.T) {
 		}`))
 	}))
 	defer mockServer.Close()
-	originalURL := utils.GoogleBooksAPIBaseURL
-	utils.GoogleBooksAPIBaseURL = mockServer.URL
-	defer func() { utils.GoogleBooksAPIBaseURL = originalURL }()
+	originalURL := googleBooksApi.GoogleBooksAPIBaseURL
+	googleBooksApi.GoogleBooksAPIBaseURL = mockServer.URL
+	defer func() { googleBooksApi.GoogleBooksAPIBaseURL = originalURL }()
+	os.Unsetenv("ISBNDB_API_KEY") // ensure ISBNdb is skipped so test uses mocked Google Books
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "function_version", "Test")
