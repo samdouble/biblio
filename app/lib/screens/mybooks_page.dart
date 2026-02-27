@@ -6,7 +6,7 @@ import 'package:biblio/widgets/books/add_book_button.dart';
 import 'package:biblio/widgets/books/books_list.dart';
 import 'package:biblio/widgets/main_drawer.dart';
 
-class NotificationsPage extends StatelessWidget {
+class MyBooksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

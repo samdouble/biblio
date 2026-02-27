@@ -10,8 +10,30 @@ permissions:
   pull-requests: write
 
 jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      app--tag_name: ${{ steps.release.outputs.app--tag_name}}
+      app--release_created: ${{ steps.release.outputs.app--release_created}}
+      backend--tag_name: ${{ steps.release.outputs.backend--tag_name}}
+      backend--release_created: ${{ steps.release.outputs.backend--release_created}}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.PAT }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+      - name: Print release outputs for debugging
+        continue-on-error: true
+        run: |
+          echo "Release outputs:"
+          echo "${{ toJson(steps.release.outputs) }}"
+
   release-please-app:
     runs-on: ubuntu-latest
+    if: ${{needs.release-please.outputs.app--release_created}}
+    needs: release-please
     timeout-minutes: 1
     steps:
       - uses: googleapis/release-please-action@v4
@@ -20,10 +42,11 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           target-branch: master
-          path: app
 
   release-please-backend:
     runs-on: ubuntu-latest
+    if: ${{needs.release-please.outputs.backend--release_created}}
+    needs: release-please
     timeout-minutes: 1
     steps:
       - uses: googleapis/release-please-action@v4
@@ -32,4 +55,3 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           target-branch: master
-          path: backend

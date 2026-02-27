@@ -3,7 +3,7 @@ name: Backend Publish
 on:
   push:
     tags:
-      - 'v*'
+      - 'backend@v*'
 
 jobs:
   publish:
