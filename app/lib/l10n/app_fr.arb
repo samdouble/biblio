@@ -1,10 +1,15 @@
 {
+  "addLibrary": "Ajouter une bibliothèque",
   "author": "Auteur",
+  "createLibrary": "Créer une bibliothèque",
   "home": "Accueil",
   "language": "Langue",
   "languageEnglish": "Anglais",
   "languageFrench": "Français",
+  "libraries": "Bibliothèques",
+  "libraryName": "Nom de la bibliothèque",
   "myBooks": "Mes livres",
+  "noLibraries": "Aucune bibliothèque. Appuyez sur + pour en créer une.",
   "settings": "Paramètres",
   "title": "Titre"
 }
