@@ -95,11 +95,23 @@ abstract class AppLocalizations {
     Locale('fr')
   ];
 
+  /// No description provided for @addLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Add library'**
+  String get addLibrary;
+
   /// No description provided for @author.
   ///
   /// In en, this message translates to:
   /// **'Author'**
   String get author;
+
+  /// No description provided for @createLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Create library'**
+  String get createLibrary;
 
   /// No description provided for @home.
   ///
@@ -125,11 +137,29 @@ abstract class AppLocalizations {
   /// **'French'**
   String get languageFrench;
 
+  /// No description provided for @libraries.
+  ///
+  /// In en, this message translates to:
+  /// **'Libraries'**
+  String get libraries;
+
+  /// No description provided for @libraryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Library name'**
+  String get libraryName;
+
   /// No description provided for @myBooks.
   ///
   /// In en, this message translates to:
   /// **'My Books'**
   String get myBooks;
+
+  /// No description provided for @noLibraries.
+  ///
+  /// In en, this message translates to:
+  /// **'No libraries yet. Tap + to create one.'**
+  String get noLibraries;
 
   /// No description provided for @settings.
   ///

@@ -1,10 +1,15 @@
 {
+  "addLibrary": "Add library",
   "author": "Author",
+  "createLibrary": "Create library",
   "home": "Home",
   "language": "Language",
   "languageEnglish": "English",
   "languageFrench": "French",
+  "libraries": "Libraries",
+  "libraryName": "Library name",
   "myBooks": "My Books",
+  "noLibraries": "No libraries yet. Tap + to create one.",
   "settings": "Settings",
   "title": "Title"
 }
