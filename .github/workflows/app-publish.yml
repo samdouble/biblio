@@ -3,7 +3,7 @@ name: App Publish
 on:
   push:
     tags:
-      - 'biblio-v*'
+      - 'app@v*'
 
 jobs:
   publish:
