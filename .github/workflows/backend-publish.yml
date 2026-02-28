@@ -3,7 +3,7 @@ name: Backend Publish
 on:
   push:
     tags:
-      - 'backend-v*'
+      - 'biblio-api-getBookByIsbn-v*'
 
 jobs:
   publish:

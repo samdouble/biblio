@@ -1,4 +1,4 @@
-module biblio-api
+module biblio-api-getBookByIsbn
 
 go 1.20
 

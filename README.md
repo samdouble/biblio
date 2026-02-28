@@ -1,4 +1,5 @@
-[![CI](https://github.com/samdouble/biblio/actions/workflows/checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/checks.yml)
+[![App CI](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml)
+[![Backend CI](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml)
 
 **App**
 [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](https://dart.dev/)
@@ -89,4 +90,21 @@ Run the Docker container with the book's ISBN as a command line argument:
 
 ```sh
 docker run --env-file .env --network biblio-api_default -e "MONGO_URL=mongodb://biblio-api-mongo0:27017,biblio-api-mongo1:27017,biblio-api-mongo2:27017/?replicaSet=rs0" biblio-api <isbn>
+```
+
+### CI
+
+Install [act](https://nektosact.com/installation/index.html):
+
+```sh
+brew install act
+```
+
+**Release Please**
+
+```sh
+act push --container-architecture linux/amd64 \
+  -P ubuntu-latest=node:20-bookworm-slim \
+  -W .github/workflows/release-please.yml \
+  -s PAT=XXXXX
 ```
