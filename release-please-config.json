@@ -2,7 +2,6 @@
   "last-release-sha": "23931c9a6fcb4617ea4d03ee41c3ae5e0bec8f12",
   "include-component-in-tag": true,
   "include-v-in-tag": true,
-  "component-no-space": true,
   "separate-pull-requests": true,
   "packages": {
     "app": {
