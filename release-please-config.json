@@ -9,7 +9,7 @@
       "path": "app"
     },
     "backend": {
-      "release-type": "go",
+      "release-type": "simple",
       "path": "backend/packages/books/getBookByIsbn"
     }
   },
