@@ -7,11 +7,13 @@
   "packages": {
     "app": {
       "release-type": "dart",
-      "path": "app"
+      "path": "app",
+      "component": "app"
     },
     "backend": {
       "release-type": "go",
-      "path": "backend/packages/books/getBookByIsbn"
+      "path": "backend/packages/books/getBookByIsbn",
+      "component": "backend"
     }
   },
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
