@@ -35,5 +35,5 @@ jobs:
           manifest-file: .release-please-manifest.json
           include-component-in-tag: true
           target-branch: master
-          path: backend/packages/books/getBookByIsbn
+          path: backend
           skip-labeling: true
