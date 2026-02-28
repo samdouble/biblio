@@ -1,4 +1,4 @@
 {
   "app": "0.1.0",
-  "backend/packages/books/getBookByIsbn": "0.1.0"
+  "backend": "0.1.0"
 }
