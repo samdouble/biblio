@@ -11,8 +11,8 @@
       "component": "app"
     },
     "backend": {
-      "release-type": "go",
-      "path": "backend/packages/books/getBookByIsbn",
+      "release-type": "simple",
+      "path": "backend",
       "skip-labeling": true,
       "component": "backend"
     }

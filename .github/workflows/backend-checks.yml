@@ -14,6 +14,7 @@ jobs:
         go-version: ["1.20", "1.21", "1.22", "1.23", "1.24", "1.25"]
         mongodb-version: ["8.0"]
         dir:
+          - backend/packages/auth/signUp
           - backend/packages/books/getBookByIsbn
     steps:
       - name: Checkout
