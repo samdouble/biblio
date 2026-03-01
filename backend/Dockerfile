@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine
+FROM golang:1.25-alpine
 
 WORKDIR /app
 COPY lib /app/lib
