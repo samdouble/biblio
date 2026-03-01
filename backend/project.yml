@@ -9,7 +9,7 @@ packages:
   - name: auth
     functions:
       - name: signUp
-        runtime: go:1.20
+        runtime: go:1.25
         limits:
           timeout: 5000
           memory: 256
@@ -18,7 +18,7 @@ packages:
   - name: books
     functions:
       - name: getBookByIsbn
-        runtime: go:1.20
+        runtime: go:1.25
         limits:
           timeout: 5000
           memory: 256
