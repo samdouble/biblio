@@ -1,7 +1,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:biblio/db.dart';
+import 'package:biblio/db/db.dart';
 
 Future<int> processPendingSearches() async {
   final biblioApiUrl = dotenv.env['BIBLIO_API_URL'] ?? '';

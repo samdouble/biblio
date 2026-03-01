@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:biblio/db.dart';
+import 'package:biblio/db/db.dart';
 import 'package:biblio/models/api_book.dart';
 import 'package:biblio/screens/barcode_scanner_page.dart';
 import 'package:biblio/screens/book_detail_page.dart';
