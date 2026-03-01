@@ -1,14 +1,13 @@
 FROM golang:1.20-alpine
 
 WORKDIR /app
+COPY lib /app/lib
+COPY packages/books/getBookByIsbn /app/packages/books/getBookByIsbn
 
-COPY packages/books/getBookByIsbn/go.mod packages/books/getBookByIsbn/go.sum ./
+WORKDIR /app/packages/books/getBookByIsbn
 RUN go mod download && go mod verify
 
-COPY packages/books/getBookByIsbn/ .
-
-# Generate the main.go file for development
-# In production, not needed as DigitalOcean will look for the Main function directly
+# Generate main.go for local/Docker runs (DigitalOcean injects entrypoint in production)
 RUN printf 'package main\n\
 \n\
 import (\n\

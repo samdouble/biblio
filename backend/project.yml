@@ -1,12 +1,22 @@
 environment:
   DIGITALOCEAN_WEBSECURE_TOKEN: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
   GOOGLE_BOOKS_API_TOKEN: "${GOOGLE_BOOKS_API_TOKEN}"
+  ISBNDB_API_KEY: "${ISBNDB_API_KEY}"
   MONGO_DBNAME: "${MONGO_DBNAME}"
   MONGO_URL: "${MONGO_URL}"
 
 packages:
+  - name: auth
+    functions:
+      - name: signUp
+        runtime: go:1.20
+        limits:
+          timeout: 5000
+          memory: 256
+        web: true
+        webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
   - name: books
-    functions: 
+    functions:
       - name: getBookByIsbn
         runtime: go:1.20
         limits:
