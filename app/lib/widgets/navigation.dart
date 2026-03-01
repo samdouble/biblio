@@ -8,11 +8,7 @@ import 'package:biblio/services/pending_search_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:biblio/l10n/app_localizations.dart';
-
-bool _isOnline(List<ConnectivityResult> results) {
-  if (results.isEmpty) return false;
-  return results.any((r) => r != ConnectivityResult.none);
-}
+import 'package:biblio/utils/connectivity.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});
@@ -42,7 +38,7 @@ class _NavigationExampleState extends State<Navigation> {
 
   Future<void> _checkInitialPending() async {
     final results = await Connectivity().checkConnectivity();
-    if (_isOnline(results)) {
+    if (isOnline(results)) {
       final count = await processPendingSearches();
       if (count > 0 && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -55,7 +51,7 @@ class _NavigationExampleState extends State<Navigation> {
   }
 
   void _onConnectivityChanged(List<ConnectivityResult> results) {
-    if (!_isOnline(results)) {
+    if (!isOnline(results)) {
       _wasOffline = true;
       return;
     }
