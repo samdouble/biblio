@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-const int _dbVersion = 2;
+const int _dbVersion = 3;
 
 Future<Database> initDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,15 +21,52 @@ Future<Database> initDatabase() async {
         """,
       );
       await _createLibraryTables(db);
+      await _createPendingSearchTable(db);
     },
     onUpgrade: (db, oldVersion, newVersion) async {
       if (oldVersion < 2) {
         await _createLibraryTables(db);
       }
+      if (oldVersion < 3) {
+        await _createPendingSearchTable(db);
+      }
     },
     version: _dbVersion,
   );
   return database;
+}
+
+Future<void> _createPendingSearchTable(Database db) async {
+  await db.execute(
+    """
+      CREATE TABLE pending_isbn_searches(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        isbn TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      )
+    """,
+  );
+}
+
+Future<void> addPendingIsbnSearch(String isbn) async {
+  final db = await initDatabase();
+  await db.insert(
+    'pending_isbn_searches',
+    {'isbn': isbn, 'created_at': DateTime.now().toUtc().millisecondsSinceEpoch},
+  );
+}
+
+Future<List<Map<String, dynamic>>> getPendingIsbnSearches() async {
+  final db = await initDatabase();
+  return db.query(
+    'pending_isbn_searches',
+    orderBy: 'created_at ASC',
+  );
+}
+
+Future<void> removePendingIsbnSearch(int id) async {
+  final db = await initDatabase();
+  await db.delete('pending_isbn_searches', where: 'id = ?', whereArgs: [id]);
 }
 
 Future<void> _createLibraryTables(Database db) async {
