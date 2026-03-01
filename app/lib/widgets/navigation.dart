@@ -1,9 +1,18 @@
+import 'dart:async';
+
 import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/screens/libraries_page.dart';
 import 'package:biblio/screens/mybooks_page.dart';
 import 'package:biblio/screens/settings_page.dart';
+import 'package:biblio/services/pending_search_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:biblio/l10n/app_localizations.dart';
+
+bool _isOnline(List<ConnectivityResult> results) {
+  if (results.isEmpty) return false;
+  return results.any((r) => r != ConnectivityResult.none);
+}
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});
@@ -14,6 +23,52 @@ class Navigation extends StatefulWidget {
 
 class _NavigationExampleState extends State<Navigation> {
   int currentPageIndex = 0;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  bool _wasOffline = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_onConnectivityChanged);
+    _checkInitialPending();
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _checkInitialPending() async {
+    final results = await Connectivity().checkConnectivity();
+    if (_isOnline(results)) {
+      final count = await processPendingSearches();
+      if (count > 0 && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$count book lookup${count == 1 ? '' : 's'} synced.')),
+        );
+      }
+    } else {
+      _wasOffline = true;
+    }
+  }
+
+  void _onConnectivityChanged(List<ConnectivityResult> results) {
+    if (!_isOnline(results)) {
+      _wasOffline = true;
+      return;
+    }
+    if (!_wasOffline) return;
+    _wasOffline = false;
+    processPendingSearches().then((count) {
+      if (count > 0 && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$count book lookup${count == 1 ? '' : 's'} synced.')),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

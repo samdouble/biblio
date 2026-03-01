@@ -1,10 +1,17 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:biblio/db.dart';
 import 'package:biblio/models/api_book.dart';
 import 'package:biblio/screens/barcode_scanner_page.dart';
 import 'package:biblio/screens/book_detail_page.dart';
+
+bool _isOnline(List<ConnectivityResult> results) {
+  if (results.isEmpty) return false;
+  return results.any((r) => r != ConnectivityResult.none);
+}
 
 class FloatingButton extends StatelessWidget {
   const FloatingButton({super.key});
@@ -25,7 +32,26 @@ class FloatingButton extends StatelessWidget {
         if (!context.mounted) {
           return;
         }
-        ScaffoldMessenger.of(context).showSnackBar(
+        final messenger = ScaffoldMessenger.of(context);
+        final navigator = Navigator.of(context);
+
+        final connectivity = Connectivity();
+        final results = await connectivity.checkConnectivity();
+        if (!_isOnline(results)) {
+          await addPendingIsbnSearch(isbn);
+          if (!context.mounted) return;
+          messenger.showSnackBar(
+            const SnackBar(
+              content: Text(
+                'You’re offline. Search saved — we’ll look it up when you’re back online.',
+              ),
+            ),
+          );
+          return;
+        }
+
+        if (!context.mounted) return;
+        messenger.showSnackBar(
           const SnackBar(content: Text('Looking up book…')),
         );
 
@@ -33,7 +59,7 @@ class FloatingButton extends StatelessWidget {
         final digitalOceanWebsecureToken =
             dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
         if (biblioApiUrl.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             const SnackBar(content: Text('BIBLIO_API_URL is not set in .env')),
           );
           return;
@@ -52,7 +78,7 @@ class FloatingButton extends StatelessWidget {
           if (!context.mounted) {
             return;
           }
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             SnackBar(content: Text('Error: ${error.toString()}')),
           );
           return;
@@ -63,7 +89,7 @@ class FloatingButton extends StatelessWidget {
         }
 
         if (response.statusCode != 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             SnackBar(
               content: Text('Could not load book (${response.statusCode})'),
             ),
@@ -73,14 +99,14 @@ class FloatingButton extends StatelessWidget {
 
         final apiBook = parseGetBookByIsbnResponse(response.body);
         if (apiBook == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             SnackBar(content: Text('Book not found for barcode $isbn')),
           );
           return;
         }
 
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        Navigator.of(context).push(
+        messenger.hideCurrentSnackBar();
+        navigator.push(
           MaterialPageRoute<void>(
             builder: (context) => BookDetailPage(book: apiBook),
           ),
