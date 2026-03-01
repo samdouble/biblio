@@ -7,11 +7,7 @@ import 'package:biblio/db.dart';
 import 'package:biblio/models/api_book.dart';
 import 'package:biblio/screens/barcode_scanner_page.dart';
 import 'package:biblio/screens/book_detail_page.dart';
-
-bool _isOnline(List<ConnectivityResult> results) {
-  if (results.isEmpty) return false;
-  return results.any((r) => r != ConnectivityResult.none);
-}
+import 'package:biblio/utils/connectivity.dart';
 
 class FloatingButton extends StatelessWidget {
   const FloatingButton({super.key});
@@ -37,13 +33,13 @@ class FloatingButton extends StatelessWidget {
 
         final connectivity = Connectivity();
         final results = await connectivity.checkConnectivity();
-        if (!_isOnline(results)) {
+        if (!isOnline(results)) {
           await addPendingIsbnSearch(isbn);
           if (!context.mounted) return;
           messenger.showSnackBar(
             const SnackBar(
               content: Text(
-                'You’re offline. Search saved — we’ll look it up when you’re back online.',
+                'You\'re offline. Search saved - we\'ll look it up when you\'re back online.',
               ),
             ),
           );
