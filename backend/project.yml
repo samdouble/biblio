@@ -8,7 +8,14 @@ environment:
 packages:
   - name: auth
     functions:
-      - name: signUp
+      - name: sendOtp
+        runtime: go:1.25
+        limits:
+          timeout: 5000
+          memory: 256
+        web: true
+        webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
+      - name: verifyOtp
         runtime: go:1.25
         limits:
           timeout: 5000

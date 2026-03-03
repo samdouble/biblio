@@ -14,7 +14,8 @@ jobs:
         go-version: ["1.25"]
         mongodb-version: ["8.0"]
         dir:
-          - backend/packages/auth/signUp
+          - backend/packages/auth/sendOtp
+          - backend/packages/auth/verifyOtp
           - backend/packages/books/getBookByIsbn
     steps:
       - name: Checkout
@@ -37,3 +38,10 @@ jobs:
           go get .
           go mod tidy
           go test
+      - name: Test build
+        working-directory: ${{ matrix.dir }}
+        run: |
+          if [ ! -f main.go ]; then
+            printf 'package main\n\nimport (\n\t"context"\n\t"os"\n\t"biblio-api/types"\n)\n\nfunc main() {\n\tMain(context.Background(), types.Event{Isbn: os.Args[1]})\n}\n' > main.go
+          fi
+          go build .
