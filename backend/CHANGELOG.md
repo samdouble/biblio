@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/samdouble/biblio/compare/backend-v0.2.0...backend-v0.3.0) (2026-03-03)
+
+
+### Features
+
+* **backend:** add send and verify OTP functions ([71edad7](https://github.com/samdouble/biblio/commit/71edad7ffd3607ed09cbbdf276ac9c40fe02b9dd))
+* **backend:** added signup endpoint ([8581716](https://github.com/samdouble/biblio/commit/85817165140ffe2f1aa35fd3fad15c7e6efbb83c))
+
 ## [0.2.0](https://github.com/samdouble/biblio/compare/backend-v0.1.0...backend-v0.2.0) (2026-02-28)
 
 
