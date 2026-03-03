@@ -107,11 +107,35 @@ abstract class AppLocalizations {
   /// **'Author'**
   String get author;
 
+  /// No description provided for @codeSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email for the code.'**
+  String get codeSent;
+
   /// No description provided for @createLibrary.
   ///
   /// In en, this message translates to:
   /// **'Create library'**
   String get createLibrary;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @enterCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get enterCode;
+
+  /// No description provided for @enterCodeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 6-digit code to {email}. Enter it below.'**
+  String enterCodeDescription(String email);
 
   /// No description provided for @home.
   ///
@@ -161,17 +185,65 @@ abstract class AppLocalizations {
   /// **'No libraries yet. Tap + to create one.'**
   String get noLibraries;
 
+  /// No description provided for @sendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send code'**
+  String get sendCode;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
 
+  /// No description provided for @signedInAs.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in as {email}'**
+  String signedInAs(String email);
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get signUp;
+
+  /// No description provided for @signUpDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email and we\'ll send you a one-time code to sign up or sign in.'**
+  String get signUpDescription;
+
+  /// No description provided for @signUpSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re signed in.'**
+  String get signUpSuccess;
+
   /// No description provided for @title.
   ///
   /// In en, this message translates to:
   /// **'Title'**
   String get title;
+
+  /// No description provided for @useDifferentEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a different email'**
+  String get useDifferentEmail;
+
+  /// No description provided for @verify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify'**
+  String get verify;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

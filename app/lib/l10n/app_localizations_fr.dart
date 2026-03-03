@@ -13,7 +13,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get author => 'Auteur';
 
   @override
+  String get codeSent => 'Consultez votre courriel pour le code.';
+
+  @override
   String get createLibrary => 'Créer une bibliothèque';
+
+  @override
+  String get email => 'Courriel';
+
+  @override
+  String get enterCode => 'Code';
+
+  @override
+  String enterCodeDescription(String email) {
+    return 'Nous avons envoyé un code à 6 chiffres à $email. Saisissez-le ci-dessous.';
+  }
 
   @override
   String get home => 'Accueil';
@@ -40,8 +54,34 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noLibraries => 'Aucune bibliothèque. Appuyez sur + pour en créer une.';
 
   @override
+  String get sendCode => 'Envoyer le code';
+
+  @override
   String get settings => 'Paramètres';
 
   @override
+  String signedInAs(String email) {
+    return 'Connecté en tant que $email';
+  }
+
+  @override
+  String get signOut => 'Se déconnecter';
+
+  @override
+  String get signUp => 'S\'inscrire';
+
+  @override
+  String get signUpDescription => 'Entrez votre courriel et nous vous enverrons un code à usage unique pour vous inscrire ou vous connecter.';
+
+  @override
+  String get signUpSuccess => 'Vous êtes connecté.';
+
+  @override
   String get title => 'Titre';
+
+  @override
+  String get useDifferentEmail => 'Utiliser un autre courriel';
+
+  @override
+  String get verify => 'Vérifier';
 }

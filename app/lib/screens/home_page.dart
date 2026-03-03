@@ -11,16 +11,25 @@ import 'package:biblio/widgets/my_widget.dart';
 var uuid = Uuid();
 
 const _localeKey = 'app_locale';
+const _signedInUserIdKey = 'signed_in_user_id';
+const _signedInEmailKey = 'signed_in_email';
 
 class MyAppState extends ChangeNotifier {
   MyAppState() {
     _loadLocale();
+    _loadSignedInUser();
   }
 
   var current = 'samdouble';
 
   Locale? _locale;
   Locale? get locale => _locale;
+
+  String? _signedInUserId;
+  String? _signedInEmail;
+  String? get signedInUserId => _signedInUserId;
+  String? get signedInEmail => _signedInEmail;
+  bool get isSignedIn => _signedInEmail != null;
 
   Future<void> _loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
@@ -29,6 +38,31 @@ class MyAppState extends ChangeNotifier {
       _locale = Locale(code);
       notifyListeners();
     }
+  }
+
+  Future<void> _loadSignedInUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    _signedInUserId = prefs.getString(_signedInUserIdKey);
+    _signedInEmail = prefs.getString(_signedInEmailKey);
+    notifyListeners();
+  }
+
+  Future<void> setSignedIn(String userId, String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_signedInUserIdKey, userId);
+    await prefs.setString(_signedInEmailKey, email);
+    _signedInUserId = userId;
+    _signedInEmail = email;
+    notifyListeners();
+  }
+
+  Future<void> signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_signedInUserIdKey);
+    await prefs.remove(_signedInEmailKey);
+    _signedInUserId = null;
+    _signedInEmail = null;
+    notifyListeners();
   }
 
   Future<void> setLocale(Locale value) async {
