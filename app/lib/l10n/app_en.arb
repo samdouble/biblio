@@ -1,7 +1,18 @@
 {
   "addLibrary": "Add library",
   "author": "Author",
+  "codeSent": "Check your email for the code.",
   "createLibrary": "Create library",
+  "email": "Email",
+  "enterCode": "Code",
+  "enterCodeDescription": "We sent a 6-digit code to {email}. Enter it below.",
+  "@enterCodeDescription": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "home": "Home",
   "language": "Language",
   "languageEnglish": "English",
@@ -10,6 +21,21 @@
   "libraryName": "Library name",
   "myBooks": "My Books",
   "noLibraries": "No libraries yet. Tap + to create one.",
+  "sendCode": "Send code",
   "settings": "Settings",
-  "title": "Title"
+  "signedInAs": "Signed in as {email}",
+  "@signedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "signOut": "Sign out",
+  "signUp": "Sign up",
+  "signUpDescription": "Enter your email and we'll send you a one-time code to sign up or sign in.",
+  "signUpSuccess": "You're signed in.",
+  "title": "Title",
+  "useDifferentEmail": "Use a different email",
+  "verify": "Verify"
 }

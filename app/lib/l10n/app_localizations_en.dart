@@ -13,7 +13,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get author => 'Author';
 
   @override
+  String get codeSent => 'Check your email for the code.';
+
+  @override
   String get createLibrary => 'Create library';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get enterCode => 'Code';
+
+  @override
+  String enterCodeDescription(String email) {
+    return 'We sent a 6-digit code to $email. Enter it below.';
+  }
 
   @override
   String get home => 'Home';
@@ -40,8 +54,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noLibraries => 'No libraries yet. Tap + to create one.';
 
   @override
+  String get sendCode => 'Send code';
+
+  @override
   String get settings => 'Settings';
 
   @override
+  String signedInAs(String email) {
+    return 'Signed in as $email';
+  }
+
+  @override
+  String get signOut => 'Sign out';
+
+  @override
+  String get signUp => 'Sign up';
+
+  @override
+  String get signUpDescription => 'Enter your email and we\'ll send you a one-time code to sign up or sign in.';
+
+  @override
+  String get signUpSuccess => 'You\'re signed in.';
+
+  @override
   String get title => 'Title';
+
+  @override
+  String get useDifferentEmail => 'Use a different email';
+
+  @override
+  String get verify => 'Verify';
 }

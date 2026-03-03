@@ -3,6 +3,7 @@ import 'package:biblio/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'package:biblio/screens/home_page.dart';
+import 'package:biblio/screens/sign_up_page.dart';
 import 'package:biblio/widgets/main_drawer.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -25,6 +26,45 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          Consumer<MyAppState>(
+            builder: (context, appState, _) {
+              if (appState.isSignedIn) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Text(
+                        l10n.signedInAs(appState.signedInEmail ?? ''),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.logout),
+                      title: Text(l10n.signOut),
+                      onTap: () => appState.signOut(),
+                    ),
+                  ],
+                );
+              }
+              return ListTile(
+                leading: const Icon(Icons.person_add),
+                title: Text(l10n.signUp),
+                onTap: () async {
+                  final result = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute<bool>(
+                      builder: (context) => const SignUpPage(),
+                    ),
+                  );
+                  if (result == true && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(l10n.signUpSuccess)),
+                    );
+                  }
+                },
+              );
+            },
+          ),
           ListTile(
             title: Text(l10n.language),
             trailing: Consumer<MyAppState>(

@@ -1,7 +1,18 @@
 {
   "addLibrary": "Ajouter une bibliothèque",
   "author": "Auteur",
+  "codeSent": "Consultez votre courriel pour le code.",
   "createLibrary": "Créer une bibliothèque",
+  "email": "Courriel",
+  "enterCode": "Code",
+  "enterCodeDescription": "Nous avons envoyé un code à 6 chiffres à {email}. Saisissez-le ci-dessous.",
+  "@enterCodeDescription": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "home": "Accueil",
   "language": "Langue",
   "languageEnglish": "Anglais",
@@ -10,6 +21,21 @@
   "libraryName": "Nom de la bibliothèque",
   "myBooks": "Mes livres",
   "noLibraries": "Aucune bibliothèque. Appuyez sur + pour en créer une.",
+  "sendCode": "Envoyer le code",
   "settings": "Paramètres",
-  "title": "Titre"
+  "signedInAs": "Connecté en tant que {email}",
+  "@signedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "signOut": "Se déconnecter",
+  "signUp": "S'inscrire",
+  "signUpDescription": "Entrez votre courriel et nous vous enverrons un code à usage unique pour vous inscrire ou vous connecter.",
+  "signUpSuccess": "Vous êtes connecté.",
+  "title": "Titre",
+  "useDifferentEmail": "Utiliser un autre courriel",
+  "verify": "Vérifier"
 }
