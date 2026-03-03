@@ -3,9 +3,11 @@ module biblio-api
 go 1.25
 
 replace biblio-api/db => ../../../lib/db
+replace biblio-api/otps => ../../../lib/otps
 
 require (
 	biblio-api/db v0.0.0
+	biblio-api/otps v0.0.0
 	github.com/aws/aws-sdk-go-v2 v1.32.6
 	github.com/aws/aws-sdk-go-v2/config v1.28.5
 	github.com/aws/aws-sdk-go-v2/service/ses v1.34.2

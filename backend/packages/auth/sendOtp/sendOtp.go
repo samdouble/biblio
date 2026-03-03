@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"biblio-api/db"
-	"biblio-api/models"
+	"biblio-api/otps"
 	"biblio-api/ses"
 	"biblio-api/types"
 )
@@ -40,8 +40,8 @@ func Main(ctx context.Context, event types.SendOtpEvent) (types.SendOtpResponse,
 	defer db.CloseClientDB()
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 
-	if err := models.UpsertOtp(database, email, otpHash); err != nil {
-		log.Printf("UpsertOtp: %v", err)
+	if err := otps.Upsert(database, email, otpHash); err != nil {
+		log.Printf("otps.Upsert: %v", err)
 		return types.SendOtpResponse{
 			Body: types.SendOtpResponseBody{Error: "failed to send code"},
 		}, err
