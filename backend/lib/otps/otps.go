@@ -1,4 +1,4 @@
-package models
+package otps
 
 import (
 	"context"
@@ -9,18 +9,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const otpsCollectionName = "otps"
-const otpExpiryMinutes = 10
+const CollectionName = "otps"
+const ExpiryMinutes = 10
 
-type OtpRecord struct {
+type Record struct {
 	Email     string    `bson:"email"`
 	OtpHash   string    `bson:"otpHash"`
 	ExpiresAt time.Time `bson:"expiresAt"`
 }
 
-func UpsertOtp(database *mongo.Database, email, otpHash string) error {
-	coll := database.Collection(otpsCollectionName)
-	expiresAt := time.Now().UTC().Add(otpExpiryMinutes * time.Minute)
+func Upsert(database *mongo.Database, email, otpHash string) error {
+	coll := database.Collection(CollectionName)
+	expiresAt := time.Now().UTC().Add(ExpiryMinutes * time.Minute)
 	doc := bson.M{
 		"email":     email,
 		"otpHash":   otpHash,
@@ -36,9 +36,9 @@ func UpsertOtp(database *mongo.Database, email, otpHash string) error {
 	return err
 }
 
-func GetOtpByEmail(database *mongo.Database, email string) (*OtpRecord, error) {
-	coll := database.Collection(otpsCollectionName)
-	var rec OtpRecord
+func GetByEmail(database *mongo.Database, email string) (*Record, error) {
+	coll := database.Collection(CollectionName)
+	var rec Record
 	err := coll.FindOne(context.TODO(), bson.M{"email": email}).Decode(&rec)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -49,8 +49,8 @@ func GetOtpByEmail(database *mongo.Database, email string) (*OtpRecord, error) {
 	return &rec, nil
 }
 
-func DeleteOtpByEmail(database *mongo.Database, email string) error {
-	coll := database.Collection(otpsCollectionName)
+func DeleteByEmail(database *mongo.Database, email string) error {
+	coll := database.Collection(CollectionName)
 	_, err := coll.DeleteOne(context.TODO(), bson.M{"email": email})
 	return err
 }

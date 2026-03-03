@@ -14,6 +14,7 @@ import (
 
 	"biblio-api/db"
 	"biblio-api/models"
+	"biblio-api/otps"
 	"biblio-api/types"
 )
 
@@ -36,9 +37,9 @@ func Main(ctx context.Context, event types.VerifyOtpEvent) (types.VerifyOtpRespo
 	defer db.CloseClientDB()
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 
-	rec, err := models.GetOtpByEmail(database, email)
+	rec, err := otps.GetByEmail(database, email)
 	if err != nil {
-		log.Printf("GetOtpByEmail: %v", err)
+		log.Printf("otps.GetByEmail: %v", err)
 		return types.VerifyOtpResponse{
 			Body: types.VerifyOtpResponseBody{Error: "invalid or expired code"},
 		}, err
@@ -50,7 +51,7 @@ func Main(ctx context.Context, event types.VerifyOtpEvent) (types.VerifyOtpRespo
 	}
 
 	if time.Now().UTC().After(rec.ExpiresAt) {
-		_ = models.DeleteOtpByEmail(database, email)
+		_ = otps.DeleteByEmail(database, email)
 		return types.VerifyOtpResponse{
 			Body: types.VerifyOtpResponseBody{Error: "code has expired"},
 		}, fmt.Errorf("otp expired")
@@ -63,8 +64,8 @@ func Main(ctx context.Context, event types.VerifyOtpEvent) (types.VerifyOtpRespo
 		}, fmt.Errorf("invalid otp")
 	}
 
-	if err := models.DeleteOtpByEmail(database, email); err != nil {
-		log.Printf("DeleteOtpByEmail: %v", err)
+	if err := otps.DeleteByEmail(database, email); err != nil {
+		log.Printf("otps.DeleteByEmail: %v", err)
 	}
 
 	user, err := models.GetUserByEmail(database, email)

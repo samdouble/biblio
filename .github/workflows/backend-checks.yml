@@ -41,7 +41,16 @@ jobs:
       - name: Test build
         working-directory: ${{ matrix.dir }}
         run: |
-          if [ ! -f main.go ]; then
-            printf 'package main\n\nimport (\n\t"context"\n\t"os"\n\t"biblio-api/types"\n)\n\nfunc main() {\n\tMain(context.Background(), types.Event{Isbn: os.Args[1]})\n}\n' > main.go
-          fi
+          case "${{ matrix.dir }}" in
+            *sendOtp*)
+              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.SendOtpEvent{}) }\n' > main.go
+              ;;
+            *verifyOtp*)
+              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.VerifyOtpEvent{}) }\n' > main.go
+              ;;
+            *getBookByIsbn*)
+              printf 'package main\n\nimport (\n\t"context"\n\t"os"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.Event{Isbn: os.Args[1]}) }\n' > main.go
+              ;;
+            *) echo "Unknown package"; exit 1 ;;
+          esac
           go build .

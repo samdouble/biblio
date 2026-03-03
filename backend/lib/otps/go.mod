@@ -1,16 +1,8 @@
-module biblio-api
+module biblio-api/otps
 
-go 1.25
+go 1.20
 
-replace biblio-api/db => ../../../lib/db
-replace biblio-api/otps => ../../../lib/otps
-
-require (
-	biblio-api/db v0.0.0
-	biblio-api/otps v0.0.0
-	github.com/google/uuid v1.6.0
-	go.mongodb.org/mongo-driver v1.17.1
-)
+require go.mongodb.org/mongo-driver v1.17.1
 
 require (
 	github.com/golang/snappy v0.0.4 // indirect
