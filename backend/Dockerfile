@@ -5,9 +5,9 @@ COPY lib /app/lib
 COPY packages/books/getBookByIsbn /app/packages/books/getBookByIsbn
 
 WORKDIR /app/packages/books/getBookByIsbn
-RUN go mod download && go mod verify
+RUN go mod download
 
-# Generate main.go for local/Docker runs (DigitalOcean injects entrypoint in production)
+# Generate main.go for local/Docker runs
 RUN printf 'package main\n\
 \n\
 import (\n\

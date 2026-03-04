@@ -36,7 +36,7 @@ func TestSimpleReturn(t *testing.T) {
 	originalURL := googleBooksApi.GoogleBooksAPIBaseURL
 	googleBooksApi.GoogleBooksAPIBaseURL = mockServer.URL
 	defer func() { googleBooksApi.GoogleBooksAPIBaseURL = originalURL }()
-	os.Unsetenv("ISBNDB_API_KEY") // ensure ISBNdb is skipped so test uses mocked Google Books
+	os.Unsetenv("ISBNDB_API_KEY")
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "function_version", "Test")

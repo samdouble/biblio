@@ -21,8 +21,11 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
           echo "DIGITALOCEAN_WEBSECURE_TOKEN=${{ secrets.DIGITALOCEAN_WEBSECURE_TOKEN }}" >> .env
           echo "GOOGLE_BOOKS_API_TOKEN=${{ secrets.GOOGLE_BOOKS_API_TOKEN }}" >> .env
+          echo "ISBNDB_API_KEY=${{ secrets.ISBNDB_API_KEY }}" >> .env
           echo "MONGO_DBNAME=${{ secrets.MONGO_DBNAME }}" >> .env
           echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> .env
       - name: Publish

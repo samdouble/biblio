@@ -113,7 +113,10 @@ func Main(ctx context.Context, event types.Event) (types.Response, error) {
 			_, _ = models.InsertSearch(database, search)
 			return []types.Book{}, nil
 		} else {
-			fmt.Println(len(existingBooks), "existing books found.")
+			fmt.Println(len(existingBooks), "existing book(s) found for ISBN", event.Isbn)
+			for _, book := range existingBooks {
+				fmt.Println(book.Id, book.VolumeInfo.Title, book.VolumeInfo.Authors)
+			}
 			search := types.Search{
 				Id: searchId,
 				CreatedAt: time.Now().UTC(),
