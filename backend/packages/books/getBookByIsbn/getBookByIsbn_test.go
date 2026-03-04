@@ -40,7 +40,7 @@ func TestSimpleReturn(t *testing.T) {
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, "function_version", "Test")
-	event := types.Event{Isbn: "0735619670"}
+	event := types.GetBookByIsbnEvent{Isbn: "0735619670"}
 	msg, err := Main(ctx, event)
 
 	if err != nil {
