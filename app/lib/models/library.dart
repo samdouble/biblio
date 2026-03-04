@@ -47,6 +47,19 @@ Future<void> deleteLibrary(Library library) async {
   await db.delete('libraries', where: 'id = ?', whereArgs: [library.id]);
 }
 
+Future<void> replaceLibrariesWith(List<Library> libraries) async {
+  final db = await initDatabase();
+  await db.delete('library_books');
+  await db.delete('libraries');
+  for (final lib in libraries) {
+    await db.insert(
+      'libraries',
+      lib.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+}
+
 Future<List<String>> fetchBookIdsInLibrary(String libraryId) async {
   final db = await initDatabase();
   final rows = await db.query(
