@@ -68,6 +68,8 @@ Shortly after, you should see the app running on your device.
 Create a `.env` file with the following variables:
 
 ```
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
 GOOGLE_BOOKS_API_TOKEN=
 ISBNDB_API_KEY=
 MONGO_DBNAME=
