@@ -6,11 +6,92 @@ on:
       - 'app-v*'
 
 jobs:
-  publish:
+  publish-android:
+    name: Publish to Play Store
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: app
     steps:
-      - uses: actions/checkout@v4
-      - name: Publish
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.41.2
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Create key.properties and keystore
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         run: |
-          echo 'Success'
+          echo "storePassword=$KEYSTORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "storeFile=keystore.jks" >> android/key.properties
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore.jks
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+      - name: Upload to Play Store
+        uses: r0adkll/upload-google-play@v1.2.1
+        if: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON != '' && secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
+          packageName: com.samdouble.biblio
+          releaseFile: app/build/app/outputs/bundle/release/app-release.aab
+          track: internal
+          status: completed
+
+  publish-ios:
+    name: Publish to App Store (TestFlight)
+    runs-on: macos-14
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.41.2
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Import code-signing certificate
+        uses: Apple-Actions/import-codesign-certs@v2
+        if: ${{ secrets.CERTIFICATES_P12_BASE64 != '' }}
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12_BASE64 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+          keychain: signing_temp
+      - name: Install provisioning profile
+        env:
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+        if: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 != '' }}
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+      - name: Build IPA
+        run: flutter build ipa --release
+        if: ${{ secrets.CERTIFICATES_P12_BASE64 != '' }}
+        env:
+          FLUTTER_CODE_SIGNING: true
+      - name: Upload to TestFlight
+        uses: Apple-Actions/upload-testflight-build@v1
+        if: ${{ secrets.APPSTORE_ISSUER_ID != '' && secrets.APPSTORE_KEY_ID != '' && secrets.APPSTORE_PRIVATE_KEY != '' }}
+        with:
+          app-path: ${{ github.workspace }}/app/build/ios/ipa/Runner.ipa
+          app-type: ios
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
