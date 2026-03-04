@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/samdouble/biblio/compare/app-v0.2.0...app-v0.3.0) (2026-03-04)
+
+
+### Features
+
+* **app:** add Searchbar on main page ([0aab10f](https://github.com/samdouble/biblio/commit/0aab10f79ff7d7fc15093328edc6579fd564ce3d))
+* **app:** synchronize libraries when user is logged in ([69d68a5](https://github.com/samdouble/biblio/commit/69d68a54fc67f059b697902d32fb290ba659ea56))
+
 ## [0.2.0](https://github.com/samdouble/biblio/compare/app-v0.1.0...app-v0.2.0) (2026-03-04)
 
 
