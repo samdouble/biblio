@@ -31,3 +31,33 @@ packages:
           memory: 256
         web: true
         webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
+  - name: libraries
+    functions:
+      - name: createLibrary
+        runtime: go:1.25
+        limits:
+          timeout: 5000
+          memory: 256
+        web: true
+        webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
+      - name: getLibraries
+        runtime: go:1.25
+        limits:
+          timeout: 5000
+          memory: 256
+        web: true
+        webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
+      - name: updateLibrary
+        runtime: go:1.25
+        limits:
+          timeout: 5000
+          memory: 256
+        web: true
+        webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
+      - name: deleteLibrary
+        runtime: go:1.25
+        limits:
+          timeout: 5000
+          memory: 256
+        web: true
+        webSecure: "${DIGITALOCEAN_WEBSECURE_TOKEN}"
