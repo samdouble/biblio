@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
 class ApiBook {
   ApiBook({
     required this.id,
@@ -100,4 +103,45 @@ ApiBook? parseGetBookByIsbnResponse(String responseBody) {
   } catch (_) {
     return null;
   }
+}
+
+/// Response from books/searchBooks. Returns empty list on error or no results.
+List<ApiBook> parseSearchBooksResponse(String responseBody) {
+  try {
+    final map = jsonDecode(responseBody) as Map<String, dynamic>?;
+    if (map == null) return [];
+    final body = map['body'];
+    if (body is! Map<String, dynamic>) return [];
+    final books = body['books'];
+    if (books is! List) return [];
+    final result = <ApiBook>[];
+    for (final item in books) {
+      if (item is Map<String, dynamic>) {
+        result.add(ApiBook.fromJson(item));
+      }
+    }
+    return result;
+  } catch (_) {
+    return [];
+  }
+}
+
+/// Search the backend books collection by title, author, or ISBN.
+Future<List<ApiBook>> searchBooksFromApi(String query, {int limit = 20}) async {
+  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
+  if (baseUrl.isEmpty || query.trim().isEmpty) return [];
+
+  final url = Uri.parse('$baseUrl/books/searchBooks');
+  final response = await http.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Require-Whisk-Auth': token,
+    },
+    body: jsonEncode({'query': query.trim(), 'limit': limit}),
+  );
+
+  if (response.statusCode != 200) return [];
+  return parseSearchBooksResponse(response.body);
 }
