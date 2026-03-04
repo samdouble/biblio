@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:biblio/models/book.dart';
 import 'package:biblio/models/library.dart';
+import 'package:biblio/screens/home_page.dart';
+import 'package:biblio/services/library_api_service.dart';
 
 class LibraryDetailPage extends StatefulWidget {
   final Library library;
@@ -14,6 +17,44 @@ class LibraryDetailPage extends StatefulWidget {
 
 class _LibraryDetailPageState extends State<LibraryDetailPage> {
   Future<List<Book>> _loadBooks() => fetchBooksInLibrary(widget.library.id);
+
+  Future<void> _deleteLibrary() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete library?'),
+        content: Text(
+          'Delete "${widget.library.name}"? Books in this library will be removed from it.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    final userId = context.read<MyAppState>().signedInUserId;
+    if (userId != null) {
+      final err = await deleteLibraryApi(userId, widget.library.id);
+      if (err != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
+        return;
+      }
+    }
+    await deleteLibrary(widget.library);
+    if (!mounted) return;
+    Navigator.of(context).pop(true);
+  }
 
   void _addBooks() async {
     final allBooks = await fetchBooks();
@@ -44,6 +85,13 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.library.name),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            tooltip: 'Delete library',
+            onPressed: _deleteLibrary,
+          ),
+        ],
       ),
       body: FutureBuilder<List<Book>>(
         future: _loadBooks(),

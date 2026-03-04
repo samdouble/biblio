@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:biblio/l10n/app_localizations.dart';
 import 'package:biblio/models/library.dart';
-import 'package:biblio/widgets/main_drawer.dart';
+import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/screens/library_detail_page.dart';
+import 'package:biblio/services/library_api_service.dart';
+import 'package:biblio/widgets/main_drawer.dart';
 
 final _uuid = Uuid();
 
@@ -16,8 +19,20 @@ class LibrariesPage extends StatefulWidget {
 }
 
 class _LibrariesPageState extends State<LibrariesPage> {
+  Future<List<Library>> _loadLibraries() async {
+    final userId = context.read<MyAppState>().signedInUserId;
+    if (userId != null) {
+      final result = await getLibraries(userId);
+      if (result.error == null && result.libraries.isNotEmpty) {
+        await replaceLibrariesWith(result.libraries);
+      }
+    }
+    return fetchLibraries();
+  }
+
   Future<void> _createLibrary() async {
     final l10n = AppLocalizations.of(context)!;
+    final userId = context.read<MyAppState>().signedInUserId;
     final nameController = TextEditingController();
     final created = await showDialog<bool>(
       context: context,
@@ -44,12 +59,32 @@ class _LibrariesPageState extends State<LibrariesPage> {
         ],
       ),
     );
-    if (created != true || !mounted) return;
+    if (created != true || !mounted) {
+      return;
+    }
     final name = nameController.text.trim();
-    if (name.isEmpty) return;
-    final library = Library(id: _uuid.v4(), name: name);
-    await insertLibrary(library);
-    if (!mounted) return;
+    if (name.isEmpty) {
+      return;
+    }
+
+    if (userId != null) {
+      final result = await createLibrary(userId, name);
+      if (result.error != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.error!)),
+        );
+        return;
+      }
+      if (result.library != null) {
+        await insertLibrary(result.library!);
+      }
+    } else {
+      final library = Library(id: _uuid.v4(), name: name);
+      await insertLibrary(library);
+    }
+    if (!mounted) {
+      return;
+    }
     setState(() {});
   }
 
@@ -70,7 +105,7 @@ class _LibrariesPageState extends State<LibrariesPage> {
       ),
       drawer: MainDrawer(),
       body: FutureBuilder<List<Library>>(
-        future: fetchLibraries(),
+        future: _loadLibraries(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
