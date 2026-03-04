@@ -23,7 +23,7 @@ type Search struct {
 	Result    *googleBooksTypes.IsbnSearchResponse `json:"result,omitempty" bson:"result,omitempty"`
 }
 
-type Event struct {
+type GetBookByIsbnEvent struct {
 	Isbn string `json:"isbn"`
 }
 

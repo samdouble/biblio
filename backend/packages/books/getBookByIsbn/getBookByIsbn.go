@@ -20,7 +20,7 @@ import (
 	isbnDbApi "biblio-api/utils/isbnDb/api"
 )
 
-func Main(ctx context.Context, event types.Event) (types.Response, error) {
+func Main(ctx context.Context, event types.GetBookByIsbnEvent) (types.Response, error) {
 	if event.Isbn == "" {
 		log.Println("ISBN is required")
 		return types.Response{}, fmt.Errorf("ISBN is required")

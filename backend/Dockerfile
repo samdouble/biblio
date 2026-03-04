@@ -17,7 +17,7 @@ import (\n\
 )\n\
 \n\
 func main() {\n\
-	Main(context.Background(), types.Event{Isbn: os.Args[1]})\n\
+	Main(context.Background(), types.GetBookByIsbnEvent{Isbn: os.Args[1]})\n\
 }\n' > main.go
 
 RUN go build -o getBookByIsbn .
