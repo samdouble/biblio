@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/samdouble/biblio/compare/backend-v0.3.0...backend-v0.4.0) (2026-03-04)
+
+
+### Features
+
+* **backend:** add librairies endpoints ([ce0efb6](https://github.com/samdouble/biblio/commit/ce0efb6851d9fde3953732dd610565761f1f17c0))
+
 ## [0.3.0](https://github.com/samdouble/biblio/compare/backend-v0.2.0...backend-v0.3.0) (2026-03-03)
 
 
