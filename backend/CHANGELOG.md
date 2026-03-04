@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/samdouble/biblio/compare/backend-v0.4.0...backend-v0.5.0) (2026-03-04)
+
+
+### Features
+
+* **backend:** add searchBooks function ([30f0399](https://github.com/samdouble/biblio/commit/30f0399f60f1c3b2021b62179c735133244cb6cc))
+
+
+### Bug Fixes
+
+* **backend:** fix build for libraries functions ([46e6607](https://github.com/samdouble/biblio/commit/46e66070c7880bf554c5a3032d870da074da03b6))
+
 ## [0.4.0](https://github.com/samdouble/biblio/compare/backend-v0.3.0...backend-v0.4.0) (2026-03-04)
 
 
