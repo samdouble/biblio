@@ -1,0 +1,11 @@
+version = 0.1
+
+[default.global.parameters]
+stack_name = "biblio-api"
+
+[default.deploy.parameters]
+stack_name = "biblio-api"
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = false
+resolve_s3 = true
+region = "ca-central-1"

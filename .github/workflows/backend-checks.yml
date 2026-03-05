@@ -46,31 +46,32 @@ jobs:
       - name: Test build
         working-directory: ${{ matrix.dir }}
         run: |
-          case "${{ matrix.dir }}" in
-            *sendOtp*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.SendOtpEvent{}) }\n' > main.go
-              ;;
-            *verifyOtp*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.VerifyOtpEvent{}) }\n' > main.go
-              ;;
-            *getBookByIsbn*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"os"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.GetBookByIsbnEvent{Isbn: os.Args[1]}) }\n' > main.go
-              ;;
-            *searchBooks*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.SearchBooksEvent{}) }\n' > main.go
-              ;;
-            *createLibrary*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.CreateLibraryEvent{}) }\n' > main.go
-              ;;
-            *getLibraries*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.GetLibrariesEvent{}) }\n' > main.go
-              ;;
-            *updateLibrary*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.UpdateLibraryEvent{}) }\n' > main.go
-              ;;
-            *deleteLibrary*)
-              printf 'package main\n\nimport (\n\t"context"\n\t"biblio-api/types"\n)\n\nfunc main() { Main(context.Background(), types.DeleteLibraryEvent{}) }\n' > main.go
-              ;;
-            *) echo "Unknown package"; exit 1 ;;
-          esac
           go build .
+
+  sam-build:
+    name: AWS SAM build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOY_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOY_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+      - name: Set up SAM CLI
+        uses: aws-actions/setup-sam@v2
+      - name: SAM build and validate
+        run: |
+          make build-all
+          sam build
+          sam validate

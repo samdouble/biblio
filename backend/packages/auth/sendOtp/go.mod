@@ -9,6 +9,7 @@ replace biblio-api/otps => ../../../lib/otps
 require (
 	biblio-api/db v0.0.0
 	biblio-api/otps v0.0.0
+	github.com/aws/aws-lambda-go v1.47.0
 	github.com/aws/aws-sdk-go-v2 v1.39.0
 	github.com/aws/aws-sdk-go-v2/config v1.28.5
 	github.com/aws/aws-sdk-go-v2/service/ses v1.34.2

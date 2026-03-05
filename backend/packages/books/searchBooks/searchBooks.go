@@ -34,7 +34,6 @@ func Main(ctx context.Context, event types.SearchBooksEvent) (types.SearchBooksR
 	}
 
 	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
-	defer db.CloseClientDB()
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 	coll := database.Collection("books")
 

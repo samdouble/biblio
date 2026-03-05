@@ -27,7 +27,7 @@ func Main(ctx context.Context, event types.GetBookByIsbnEvent) (types.Response, 
 	}
 
 	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
-	defer db.CloseClientDB()
+	// Do not CloseClientDB: Lambda reuses the process; closing would break concurrent/next invocations.
 
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 	searchesCollection := database.Collection("searches")

@@ -1,11 +1,16 @@
 name: App Checks
 
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'app/**'
 
 jobs:
   android_test:
      name: Test on Android
-     runs-on: macos-latest
+     runs-on: ubuntu-latest
      timeout-minutes: 20
      defaults:
        run:
@@ -34,7 +39,6 @@ jobs:
         run: |
           touch .env
           echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
-          echo "DIGITALOCEAN_WEBSECURE_TOKEN=${{ secrets.DIGITALOCEAN_WEBSECURE_TOKEN }}" >> .env
       - name: Lint
         run: |
           flutter analyze
