@@ -4,7 +4,9 @@
   "addByScanning": "Add by scanning",
   "addLibrary": "Add library",
   "author": "Author",
+  "clearSearch": "Clear search",
   "codeSent": "Check your email for the code.",
+  "couldNotLoadBookDetails": "Could not load book details",
   "createLibrary": "Create library",
   "email": "Email",
   "enterCode": "Code",
@@ -23,7 +25,18 @@
   "libraries": "Libraries",
   "libraryName": "Library name",
   "myBooks": "My Books",
+  "noBooksFoundFor": "No books found for \"{query}\".",
+  "@noBooksFoundFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
   "noLibraries": "No libraries yet. Tap + to create one.",
+  "recentlyScanned": "Recently scanned",
+  "recentlyScannedEmpty": "Scan a book with the + button to see it here.",
+  "searchByHint": "Search by title, author, ISBN…",
   "sendCode": "Send code",
   "settings": "Settings",
   "signedInAs": "Signed in as {email}",
@@ -39,6 +52,7 @@
   "signUpDescription": "Enter your email and we'll send you a one-time code to sign up or sign in.",
   "signUpSuccess": "You're signed in.",
   "title": "Title",
+  "untitled": "Untitled",
   "useDifferentEmail": "Use a different email",
   "verify": "Verify"
 }

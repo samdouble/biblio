@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:biblio/l10n/app_localizations.dart';
 import 'package:biblio/models/api_book.dart';
 import 'package:biblio/models/book.dart';
 import 'package:biblio/screens/book_detail_page.dart';
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
           controller: _searchController,
           focusNode: _searchFocusNode,
           decoration: InputDecoration(
-            hintText: 'Search by title, author, ISBN…',
+            hintText: AppLocalizations.of(context)!.searchByHint,
             hintStyle: TextStyle(
               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
             ),
@@ -156,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                 : IconButton(
                     icon: const Icon(Icons.close),
                     onPressed: _clearSearch,
-                    tooltip: 'Clear search',
+                    tooltip: AppLocalizations.of(context)!.clearSearch,
                   ),
           ),
           onSubmitted: _runSearch,
@@ -185,7 +186,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Text(
-                'Recently scanned',
+                AppLocalizations.of(context)!.recentlyScanned,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -198,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Center(
                         child: Text(
-                          'Scan a book with the + button to see it here.',
+                          AppLocalizations.of(context)!.recentlyScannedEmpty,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: Theme.of(context)
@@ -234,7 +235,7 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: const EdgeInsets.all(24),
           child: Text(
-            'No books found for "$_searchQuery".',
+            AppLocalizations.of(context)!.noBooksFoundFor(_searchQuery),
             style: Theme.of(context).textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
@@ -251,7 +252,7 @@ class _HomePageState extends State<HomePage> {
             ? info.authors.join(', ')
             : (book.isbn.isNotEmpty ? 'ISBN ${book.isbn}' : '');
         return ListTile(
-          title: Text(info.title.isEmpty ? 'Untitled' : info.title),
+          title: Text(info.title.isEmpty ? AppLocalizations.of(context)!.untitled : info.title),
           subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
           onTap: () {
             Navigator.of(context).push(
@@ -293,8 +294,8 @@ class _RecentBookCard extends StatelessWidget {
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Could not load book details')),
+                    SnackBar(
+                        content: Text(AppLocalizations.of(context)!.couldNotLoadBookDetails)),
                   );
                 }
               },
@@ -316,7 +317,7 @@ class _RecentBookCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              book.title.isEmpty ? 'Untitled' : book.title,
+              book.title.isEmpty ? AppLocalizations.of(context)!.untitled : book.title,
               style: theme.textTheme.labelSmall,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

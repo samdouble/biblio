@@ -62,7 +62,8 @@ import 'app_localizations_fr.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -70,7 +71,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -82,7 +84,8 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -125,11 +128,23 @@ abstract class AppLocalizations {
   /// **'Author'**
   String get author;
 
+  /// No description provided for @clearSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get clearSearch;
+
   /// No description provided for @codeSent.
   ///
   /// In en, this message translates to:
   /// **'Check your email for the code.'**
   String get codeSent;
+
+  /// No description provided for @couldNotLoadBookDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load book details'**
+  String get couldNotLoadBookDetails;
 
   /// No description provided for @createLibrary.
   ///
@@ -197,11 +212,35 @@ abstract class AppLocalizations {
   /// **'My Books'**
   String get myBooks;
 
+  /// No description provided for @noBooksFoundFor.
+  ///
+  /// In en, this message translates to:
+  /// **'No books found for \"{query}\".'**
+  String noBooksFoundFor(String query);
+
   /// No description provided for @noLibraries.
   ///
   /// In en, this message translates to:
   /// **'No libraries yet. Tap + to create one.'**
   String get noLibraries;
+
+  /// No description provided for @recentlyScanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently scanned'**
+  String get recentlyScanned;
+
+  /// No description provided for @recentlyScannedEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a book with the + button to see it here.'**
+  String get recentlyScannedEmpty;
+
+  /// No description provided for @searchByHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by title, author, ISBN…'**
+  String get searchByHint;
 
   /// No description provided for @sendCode.
   ///
@@ -251,6 +290,12 @@ abstract class AppLocalizations {
   /// **'Title'**
   String get title;
 
+  /// No description provided for @untitled.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled'**
+  String get untitled;
+
   /// No description provided for @useDifferentEmail.
   ///
   /// In en, this message translates to:
@@ -264,7 +309,8 @@ abstract class AppLocalizations {
   String get verify;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -273,25 +319,25 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'fr'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en', 'fr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return AppLocalizationsEn();
-    case 'fr': return AppLocalizationsFr();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'fr':
+      return AppLocalizationsFr();
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

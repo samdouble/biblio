@@ -4,7 +4,9 @@
   "addByScanning": "Ajouter en scannant",
   "addLibrary": "Ajouter une bibliothèque",
   "author": "Auteur",
+  "clearSearch": "Effacer la recherche",
   "codeSent": "Consultez votre courriel pour le code.",
+  "couldNotLoadBookDetails": "Impossible de charger les détails du livre",
   "createLibrary": "Créer une bibliothèque",
   "email": "Courriel",
   "enterCode": "Code",
@@ -23,7 +25,18 @@
   "libraries": "Bibliothèques",
   "libraryName": "Nom de la bibliothèque",
   "myBooks": "Mes livres",
+  "noBooksFoundFor": "Aucun livre trouvé pour « {query} ».",
+  "@noBooksFoundFor": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
   "noLibraries": "Aucune bibliothèque. Appuyez sur + pour en créer une.",
+  "recentlyScanned": "Récemment scannés",
+  "recentlyScannedEmpty": "Scannez un livre avec le bouton + pour le voir ici.",
+  "searchByHint": "Rechercher par titre, auteur, ISBN…",
   "sendCode": "Envoyer le code",
   "settings": "Paramètres",
   "signedInAs": "Connecté en tant que {email}",
@@ -39,6 +52,7 @@
   "signUpDescription": "Entrez votre courriel et nous vous enverrons un code à usage unique pour vous inscrire ou vous connecter.",
   "signUpSuccess": "Vous êtes connecté.",
   "title": "Titre",
+  "untitled": "Sans titre",
   "useDifferentEmail": "Utiliser un autre courriel",
   "verify": "Vérifier"
 }
