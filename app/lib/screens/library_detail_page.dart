@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:biblio/l10n/app_localizations.dart';
 import 'package:biblio/models/api_book.dart';
 import 'package:biblio/models/book.dart';
 import 'package:biblio/models/library.dart';
@@ -229,13 +230,13 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                   FilledButton.icon(
                     onPressed: _addBooks,
                     icon: const Icon(Icons.add),
-                    label: const Text('Add books'),
+                    label: Text(AppLocalizations.of(context)!.addBooks),
                   ),
                   const SizedBox(height: 8),
                   FilledButton.tonalIcon(
                     onPressed: _addBooksByScanning,
                     icon: const Icon(Icons.qr_code_scanner),
-                    label: const Text('Add by scanning'),
+                    label: Text(AppLocalizations.of(context)!.addByScanning),
                   ),
                 ],
               ),
@@ -252,7 +253,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                       child: FilledButton.icon(
                         onPressed: _addBooks,
                         icon: const Icon(Icons.add),
-                        label: const Text('Add books'),
+                        label: Text(AppLocalizations.of(context)!.addBooks),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -260,7 +261,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                       child: FilledButton.tonalIcon(
                         onPressed: _addBooksByScanning,
                         icon: const Icon(Icons.qr_code_scanner),
-                        label: const Text('Add by scanning'),
+                        label: Text(AppLocalizations.of(context)!.addByScanning),
                       ),
                     ),
                   ],
@@ -309,7 +310,7 @@ class _AddBooksToLibraryDialogState extends State<_AddBooksToLibraryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add books to library'),
+      title: Text(AppLocalizations.of(context)!.addBooksToLibrary),
       content: SizedBox(
         width: double.maxFinite,
         child: ListView.builder(

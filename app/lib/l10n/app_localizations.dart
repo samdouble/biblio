@@ -95,6 +95,24 @@ abstract class AppLocalizations {
     Locale('fr')
   ];
 
+  /// No description provided for @addBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'Add books'**
+  String get addBooks;
+
+  /// No description provided for @addBooksToLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Add books to library'**
+  String get addBooksToLibrary;
+
+  /// No description provided for @addByScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Add by scanning'**
+  String get addByScanning;
+
   /// No description provided for @addLibrary.
   ///
   /// In en, this message translates to:

@@ -1,4 +1,7 @@
 {
+  "addBooks": "Add books",
+  "addBooksToLibrary": "Add books to library",
+  "addByScanning": "Add by scanning",
   "addLibrary": "Add library",
   "author": "Author",
   "codeSent": "Check your email for the code.",
