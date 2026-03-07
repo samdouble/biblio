@@ -45,6 +45,17 @@ jobs:
       - name: Tests
         run: |
           flutter test --coverage
+      - name: Coverage summary
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y lcov
+          lcov --summary coverage/lcov.info
+          echo "## Test coverage" >> $GITHUB_STEP_SUMMARY
+          lcov --summary coverage/lcov.info >> $GITHUB_STEP_SUMMARY
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-coverage
+          path: app/coverage/
       - name: Build
         run: |
           flutter build apk
