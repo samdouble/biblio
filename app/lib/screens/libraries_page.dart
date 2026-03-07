@@ -19,15 +19,40 @@ class LibrariesPage extends StatefulWidget {
 }
 
 class _LibrariesPageState extends State<LibrariesPage> {
-  Future<List<Library>> _loadLibraries() async {
+  Future<List<(Library library, int bookCount)>> _loadLibraries() async {
     final userId = context.read<MyAppState>().signedInUserId;
     if (userId != null) {
       final result = await getLibraries(userId);
-      if (result.error == null && result.libraries.isNotEmpty) {
-        await replaceLibrariesWith(result.libraries);
+      if (result.error == null) {
+        await syncLibrariesWithServer(
+          result.libraries,
+          (name) async {
+            final r = await createLibrary(userId, name);
+            return (library: r.library, error: r.error);
+          },
+        );
+        await pushLibraryBooksToServer(
+          userId,
+          (libraryId, bookIds) async {
+            final err = await setLibraryBooks(userId, libraryId, bookIds);
+            if (err != null && mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(err)),
+              );
+            }
+            return err;
+          },
+        );
       }
     }
-    return fetchLibraries();
+    final libraries = await fetchLibraries();
+    final counts = await Future.wait(
+      libraries.map((l) => fetchBookCountInLibrary(l.id)),
+    );
+    return List.generate(
+      libraries.length,
+      (i) => (libraries[i], counts[i]),
+    );
   }
 
   Future<void> _createLibrary() async {
@@ -104,46 +129,60 @@ class _LibrariesPageState extends State<LibrariesPage> {
         title: Text(l10n.libraries),
       ),
       drawer: MainDrawer(),
-      body: FutureBuilder<List<Library>>(
-        future: _loadLibraries(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final libraries = snapshot.data!;
-          if (libraries.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  l10n.noLibraries,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ),
-            );
-          }
-          return ListView.builder(
-            itemCount: libraries.length,
-            itemBuilder: (context, index) {
-              final lib = libraries[index];
-              return ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.folder_outlined),
-                ),
-                title: Text(lib.name),
-                onTap: () async {
-                  await Navigator.of(context).push<void>(
-                    MaterialPageRoute<void>(
-                      builder: (context) => LibraryDetailPage(library: lib),
-                    ),
-                  );
-                  if (mounted) setState(() {});
-                },
-              );
-            },
-          );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {});
         },
+        child: FutureBuilder<List<(Library library, int bookCount)>>(
+          future: _loadLibraries(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final list = snapshot.data!;
+            if (list.isEmpty) {
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(
+                          l10n.noLibraries,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: list.length,
+              itemBuilder: (context, index) {
+                final (lib, bookCount) = list[index];
+                return ListTile(
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.folder_outlined),
+                  ),
+                  title: Text('${lib.name} ($bookCount)'),
+                  onTap: () async {
+                    await Navigator.of(context).push<void>(
+                      MaterialPageRoute<void>(
+                        builder: (context) => LibraryDetailPage(library: lib),
+                      ),
+                    );
+                    if (mounted) setState(() {});
+                  },
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _createLibrary,

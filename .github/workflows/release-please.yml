@@ -13,9 +13,7 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     outputs:
-      app--tag_name: ${{ steps.release.outputs.app--tag_name}}
       app--release_created: ${{ steps.release.outputs.app--release_created}}
-      backend--tag_name: ${{ steps.release.outputs.backend--tag_name}}
       backend--release_created: ${{ steps.release.outputs.backend--release_created}}
     steps:
       - uses: googleapis/release-please-action@v4

@@ -5,7 +5,6 @@ import 'package:biblio/db/db.dart';
 
 Future<int> processPendingSearches() async {
   final biblioApiUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (biblioApiUrl.isEmpty) {
     return 0;
   }
@@ -22,7 +21,6 @@ Future<int> processPendingSearches() async {
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'X-Require-Whisk-Auth': token,
         },
       );
       if (response.statusCode == 200) {

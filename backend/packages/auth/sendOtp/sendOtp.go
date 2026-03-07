@@ -37,7 +37,6 @@ func Main(ctx context.Context, event types.SendOtpEvent) (types.SendOtpResponse,
 	otpHash := hashOtp(otpCode)
 
 	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
-	defer db.CloseClientDB()
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 
 	if err := otps.Upsert(database, email, otpHash); err != nil {

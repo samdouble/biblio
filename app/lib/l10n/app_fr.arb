@@ -1,4 +1,7 @@
 {
+  "addBooks": "Ajouter des livres",
+  "addBooksToLibrary": "Ajouter des livres à la bibliothèque",
+  "addByScanning": "Ajouter en scannant",
   "addLibrary": "Ajouter une bibliothèque",
   "author": "Auteur",
   "codeSent": "Consultez votre courriel pour le code.",

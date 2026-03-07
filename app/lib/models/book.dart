@@ -6,11 +6,15 @@ class Book {
   final String id;
   final String title;
   final String author;
+  final String isbn;
+  final String thumbnailUrl;
 
   const Book({
     required this.id,
     required this.title,
     required this.author,
+    this.isbn = '',
+    this.thumbnailUrl = '',
   });
 
   Map<String, Object?> toMap() {
@@ -18,6 +22,8 @@ class Book {
       'id': id,
       'title': title,
       'author': author,
+      'isbn': isbn,
+      'thumbnail_url': thumbnailUrl,
     };
   }
 
@@ -28,21 +34,42 @@ class Book {
 }
 
 Future<List<Book>> fetchBooks() async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   final List<Map<String, Object?>> bookMaps = await db.query('books');
   return [
-    for (
-      final {
-        'id': id as String,
-        'title': title as String,
-        'author': author as String,
-      } in bookMaps)
-      Book(id: id, title: title, author: author),
+    for (final m in bookMaps)
+      Book(
+        id: m['id'] as String,
+        title: m['title'] as String,
+        author: m['author'] as String,
+        isbn: (m['isbn'] as String?) ?? '',
+        thumbnailUrl: (m['thumbnail_url'] as String?) ?? '',
+      ),
+  ];
+}
+
+Future<List<Book>> fetchRecentScannedBooks({int limit = 5}) async {
+  final db = await databaseResolver();
+  final List<Map<String, Object?>> rows = await db.query(
+    'books',
+    where: "COALESCE(isbn, '') != ''",
+    orderBy: 'rowid DESC',
+    limit: limit,
+  );
+  return [
+    for (final m in rows)
+      Book(
+        id: m['id'] as String,
+        title: m['title'] as String,
+        author: m['author'] as String,
+        isbn: (m['isbn'] as String?) ?? '',
+        thumbnailUrl: (m['thumbnail_url'] as String?) ?? '',
+      ),
   ];
 }
 
 Future<void> insertBook(Book book) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
 
   await db.insert(
     'books',

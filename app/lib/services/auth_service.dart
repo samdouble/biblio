@@ -18,7 +18,6 @@ class VerifyOtpResult {
 
 Future<SendOtpResult> sendOtp(String email) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (baseUrl.isEmpty) {
     return SendOtpResult(sent: false, error: 'API not configured');
   }
@@ -28,7 +27,6 @@ Future<SendOtpResult> sendOtp(String email) async {
     url,
     headers: {
       'Content-Type': 'application/json',
-      'X-Require-Whisk-Auth': token,
     },
     body: jsonEncode({'email': email}),
   );
@@ -55,7 +53,6 @@ Future<SendOtpResult> sendOtp(String email) async {
 
 Future<VerifyOtpResult> verifyOtp(String email, String otp) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (baseUrl.isEmpty) {
     return VerifyOtpResult(error: 'API not configured');
   }
@@ -65,7 +62,6 @@ Future<VerifyOtpResult> verifyOtp(String email, String otp) async {
     url,
     headers: {
       'Content-Type': 'application/json',
-      'X-Require-Whisk-Auth': token,
     },
     body: jsonEncode({'email': email, 'otp': otp}),
   );

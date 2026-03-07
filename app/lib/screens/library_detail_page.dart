@@ -1,10 +1,15 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:biblio/l10n/app_localizations.dart';
+import 'package:biblio/models/api_book.dart';
 import 'package:biblio/models/book.dart';
 import 'package:biblio/models/library.dart';
+import 'package:biblio/screens/barcode_scanner_page.dart';
 import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
+import 'package:biblio/utils/connectivity.dart';
 
 class LibraryDetailPage extends StatefulWidget {
   final Library library;
@@ -16,7 +21,58 @@ class LibraryDetailPage extends StatefulWidget {
 }
 
 class _LibraryDetailPageState extends State<LibraryDetailPage> {
-  Future<List<Book>> _loadBooks() => fetchBooksInLibrary(widget.library.id);
+  late Library _library;
+
+  @override
+  void initState() {
+    super.initState();
+    _library = widget.library;
+  }
+
+  Future<List<Book>> _loadBooks() => fetchBooksInLibrary(_library.id);
+
+  Future<void> _renameLibrary() async {
+    final nameController = TextEditingController(text: _library.name);
+    final newName = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rename library'),
+        content: TextField(
+          controller: nameController,
+          decoration: const InputDecoration(
+            labelText: 'Name',
+            hintText: 'Library name',
+          ),
+          autofocus: true,
+          onSubmitted: (_) => Navigator.of(context).pop(nameController.text.trim()),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(nameController.text.trim()),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
+          ),
+        ],
+      ),
+    );
+    if (newName == null || newName.isEmpty || !mounted) return;
+    if (newName == _library.name) return;
+
+    final userId = context.read<MyAppState>().signedInUserId;
+    if (userId != null) {
+      final err = await updateLibrary(userId, _library.id, newName);
+      if (err != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
+        return;
+      }
+    }
+    await updateLibraryName(_library.id, newName);
+    if (!mounted) return;
+    setState(() => _library = Library(id: _library.id, name: newName));
+  }
 
   Future<void> _deleteLibrary() async {
     final confirmed = await showDialog<bool>(
@@ -24,7 +80,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
       builder: (context) => AlertDialog(
         title: const Text('Delete library?'),
         content: Text(
-          'Delete "${widget.library.name}"? Books in this library will be removed from it.',
+          'Delete "${_library.name}"? Books in this library will be removed from it.',
         ),
         actions: [
           TextButton(
@@ -45,20 +101,20 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
 
     final userId = context.read<MyAppState>().signedInUserId;
     if (userId != null) {
-      final err = await deleteLibraryApi(userId, widget.library.id);
+      final err = await deleteLibraryApi(userId, _library.id);
       if (err != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
         return;
       }
     }
-    await deleteLibrary(widget.library);
+    await deleteLibrary(_library);
     if (!mounted) return;
     Navigator.of(context).pop(true);
   }
 
   void _addBooks() async {
     final allBooks = await fetchBooks();
-    final currentIds = await fetchBookIdsInLibrary(widget.library.id);
+    final currentIds = await fetchBookIdsInLibrary(_library.id);
     final currentSet = currentIds.toSet();
     final available = allBooks.where((b) => !currentSet.contains(b.id)).toList();
     if (available.isEmpty) {
@@ -75,17 +131,78 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     );
     if (selected == null || selected.isEmpty || !mounted) return;
     for (final book in selected) {
-      await addBookToLibrary(widget.library.id, book.id);
+      await addBookToLibrary(_library.id, book.id);
     }
     setState(() {});
+  }
+
+  Future<void> _addBooksByScanning() async {
+    if (!mounted) return;
+    final connectivity = Connectivity();
+    final messenger = ScaffoldMessenger.of(context);
+
+    while (mounted) {
+      final isbn = await Navigator.of(context).push<String>(
+        MaterialPageRoute<String>(
+          builder: (context) => const BarcodeScannerPage(),
+        ),
+      );
+      if (isbn == null || isbn.isEmpty) break;
+
+      final results = await connectivity.checkConnectivity();
+      if (!isOnline(results)) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('You\'re offline. Connect to add books by scanning.'),
+          ),
+        );
+        continue;
+      }
+
+      final apiBook = await getBookByIsbn(isbn);
+      if (apiBook == null) {
+        messenger.showSnackBar(
+          SnackBar(content: Text('Book not found for barcode $isbn')),
+        );
+        continue;
+      }
+
+      final info = apiBook.volumeInfo;
+      final thumb = info.imageLinks?.thumbnail.isNotEmpty == true
+          ? info.imageLinks!.thumbnail
+          : info.imageLinks?.smallThumbnail ?? '';
+      await insertBook(Book(
+        id: apiBook.id,
+        title: info.title.isEmpty ? 'Untitled' : info.title,
+        author: info.authors.isEmpty ? '' : info.authors.join(', '),
+        isbn: apiBook.isbn,
+        thumbnailUrl: thumb,
+      ));
+      await addBookToLibrary(_library.id, apiBook.id);
+
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'Added "${info.title.isEmpty ? "Untitled" : info.title}" to ${_library.name}. Scan next or tap back.',
+          ),
+        ),
+      );
+    }
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.library.name),
+        title: Text(_library.name),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Rename library',
+            onPressed: _renameLibrary,
+          ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
             tooltip: 'Delete library',
@@ -111,11 +228,15 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                   ),
                   const SizedBox(height: 16),
                   FilledButton.icon(
-                    onPressed: () {
-                      _addBooks();
-                    },
+                    onPressed: _addBooks,
                     icon: const Icon(Icons.add),
-                    label: const Text('Add books'),
+                    label: Text(AppLocalizations.of(context)!.addBooks),
+                  ),
+                  const SizedBox(height: 8),
+                  FilledButton.tonalIcon(
+                    onPressed: _addBooksByScanning,
+                    icon: const Icon(Icons.qr_code_scanner),
+                    label: Text(AppLocalizations.of(context)!.addByScanning),
                   ),
                 ],
               ),
@@ -126,10 +247,24 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: FilledButton.icon(
-                  onPressed: _addBooks,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add books'),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: _addBooks,
+                        icon: const Icon(Icons.add),
+                        label: Text(AppLocalizations.of(context)!.addBooks),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton.tonalIcon(
+                        onPressed: _addBooksByScanning,
+                        icon: const Icon(Icons.qr_code_scanner),
+                        label: Text(AppLocalizations.of(context)!.addByScanning),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -144,7 +279,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                         icon: const Icon(Icons.remove_circle_outline),
                         tooltip: 'Remove from library',
                         onPressed: () async {
-                          await removeBookFromLibrary(widget.library.id, book.id);
+                          await removeBookFromLibrary(_library.id, book.id);
                           setState(() {});
                         },
                       ),
@@ -175,7 +310,7 @@ class _AddBooksToLibraryDialogState extends State<_AddBooksToLibraryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add books to library'),
+      title: Text(AppLocalizations.of(context)!.addBooksToLibrary),
       content: SizedBox(
         width: double.maxFinite,
         child: ListView.builder(

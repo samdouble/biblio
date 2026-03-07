@@ -6,12 +6,13 @@ replace biblio-api/db => ../../../lib/db
 
 require (
 	biblio-api/db v0.0.0
+	github.com/aws/aws-lambda-go v1.47.0
+	github.com/google/uuid v1.6.0
 	go.mongodb.org/mongo-driver v1.17.1
 )
 
 require (
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect

@@ -4,7 +4,7 @@
     <!-- Required for mobile_scanner (barcode scanning). -->
     <uses-permission android:name="android.permission.CAMERA" />
     <application
-        android:label="biblio"
+        android:label="Biblio"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

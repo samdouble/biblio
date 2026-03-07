@@ -24,7 +24,7 @@ class Library {
 }
 
 Future<List<Library>> fetchLibraries() async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   final List<Map<String, Object?>> rows = await db.query('libraries');
   return [
     for (final {'id': id as String, 'name': name as String} in rows)
@@ -33,7 +33,7 @@ Future<List<Library>> fetchLibraries() async {
 }
 
 Future<void> insertLibrary(Library library) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   await db.insert(
     'libraries',
     library.toMap(),
@@ -41,16 +41,24 @@ Future<void> insertLibrary(Library library) async {
   );
 }
 
+Future<void> updateLibraryName(String libraryId, String name) async {
+  final db = await databaseResolver();
+  await db.update(
+    'libraries',
+    {'name': name},
+    where: 'id = ?',
+    whereArgs: [libraryId],
+  );
+}
+
 Future<void> deleteLibrary(Library library) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   await db.delete('library_books', where: 'library_id = ?', whereArgs: [library.id]);
   await db.delete('libraries', where: 'id = ?', whereArgs: [library.id]);
 }
 
-Future<void> replaceLibrariesWith(List<Library> libraries) async {
-  final db = await initDatabase();
-  await db.delete('library_books');
-  await db.delete('libraries');
+Future<void> mergeLibrariesFromServer(List<Library> libraries) async {
+  final db = await databaseResolver();
   for (final lib in libraries) {
     await db.insert(
       'libraries',
@@ -60,8 +68,50 @@ Future<void> replaceLibrariesWith(List<Library> libraries) async {
   }
 }
 
+Future<void> replaceLocalLibraryId(String oldId, Library newLibrary) async {
+  final db = await databaseResolver();
+  await db.update(
+    'library_books',
+    {'library_id': newLibrary.id},
+    where: 'library_id = ?',
+    whereArgs: [oldId],
+  );
+  await db.delete('libraries', where: 'id = ?', whereArgs: [oldId]);
+  await db.insert(
+    'libraries',
+    newLibrary.toMap(),
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}
+
+Future<void> syncLibrariesWithServer(
+  List<Library> serverLibraries,
+  Future<({Library? library, String? error})> Function(String name) createLibrary,
+) async {
+  await mergeLibrariesFromServer(serverLibraries);
+  final serverIds = serverLibraries.map((l) => l.id).toSet();
+  final localLibraries = await fetchLibraries();
+  for (final lib in localLibraries) {
+    if (serverIds.contains(lib.id)) continue;
+    final result = await createLibrary(lib.name);
+    if (result.error == null && result.library != null) {
+      await replaceLocalLibraryId(lib.id, result.library!);
+    }
+  }
+}
+
+Future<int> fetchBookCountInLibrary(String libraryId) async {
+  final db = await databaseResolver();
+  final result = await db.rawQuery(
+    'SELECT COUNT(*) as count FROM library_books WHERE library_id = ?',
+    [libraryId],
+  );
+  final count = result.first['count'];
+  return (count is int) ? count : (count as num).toInt();
+}
+
 Future<List<String>> fetchBookIdsInLibrary(String libraryId) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   final rows = await db.query(
     'library_books',
     columns: ['book_id'],
@@ -72,7 +122,7 @@ Future<List<String>> fetchBookIdsInLibrary(String libraryId) async {
 }
 
 Future<List<Book>> fetchBooksInLibrary(String libraryId) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   final rows = await db.rawQuery(
     '''
     SELECT b.id, b.title, b.author
@@ -90,7 +140,7 @@ Future<List<Book>> fetchBooksInLibrary(String libraryId) async {
 }
 
 Future<void> addBookToLibrary(String libraryId, String bookId) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   await db.insert(
     'library_books',
     {'library_id': libraryId, 'book_id': bookId},
@@ -99,10 +149,23 @@ Future<void> addBookToLibrary(String libraryId, String bookId) async {
 }
 
 Future<void> removeBookFromLibrary(String libraryId, String bookId) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   await db.delete(
     'library_books',
     where: 'library_id = ? AND book_id = ?',
     whereArgs: [libraryId, bookId],
   );
+}
+
+/// Pushes each local library's book IDs to the backend via [setLibraryBooks].
+/// [setLibraryBooks] should return an error message or null on success.
+Future<void> pushLibraryBooksToServer(
+  String userId,
+  Future<String?> Function(String libraryId, List<String> bookIds) setLibraryBooks,
+) async {
+  final localLibraries = await fetchLibraries();
+  for (final lib in localLibraries) {
+    final bookIds = await fetchBookIdsInLibrary(lib.id);
+    await setLibraryBooks(lib.id, bookIds);
+  }
 }

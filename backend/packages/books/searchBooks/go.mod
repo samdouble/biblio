@@ -6,6 +6,7 @@ replace biblio-api/db => ../../../lib/db
 
 require (
 	biblio-api/db v0.0.0
+	github.com/aws/aws-lambda-go v1.47.0
 	go.mongodb.org/mongo-driver v1.17.1
 )
 

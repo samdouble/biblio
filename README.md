@@ -1,16 +1,20 @@
-[![App CI](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml)
-[![Backend CI](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml)
-
 **App**
+
+[![App CI](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml)
+
 [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](https://dart.dev/)
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=ffffff)](https://flutter.dev/)
 [![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)](https://developer.android.com/)
 [![iOS](https://img.shields.io/badge/iOS-000000?&logo=apple&logoColor=white)](https://developer.apple.com/ios/)
 
 **Backend**
+
+[![CI](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml)
+
 [![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?&logo=go&logoColor=white)](https://go.dev/)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?logo=google-cloud&logoColor=white)](https://cloud.google.com/)
-[![DigitalOcean](https://img.shields.io/badge/DigitalOcean-%230167ff.svg?logo=digitalOcean&logoColor=white)](https://www.digitalocean.com/)
+[![AWS Lambda](https://custom-icon-badges.demolab.com/badge/AWS%20Lambda-%23FF9900.svg?logo=aws-lambda&logoColor=white)](https://aws.amazon.com/lambda/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
 # biblio
 
@@ -26,7 +30,6 @@ Create an `.env` file at the root of the project:
 
 ```
 BIBLIO_API_URL=
-DIGITALOCEAN_WEBSECURE_TOKEN=
 ```
 
 #### Install Flutter SDK and its dependencies
@@ -68,8 +71,6 @@ Shortly after, you should see the app running on your device.
 Create a `.env` file with the following variables:
 
 ```
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
 GOOGLE_BOOKS_API_TOKEN=
 ISBNDB_API_KEY=
 MONGO_DBNAME=

@@ -34,7 +34,6 @@ func Main(ctx context.Context, event types.UpdateLibraryEvent) (types.UpdateLibr
 	}
 
 	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
-	defer db.CloseClientDB()
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 
 	lib, err := libraries.GetByIdAndUserId(database, libraryId, userId)

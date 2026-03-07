@@ -31,7 +31,6 @@ func Main(ctx context.Context, event types.CreateLibraryEvent) (types.CreateLibr
 	}
 
 	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
-	defer db.CloseClientDB()
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 
 	now := time.Now().UTC()

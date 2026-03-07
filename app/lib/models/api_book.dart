@@ -105,7 +105,6 @@ ApiBook? parseGetBookByIsbnResponse(String responseBody) {
   }
 }
 
-/// Response from books/searchBooks. Returns empty list on error or no results.
 List<ApiBook> parseSearchBooksResponse(String responseBody) {
   try {
     final map = jsonDecode(responseBody) as Map<String, dynamic>?;
@@ -126,10 +125,8 @@ List<ApiBook> parseSearchBooksResponse(String responseBody) {
   }
 }
 
-/// Search the backend books collection by title, author, or ISBN.
 Future<List<ApiBook>> searchBooksFromApi(String query, {int limit = 20}) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (baseUrl.isEmpty || query.trim().isEmpty) return [];
 
   final url = Uri.parse('$baseUrl/books/searchBooks');
@@ -137,11 +134,24 @@ Future<List<ApiBook>> searchBooksFromApi(String query, {int limit = 20}) async {
     url,
     headers: {
       'Content-Type': 'application/json',
-      'X-Require-Whisk-Auth': token,
     },
     body: jsonEncode({'query': query.trim(), 'limit': limit}),
   );
 
   if (response.statusCode != 200) return [];
   return parseSearchBooksResponse(response.body);
+}
+
+Future<ApiBook?> getBookByIsbn(String isbn) async {
+  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  if (baseUrl.isEmpty || isbn.trim().isEmpty) return null;
+  final url = Uri.parse(
+    '$baseUrl/books/getBookByIsbn?isbn=${Uri.encodeQueryComponent(isbn.trim())}',
+  );
+  final response = await http.get(
+    url,
+    headers: {'Content-Type': 'application/json'},
+  );
+  if (response.statusCode != 200) return null;
+  return parseGetBookByIsbnResponse(response.body);
 }
