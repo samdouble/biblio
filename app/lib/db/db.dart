@@ -39,8 +39,10 @@ Future<Database> initDatabase() async {
   return database;
 }
 
+Future<Database> Function() databaseResolver = initDatabase;
+
 Future<void> addPendingIsbnSearch(String isbn) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   await db.insert(
     'pending_isbn_searches',
     {'isbn': isbn, 'created_at': DateTime.now().toUtc().millisecondsSinceEpoch},
@@ -48,7 +50,7 @@ Future<void> addPendingIsbnSearch(String isbn) async {
 }
 
 Future<List<Map<String, dynamic>>> getPendingIsbnSearches() async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   return db.query(
     'pending_isbn_searches',
     orderBy: 'created_at ASC',
@@ -56,6 +58,6 @@ Future<List<Map<String, dynamic>>> getPendingIsbnSearches() async {
 }
 
 Future<void> removePendingIsbnSearch(int id) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   await db.delete('pending_isbn_searches', where: 'id = ?', whereArgs: [id]);
 }
