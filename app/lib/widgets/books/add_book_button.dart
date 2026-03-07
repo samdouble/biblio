@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:biblio/db/db.dart';
 import 'package:biblio/models/api_book.dart';
+import 'package:biblio/models/book.dart';
 import 'package:biblio/screens/barcode_scanner_page.dart';
 import 'package:biblio/screens/book_detail_page.dart';
 import 'package:biblio/utils/connectivity.dart';
@@ -96,6 +97,18 @@ class FloatingButton extends StatelessWidget {
           );
           return;
         }
+
+        final info = apiBook.volumeInfo;
+        final thumb = info.imageLinks?.thumbnail.isNotEmpty == true
+            ? info.imageLinks!.thumbnail
+            : info.imageLinks?.smallThumbnail ?? '';
+        await insertBook(Book(
+          id: apiBook.id,
+          title: info.title.isEmpty ? 'Untitled' : info.title,
+          author: info.authors.isEmpty ? '' : info.authors.join(', '),
+          isbn: apiBook.isbn,
+          thumbnailUrl: thumb,
+        ));
 
         messenger.hideCurrentSnackBar();
         navigator.push(
