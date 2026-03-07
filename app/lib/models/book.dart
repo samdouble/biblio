@@ -34,7 +34,7 @@ class Book {
 }
 
 Future<List<Book>> fetchBooks() async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   final List<Map<String, Object?>> bookMaps = await db.query('books');
   return [
     for (final m in bookMaps)
@@ -49,7 +49,7 @@ Future<List<Book>> fetchBooks() async {
 }
 
 Future<List<Book>> fetchRecentScannedBooks({int limit = 5}) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
   final List<Map<String, Object?>> rows = await db.query(
     'books',
     where: "COALESCE(isbn, '') != ''",
@@ -69,7 +69,7 @@ Future<List<Book>> fetchRecentScannedBooks({int limit = 5}) async {
 }
 
 Future<void> insertBook(Book book) async {
-  final db = await initDatabase();
+  final db = await databaseResolver();
 
   await db.insert(
     'books',
