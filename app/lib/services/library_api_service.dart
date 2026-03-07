@@ -19,7 +19,6 @@ class GetLibrariesResult {
 
 Future<CreateLibraryResult> createLibrary(String userId, String name) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (baseUrl.isEmpty) return CreateLibraryResult(error: 'API not configured');
 
   final url = Uri.parse('$baseUrl/libraries/createLibrary');
@@ -27,7 +26,6 @@ Future<CreateLibraryResult> createLibrary(String userId, String name) async {
     url,
     headers: {
       'Content-Type': 'application/json',
-      'X-Require-Whisk-Auth': token,
     },
     body: jsonEncode({'userId': userId, 'name': name}),
   );
@@ -61,7 +59,6 @@ Future<CreateLibraryResult> createLibrary(String userId, String name) async {
 
 Future<GetLibrariesResult> getLibraries(String userId) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (baseUrl.isEmpty) return GetLibrariesResult(error: 'API not configured');
 
   final url = Uri.parse('$baseUrl/libraries/getLibraries');
@@ -69,7 +66,6 @@ Future<GetLibrariesResult> getLibraries(String userId) async {
     url,
     headers: {
       'Content-Type': 'application/json',
-      'X-Require-Whisk-Auth': token,
     },
     body: jsonEncode({'userId': userId}),
   );
@@ -103,7 +99,6 @@ Future<GetLibrariesResult> getLibraries(String userId) async {
 
 Future<String?> updateLibrary(String userId, String libraryId, String name) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/updateLibrary');
@@ -111,7 +106,6 @@ Future<String?> updateLibrary(String userId, String libraryId, String name) asyn
     url,
     headers: {
       'Content-Type': 'application/json',
-      'X-Require-Whisk-Auth': token,
     },
     body: jsonEncode({'userId': userId, 'libraryId': libraryId, 'name': name}),
   );
@@ -128,7 +122,6 @@ Future<String?> updateLibrary(String userId, String libraryId, String name) asyn
 
 Future<String?> deleteLibraryApi(String userId, String libraryId) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  final token = dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/deleteLibrary');
@@ -136,7 +129,6 @@ Future<String?> deleteLibraryApi(String userId, String libraryId) async {
     url,
     headers: {
       'Content-Type': 'application/json',
-      'X-Require-Whisk-Auth': token,
     },
     body: jsonEncode({'userId': userId, 'libraryId': libraryId}),
   );

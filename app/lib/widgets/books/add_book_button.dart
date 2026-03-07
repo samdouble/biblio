@@ -47,13 +47,10 @@ class FloatingButton extends StatelessWidget {
         }
 
         if (!context.mounted) return;
-        messenger.showSnackBar(
-          const SnackBar(content: Text('Looking up book…')),
-        );
+        final snackBar = SnackBar(content: Text('Looking up book with ISBN $isbn…'));
+        messenger.showSnackBar(snackBar);
 
         final biblioApiUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-        final digitalOceanWebsecureToken =
-            dotenv.env['DIGITALOCEAN_WEBSECURE_TOKEN'] ?? '';
         if (biblioApiUrl.isEmpty) {
           messenger.showSnackBar(
             const SnackBar(content: Text('BIBLIO_API_URL is not set in .env')),
@@ -67,7 +64,6 @@ class FloatingButton extends StatelessWidget {
             Uri.parse(url),
             headers: {
               'Content-Type': 'application/json',
-              'X-Require-Whisk-Auth': digitalOceanWebsecureToken,
             },
           );
         } catch (error) {
