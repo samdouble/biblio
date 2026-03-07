@@ -6,16 +6,18 @@ BUILD_DIR = .build
 # Run: make build-all && sam build
 build-all:
 	@mkdir -p $(BUILD_DIR)/AuthSendOtp $(BUILD_DIR)/AuthVerifyOtp $(BUILD_DIR)/BooksGetBookByIsbn $(BUILD_DIR)/BooksSearchBooks \
-		$(BUILD_DIR)/LibrariesCreateLibrary $(BUILD_DIR)/LibrariesGetLibraries $(BUILD_DIR)/LibrariesUpdateLibrary $(BUILD_DIR)/LibrariesDeleteLibrary
+		$(BUILD_DIR)/LibrariesCreateLibrary $(BUILD_DIR)/LibrariesGetLibraries $(BUILD_DIR)/LibrariesGetLibraryBooks $(BUILD_DIR)/LibrariesSetLibraryBooks $(BUILD_DIR)/LibrariesUpdateLibrary $(BUILD_DIR)/LibrariesDeleteLibrary
 	cd packages/auth/sendOtp && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/AuthSendOtp/
 	cd packages/auth/verifyOtp && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/AuthVerifyOtp/
 	cd packages/books/getBookByIsbn && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/BooksGetBookByIsbn/
 	cd packages/books/searchBooks && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/BooksSearchBooks/
 	cd packages/libraries/createLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesCreateLibrary/
 	cd packages/libraries/getLibraries && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesGetLibraries/
+	cd packages/libraries/getLibraryBooks && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesGetLibraryBooks/
+	cd packages/libraries/setLibraryBooks && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesSetLibraryBooks/
 	cd packages/libraries/updateLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesUpdateLibrary/
 	cd packages/libraries/deleteLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesDeleteLibrary/
-	@for id in AuthSendOtp AuthVerifyOtp BooksGetBookByIsbn BooksSearchBooks LibrariesCreateLibrary LibrariesGetLibraries LibrariesUpdateLibrary LibrariesDeleteLibrary; do \
+	@for id in AuthSendOtp AuthVerifyOtp BooksGetBookByIsbn BooksSearchBooks LibrariesCreateLibrary LibrariesGetLibraries LibrariesGetLibraryBooks LibrariesSetLibraryBooks LibrariesUpdateLibrary LibrariesDeleteLibrary; do \
 		printf 'build-%s:\n\tcp bootstrap $$(ARTIFACTS_DIR)/\n' "$$id" > $(BUILD_DIR)/$$id/Makefile; \
 	done
 
@@ -32,6 +34,10 @@ build-LibrariesCreateLibrary:
 	cd packages/libraries/createLibrary && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
 build-LibrariesGetLibraries:
 	cd packages/libraries/getLibraries && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
+build-LibrariesGetLibraryBooks:
+	cd packages/libraries/getLibraryBooks && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
+build-LibrariesSetLibraryBooks:
+	cd packages/libraries/setLibraryBooks && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
 build-LibrariesUpdateLibrary:
 	cd packages/libraries/updateLibrary && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
 build-LibrariesDeleteLibrary:
