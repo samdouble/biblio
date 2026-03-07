@@ -89,6 +89,19 @@ Resources:
             Path: /books/getBookByIsbn
             Method: GET
 
+  BooksGetBooksByAuthor:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/BooksGetBooksByAuthor
+      Handler: bootstrap
+      Events:
+        ApiPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref BiblioHttpApi
+            Path: /books/getBooksByAuthor
+            Method: POST
+
   BooksSearchBooks:
     Type: AWS::Serverless::Function
     Properties:
