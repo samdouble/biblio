@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 import 'package:biblio/models/api_book.dart';
 import 'package:biblio/models/book.dart';
 import 'package:biblio/screens/book_detail_page.dart';
 import 'package:biblio/widgets/books/add_book_button.dart';
 import 'package:biblio/widgets/main_drawer.dart';
-import 'package:biblio/widgets/my_widget.dart';
-
-var uuid = Uuid();
 
 const _localeKey = 'app_locale';
 const _signedInUserIdKey = 'signed_in_user_id';
@@ -170,34 +166,7 @@ class _HomePageState extends State<HomePage> {
       body: _searchQuery.isNotEmpty
           ? _searchBody()
           : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _recentlyScannedSection(),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      MyWidget(),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              var everyFallingStar = Book(
-                                id: uuid.v4(),
-                                title: 'Every Falling Star',
-                                author: 'Sungju Lee',
-                              );
-                              await insertBook(everyFallingStar);
-                            },
-                            child: const Text('Create Book'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              child: _recentlyScannedSection(),
             ),
       drawer: MainDrawer(),
       floatingActionButton: FloatingButton(),

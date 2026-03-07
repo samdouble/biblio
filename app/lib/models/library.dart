@@ -60,6 +60,16 @@ Future<void> replaceLibrariesWith(List<Library> libraries) async {
   }
 }
 
+Future<int> fetchBookCountInLibrary(String libraryId) async {
+  final db = await initDatabase();
+  final result = await db.rawQuery(
+    'SELECT COUNT(*) as count FROM library_books WHERE library_id = ?',
+    [libraryId],
+  );
+  final count = result.first['count'];
+  return (count is int) ? count : (count as num).toInt();
+}
+
 Future<List<String>> fetchBookIdsInLibrary(String libraryId) async {
   final db = await initDatabase();
   final rows = await db.query(

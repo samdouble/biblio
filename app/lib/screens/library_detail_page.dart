@@ -1,10 +1,14 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:biblio/models/api_book.dart';
 import 'package:biblio/models/book.dart';
 import 'package:biblio/models/library.dart';
+import 'package:biblio/screens/barcode_scanner_page.dart';
 import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
+import 'package:biblio/utils/connectivity.dart';
 
 class LibraryDetailPage extends StatefulWidget {
   final Library library;
@@ -80,6 +84,62 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     setState(() {});
   }
 
+  Future<void> _addBooksByScanning() async {
+    if (!mounted) return;
+    final connectivity = Connectivity();
+    final messenger = ScaffoldMessenger.of(context);
+
+    while (mounted) {
+      final isbn = await Navigator.of(context).push<String>(
+        MaterialPageRoute<String>(
+          builder: (context) => const BarcodeScannerPage(),
+        ),
+      );
+      if (isbn == null || isbn.isEmpty) break;
+
+      final results = await connectivity.checkConnectivity();
+      if (!isOnline(results)) {
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('You\'re offline. Connect to add books by scanning.'),
+          ),
+        );
+        continue;
+      }
+
+      final apiBook = await getBookByIsbn(isbn);
+      if (apiBook == null) {
+        messenger.showSnackBar(
+          SnackBar(content: Text('Book not found for barcode $isbn')),
+        );
+        continue;
+      }
+
+      final info = apiBook.volumeInfo;
+      final thumb = info.imageLinks?.thumbnail.isNotEmpty == true
+          ? info.imageLinks!.thumbnail
+          : info.imageLinks?.smallThumbnail ?? '';
+      await insertBook(Book(
+        id: apiBook.id,
+        title: info.title.isEmpty ? 'Untitled' : info.title,
+        author: info.authors.isEmpty ? '' : info.authors.join(', '),
+        isbn: apiBook.isbn,
+        thumbnailUrl: thumb,
+      ));
+      await addBookToLibrary(widget.library.id, apiBook.id);
+
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'Added "${info.title.isEmpty ? "Untitled" : info.title}" to ${widget.library.name}. Scan next or tap back.',
+          ),
+        ),
+      );
+    }
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,11 +171,15 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                   ),
                   const SizedBox(height: 16),
                   FilledButton.icon(
-                    onPressed: () {
-                      _addBooks();
-                    },
+                    onPressed: _addBooks,
                     icon: const Icon(Icons.add),
                     label: const Text('Add books'),
+                  ),
+                  const SizedBox(height: 8),
+                  FilledButton.tonalIcon(
+                    onPressed: _addBooksByScanning,
+                    icon: const Icon(Icons.qr_code_scanner),
+                    label: const Text('Add by scanning'),
                   ),
                 ],
               ),
@@ -126,10 +190,24 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: FilledButton.icon(
-                  onPressed: _addBooks,
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add books'),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: _addBooks,
+                        icon: const Icon(Icons.add),
+                        label: const Text('Add books'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton.tonalIcon(
+                        onPressed: _addBooksByScanning,
+                        icon: const Icon(Icons.qr_code_scanner),
+                        label: const Text('Add by scanning'),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
