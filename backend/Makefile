@@ -1,4 +1,4 @@
-# CGO_ENABLED=0 produces static binary for Lambda provided.al2
+# CGO_ENABLED=0 produces static binary for Lambda provided.al2023
 GOBUILD = CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bootstrap .
 BUILD_DIR = .build
 

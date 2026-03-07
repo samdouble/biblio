@@ -1,4 +1,5 @@
 **App**
+
 [![App CI](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml)
 
 [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](https://dart.dev/)
@@ -7,6 +8,7 @@
 [![iOS](https://img.shields.io/badge/iOS-000000?&logo=apple&logoColor=white)](https://developer.apple.com/ios/)
 
 **Backend**
+
 [![CI](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml)
 
 [![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?&logo=go&logoColor=white)](https://go.dev/)
