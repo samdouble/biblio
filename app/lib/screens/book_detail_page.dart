@@ -10,13 +10,14 @@ class BookDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final info = book.volumeInfo;
     final theme = Theme.of(context);
+    final bottomPadding = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(info.title.isEmpty ? 'Book details' : info.title),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
