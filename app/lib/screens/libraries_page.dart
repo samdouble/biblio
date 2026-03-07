@@ -19,7 +19,7 @@ class LibrariesPage extends StatefulWidget {
 }
 
 class _LibrariesPageState extends State<LibrariesPage> {
-  Future<List<Library>> _loadLibraries() async {
+  Future<List<(Library library, int bookCount)>> _loadLibraries() async {
     final userId = context.read<MyAppState>().signedInUserId;
     if (userId != null) {
       final result = await getLibraries(userId);
@@ -27,7 +27,14 @@ class _LibrariesPageState extends State<LibrariesPage> {
         await replaceLibrariesWith(result.libraries);
       }
     }
-    return fetchLibraries();
+    final libraries = await fetchLibraries();
+    final counts = await Future.wait(
+      libraries.map((l) => fetchBookCountInLibrary(l.id)),
+    );
+    return List.generate(
+      libraries.length,
+      (i) => (libraries[i], counts[i]),
+    );
   }
 
   Future<void> _createLibrary() async {
@@ -104,14 +111,14 @@ class _LibrariesPageState extends State<LibrariesPage> {
         title: Text(l10n.libraries),
       ),
       drawer: MainDrawer(),
-      body: FutureBuilder<List<Library>>(
+      body: FutureBuilder<List<(Library library, int bookCount)>>(
         future: _loadLibraries(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          final libraries = snapshot.data!;
-          if (libraries.isEmpty) {
+          final list = snapshot.data!;
+          if (list.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -124,14 +131,14 @@ class _LibrariesPageState extends State<LibrariesPage> {
             );
           }
           return ListView.builder(
-            itemCount: libraries.length,
+            itemCount: list.length,
             itemBuilder: (context, index) {
-              final lib = libraries[index];
+              final (lib, bookCount) = list[index];
               return ListTile(
                 leading: const CircleAvatar(
                   child: Icon(Icons.folder_outlined),
                 ),
-                title: Text(lib.name),
+                title: Text('${lib.name} ($bookCount)'),
                 onTap: () async {
                   await Navigator.of(context).push<void>(
                     MaterialPageRoute<void>(
