@@ -155,6 +155,32 @@ Resources:
             Path: /libraries/deleteLibrary
             Method: POST
 
+  LibrariesGetLibraryBooks:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/LibrariesGetLibraryBooks
+      Handler: bootstrap
+      Events:
+        ApiPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref BiblioHttpApi
+            Path: /libraries/getLibraryBooks
+            Method: POST
+
+  LibrariesSetLibraryBooks:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/LibrariesSetLibraryBooks
+      Handler: bootstrap
+      Events:
+        ApiPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref BiblioHttpApi
+            Path: /libraries/setLibraryBooks
+            Method: POST
+
 Outputs:
   ApiUrl:
     Description: Base URL of the HTTP API (use this as BIBLIO_API_URL in the app)
