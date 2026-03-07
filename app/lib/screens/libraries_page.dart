@@ -31,6 +31,18 @@ class _LibrariesPageState extends State<LibrariesPage> {
             return (library: r.library, error: r.error);
           },
         );
+        await pushLibraryBooksToServer(
+          userId,
+          (libraryId, bookIds) async {
+            final err = await setLibraryBooks(userId, libraryId, bookIds);
+            if (err != null && mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(err)),
+              );
+            }
+            return err;
+          },
+        );
       }
     }
     final libraries = await fetchLibraries();
