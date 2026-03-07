@@ -41,6 +41,16 @@ Future<void> insertLibrary(Library library) async {
   );
 }
 
+Future<void> updateLibraryName(String libraryId, String name) async {
+  final db = await databaseResolver();
+  await db.update(
+    'libraries',
+    {'name': name},
+    where: 'id = ?',
+    whereArgs: [libraryId],
+  );
+}
+
 Future<void> deleteLibrary(Library library) async {
   final db = await databaseResolver();
   await db.delete('library_books', where: 'library_id = ?', whereArgs: [library.id]);
