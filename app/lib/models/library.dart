@@ -125,7 +125,7 @@ Future<List<Book>> fetchBooksInLibrary(String libraryId) async {
   final db = await databaseResolver();
   final rows = await db.rawQuery(
     '''
-    SELECT b.id, b.title, b.author
+    SELECT b.id, b.title, b.author, b.isbn, b.thumbnail_url
     FROM books b
     INNER JOIN library_books lb ON b.id = lb.book_id
     WHERE lb.library_id = ?
@@ -134,8 +134,14 @@ Future<List<Book>> fetchBooksInLibrary(String libraryId) async {
     [libraryId],
   );
   return [
-    for (final {'id': id as String, 'title': title as String, 'author': author as String} in rows)
-      Book(id: id, title: title, author: author),
+    for (final row in rows)
+      Book(
+        id: row['id'] as String,
+        title: row['title'] as String,
+        author: row['author'] as String,
+        isbn: (row['isbn'] as String?) ?? '',
+        thumbnailUrl: (row['thumbnail_url'] as String?) ?? '',
+      ),
   ];
 }
 

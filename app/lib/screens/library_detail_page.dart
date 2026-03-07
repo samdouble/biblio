@@ -7,6 +7,7 @@ import 'package:biblio/models/api_book.dart';
 import 'package:biblio/models/book.dart';
 import 'package:biblio/models/library.dart';
 import 'package:biblio/screens/barcode_scanner_page.dart';
+import 'package:biblio/screens/book_detail_page.dart';
 import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
 import 'package:biblio/utils/connectivity.dart';
@@ -275,6 +276,34 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                     return ListTile(
                       title: Text(book.title),
                       subtitle: Text(book.author),
+                      onTap: () async {
+                        if (book.isbn.isEmpty) {
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Book details are available for books added by scan.',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+                        final apiBook = await getBookByIsbn(book.isbn);
+                        if (!mounted) return;
+                        if (apiBook != null) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (context) => BookDetailPage(book: apiBook),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Could not load book details'),
+                            ),
+                          );
+                        }
+                      },
                       trailing: IconButton(
                         icon: const Icon(Icons.remove_circle_outline),
                         tooltip: 'Remove from library',
