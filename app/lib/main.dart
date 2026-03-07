@@ -25,7 +25,10 @@ class MyApp extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             title: 'Biblio',
             theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xFF2E7D32),
+                brightness: Brightness.light,
+              ),
               useMaterial3: true,
             ),
             home: Navigation(),

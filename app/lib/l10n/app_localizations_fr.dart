@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -22,7 +24,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get author => 'Auteur';
 
   @override
+  String get clearSearch => 'Effacer la recherche';
+
+  @override
   String get codeSent => 'Consultez votre courriel pour le code.';
+
+  @override
+  String get couldNotLoadBookDetails =>
+      'Impossible de charger les détails du livre';
 
   @override
   String get createLibrary => 'Créer une bibliothèque';
@@ -60,7 +69,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get myBooks => 'Mes livres';
 
   @override
-  String get noLibraries => 'Aucune bibliothèque. Appuyez sur + pour en créer une.';
+  String noBooksFoundFor(String query) {
+    return 'Aucun livre trouvé pour « $query ».';
+  }
+
+  @override
+  String get noLibraries =>
+      'Aucune bibliothèque. Appuyez sur + pour en créer une.';
+
+  @override
+  String get recentlyScanned => 'Récemment scannés';
+
+  @override
+  String get recentlyScannedEmpty =>
+      'Scannez un livre avec le bouton + pour le voir ici.';
+
+  @override
+  String get searchByHint => 'Rechercher par titre, auteur, ISBN…';
 
   @override
   String get sendCode => 'Envoyer le code';
@@ -80,13 +105,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signUp => 'S\'inscrire';
 
   @override
-  String get signUpDescription => 'Entrez votre courriel et nous vous enverrons un code à usage unique pour vous inscrire ou vous connecter.';
+  String get signUpDescription =>
+      'Entrez votre courriel et nous vous enverrons un code à usage unique pour vous inscrire ou vous connecter.';
 
   @override
   String get signUpSuccess => 'Vous êtes connecté.';
 
   @override
   String get title => 'Titre';
+
+  @override
+  String get untitled => 'Sans titre';
 
   @override
   String get useDifferentEmail => 'Utiliser un autre courriel';
