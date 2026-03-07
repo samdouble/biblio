@@ -48,7 +48,6 @@ Future<List<Book>> fetchBooks() async {
   ];
 }
 
-/// Returns the 5 most recently scanned books (books with an ISBN, added via barcode scan).
 Future<List<Book>> fetchRecentScannedBooks({int limit = 5}) async {
   final db = await initDatabase();
   final List<Map<String, Object?>> rows = await db.query(

@@ -89,10 +89,24 @@ class _HomePageState extends State<HomePage> {
   bool _searching = false;
 
   @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() => setState(() {}));
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() {
+      _searchQuery = '';
+      _searchResults = [];
+    });
   }
 
   Future<void> _runSearch(String query) async {
@@ -141,6 +155,13 @@ class _HomePageState extends State<HomePage> {
             ),
             border: InputBorder.none,
             filled: false,
+            suffixIcon: _searchController.text.isEmpty
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: _clearSearch,
+                    tooltip: 'Clear search',
+                  ),
           ),
           onSubmitted: _runSearch,
           textInputAction: TextInputAction.search,
