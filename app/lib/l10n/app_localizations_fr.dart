@@ -7,6 +7,15 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
+  String get addBooks => 'Ajouter des livres';
+
+  @override
+  String get addBooksToLibrary => 'Ajouter des livres à la bibliothèque';
+
+  @override
+  String get addByScanning => 'Ajouter en scannant';
+
+  @override
   String get addLibrary => 'Ajouter une bibliothèque';
 
   @override
