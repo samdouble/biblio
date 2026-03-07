@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-/// Full-screen barcode scanner. Pops with the scanned value (e.g. ISBN) or null if closed.
 class BarcodeScannerPage extends StatefulWidget {
   const BarcodeScannerPage({super.key});
 

@@ -148,29 +148,90 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _searchQuery.isNotEmpty
           ? _searchBody()
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                MyWidget(),
-                Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        var everyFallingStar = Book(
-                          id: uuid.v4(),
-                          title: 'Every Falling Star',
-                          author: 'Sungju Lee',
-                        );
-                        await insertBook(everyFallingStar);
-                      },
-                      child: const Text('Create Book'),
-                    ),
-                  ],
-                ),
-              ],
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _recentlyScannedSection(),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      MyWidget(),
+                      Column(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              var everyFallingStar = Book(
+                                id: uuid.v4(),
+                                title: 'Every Falling Star',
+                                author: 'Sungju Lee',
+                              );
+                              await insertBook(everyFallingStar);
+                            },
+                            child: const Text('Create Book'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
       drawer: MainDrawer(),
       floatingActionButton: FloatingButton(),
+    );
+  }
+
+  Widget _recentlyScannedSection() {
+    return FutureBuilder<List<Book>>(
+      future: fetchRecentScannedBooks(limit: 5),
+      builder: (context, snapshot) {
+        final books = snapshot.hasData ? snapshot.data! : <Book>[];
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text(
+                'Recently scanned',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            SizedBox(
+              height: 165,
+              child: books.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Center(
+                        child: Text(
+                          'Scan a book with the + button to see it here.',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                        ),
+                      ),
+                    )
+                  : ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      itemCount: books.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 12),
+                      itemBuilder: (context, index) {
+                        final book = books[index];
+                        return _RecentBookCard(book: book);
+                      },
+                    ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -211,6 +272,78 @@ class _HomePageState extends State<HomePage> {
           },
         );
       },
+    );
+  }
+}
+
+class _RecentBookCard extends StatelessWidget {
+  const _RecentBookCard({required this.book});
+
+  final Book book;
+
+  @override
+  Widget build(BuildContext context) {
+    const cardWidth = 100.0;
+    const coverHeight = 120.0;
+    final theme = Theme.of(context);
+
+    return SizedBox(
+      width: cardWidth,
+      child: InkWell(
+        onTap: book.isbn.isEmpty
+            ? null
+            : () async {
+                final apiBook = await getBookByIsbn(book.isbn);
+                if (!context.mounted) return;
+                if (apiBook != null) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => BookDetailPage(book: apiBook),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Could not load book details')),
+                  );
+                }
+              },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: book.thumbnailUrl.isNotEmpty
+                  ? Image.network(
+                      book.thumbnailUrl,
+                      width: cardWidth,
+                      height: coverHeight,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => _coverPlaceholder(cardWidth, coverHeight),
+                    )
+                  : _coverPlaceholder(cardWidth, coverHeight),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              book.title.isEmpty ? 'Untitled' : book.title,
+              style: theme.textTheme.labelSmall,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _coverPlaceholder(double w, double h) {
+    return Container(
+      width: w,
+      height: h,
+      color: Colors.black,
+      child: const Icon(Icons.menu_book, color: Colors.white54, size: 32),
     );
   }
 }
