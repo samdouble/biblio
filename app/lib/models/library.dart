@@ -156,3 +156,16 @@ Future<void> removeBookFromLibrary(String libraryId, String bookId) async {
     whereArgs: [libraryId, bookId],
   );
 }
+
+/// Pushes each local library's book IDs to the backend via [setLibraryBooks].
+/// [setLibraryBooks] should return an error message or null on success.
+Future<void> pushLibraryBooksToServer(
+  String userId,
+  Future<String?> Function(String libraryId, List<String> bookIds) setLibraryBooks,
+) async {
+  final localLibraries = await fetchLibraries();
+  for (final lib in localLibraries) {
+    final bookIds = await fetchBookIdsInLibrary(lib.id);
+    await setLibraryBooks(lib.id, bookIds);
+  }
+}

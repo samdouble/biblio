@@ -142,3 +142,48 @@ Future<String?> deleteLibraryApi(String userId, String libraryId) async {
     return null;
   }
 }
+
+Future<List<String>?> getLibraryBooks(String userId, String libraryId) async {
+  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  if (baseUrl.isEmpty) return null;
+
+  final url = Uri.parse('$baseUrl/libraries/getLibraryBooks');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'userId': userId, 'libraryId': libraryId}),
+  );
+
+  if (response.statusCode != 200) return null;
+  try {
+    final body = jsonDecode(response.body) as Map<String, dynamic>?;
+    final list = body?['body'] is Map ? (body!['body'] as Map)['bookIds'] : null;
+    if (list is List) {
+      return [for (final e in list) if (e is String) e];
+    }
+    return <String>[];
+  } catch (_) {
+    return null;
+  }
+}
+
+Future<String?> setLibraryBooks(String userId, String libraryId, List<String> bookIds) async {
+  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  if (baseUrl.isEmpty) return 'API not configured';
+
+  final url = Uri.parse('$baseUrl/libraries/setLibraryBooks');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'userId': userId, 'libraryId': libraryId, 'bookIds': bookIds}),
+  );
+
+  if (response.statusCode != 200) return 'Failed to sync library books';
+  try {
+    final body = jsonDecode(response.body) as Map<String, dynamic>?;
+    final err = body?['body'] is Map ? (body!['body'] as Map)['error'] : null;
+    return err as String?;
+  } catch (_) {
+    return null;
+  }
+}
