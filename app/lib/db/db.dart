@@ -7,14 +7,16 @@ import 'package:biblio/db/migrations/migration_001_books.dart' as m1;
 import 'package:biblio/db/migrations/migration_002_library_tables.dart' as m2;
 import 'package:biblio/db/migrations/migration_003_pending_search.dart' as m3;
 import 'package:biblio/db/migrations/migration_004_books_isbn_thumbnail.dart' as m4;
+import 'package:biblio/db/migrations/migration_005_books_thumbnail_url.dart' as m5;
 
-const int _dbVersion = 4;
+const int _dbVersion = 5;
 
 final List<Future<void> Function(Database)> _migrations = [
   m1.run,
   m2.run,
   m3.run,
   m4.run,
+  m5.run,
 ];
 
 Future<Database> initDatabase() async {
