@@ -155,3 +155,18 @@ Future<ApiBook?> getBookByIsbn(String isbn) async {
   if (response.statusCode != 200) return null;
   return parseGetBookByIsbnResponse(response.body);
 }
+
+Future<List<ApiBook>> getBooksByAuthor(String author) async {
+  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  if (baseUrl.isEmpty || author.trim().isEmpty) return [];
+
+  final url = Uri.parse('$baseUrl/books/getBooksByAuthor');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'author': author.trim()}),
+  );
+
+  if (response.statusCode != 200) return [];
+  return parseSearchBooksResponse(response.body);
+}

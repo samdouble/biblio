@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:biblio/models/api_book.dart';
+import 'package:biblio/screens/books_by_author_page.dart';
 
 class BookDetailPage extends StatelessWidget {
   const BookDetailPage({super.key, required this.book});
@@ -49,11 +50,37 @@ class BookDetailPage extends StatelessWidget {
               ),
             if (info.authors.isNotEmpty) ...[
               const SizedBox(height: 8),
-              Text(
-                info.authors.join(', '),
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.primary,
-                ),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  for (final author in info.authors)
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (context) => BooksByAuthorPage(
+                              authorName: author,
+                            ),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(4),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
+                        child: Text(
+                          author,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ],
             if (book.isbn.isNotEmpty) ...[
