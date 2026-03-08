@@ -12,10 +12,13 @@ import (
 	"biblio-api/types"
 )
 
+// Test hooks for cache, fetcher, books insert and lookup.
 var (
-	getCachedBooksFn   = getCachedBooks
-	setCachedBooksFn   = setCachedBooks
-	fetchAuthorBooksFn = fetchBooksByAuthorFromIsbnDb
+	getCachedIsbnsFn    = getCachedIsbns
+	setCachedIsbnsFn    = setCachedIsbns
+	fetchAuthorBooksFn  = fetchBooksByAuthorFromIsbnDb
+	insertAuthorBooksFn = insertAuthorBooks
+	getBooksByIsbnsFn   = getBooksByIsbns
 )
 
 func Main(ctx context.Context, event types.GetBooksByAuthorEvent) (types.GetBooksByAuthorResponse, error) {
@@ -31,15 +34,20 @@ func mainWithDB(ctx context.Context, event types.GetBooksByAuthorEvent, database
 		}, nil
 	}
 
-	if cached, ok, err := getCachedBooksFn(database, author); err != nil {
-		log.Printf("getCachedBooks: %v", err)
+	isbns, ok, err := getCachedIsbnsFn(database, author)
+	if err != nil {
+		log.Printf("getCachedIsbns: %v", err)
 		return types.GetBooksByAuthorResponse{
 			Body: types.GetBooksByAuthorResponseBody{Error: "cache error"},
 		}, err
-	} else if ok {
-		books, _ := cached.([]interface{})
-		if books == nil {
-			books = []interface{}{}
+	}
+	if ok {
+		books, err := getBooksByIsbnsFn(database, isbns)
+		if err != nil {
+			log.Printf("getBooksByIsbns: %v", err)
+			return types.GetBooksByAuthorResponse{
+				Body: types.GetBooksByAuthorResponseBody{Error: "failed to load books"},
+			}, err
 		}
 		return types.GetBooksByAuthorResponse{
 			Body: types.GetBooksByAuthorResponseBody{Books: books},
@@ -54,15 +62,21 @@ func mainWithDB(ctx context.Context, event types.GetBooksByAuthorEvent, database
 		}, err
 	}
 
-	out := make([]interface{}, 0, len(resp.Books))
-	for i := range resp.Books {
-		bo := isbnDbBookToOutput(&resp.Books[i])
-		out = append(out, bo)
+	isbns, err = insertAuthorBooksFn(database, resp.Books)
+	if err != nil {
+		log.Printf("insertAuthorBooks: %v", err)
+	}
+	_ = setCachedIsbnsFn(database, author, isbns)
+
+	books, err := getBooksByIsbnsFn(database, isbns)
+	if err != nil {
+		log.Printf("getBooksByIsbns: %v", err)
+		return types.GetBooksByAuthorResponse{
+			Body: types.GetBooksByAuthorResponseBody{Error: "failed to load books"},
+		}, err
 	}
 
-	_ = setCachedBooksFn(database, author, out)
-
 	return types.GetBooksByAuthorResponse{
-		Body: types.GetBooksByAuthorResponseBody{Books: out},
+		Body: types.GetBooksByAuthorResponseBody{Books: books},
 	}, nil
 }

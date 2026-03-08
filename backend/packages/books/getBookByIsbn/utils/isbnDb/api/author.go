@@ -10,14 +10,11 @@ import (
 	isbnDbTypes "biblio-api/utils/isbnDb"
 )
 
-// GetAuthorBooksResponse is the response from ISBNDB GET /author/{name}.
 type GetAuthorBooksResponse struct {
 	Author string              `json:"author"`
 	Books  []isbnDbTypes.IsbnDbBook `json:"books"`
 }
 
-// GetBooksByAuthor fetches books by author from ISBNDB (api2.isbndb.com).
-// The API uses the exact author name in the path.
 func GetBooksByAuthor(authorName string) (*GetAuthorBooksResponse, error) {
 	key := os.Getenv("ISBNDB_API_KEY")
 	if key == "" {
