@@ -82,6 +82,21 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aucune bibliothèque. Appuyez sur + pour en créer une.';
 
   @override
+  String get plan => 'Formule';
+
+  @override
+  String get planFree => 'Gratuit';
+
+  @override
+  String get planFreeDescription => 'Utilisez l\'application gratuitement.';
+
+  @override
+  String get planPayPerBook => 'Paiement par livre';
+
+  @override
+  String get planPayPerBookDescription => 'Petit montant par livre ajouté.';
+
+  @override
   String get recentlyScanned => 'Récemment scannés';
 
   @override

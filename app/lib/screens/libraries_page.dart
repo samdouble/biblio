@@ -53,10 +53,12 @@ class _LibrariesPageState extends State<LibrariesPage> {
     final counts = await Future.wait(
       libraries.map((l) => fetchBookCountInLibrary(l.id)),
     );
-    return List.generate(
+    final list = List.generate(
       libraries.length,
       (i) => (libraries[i], counts[i]),
     );
+    list.sort((a, b) => a.$1.name.toLowerCase().compareTo(b.$1.name.toLowerCase()));
+    return list;
   }
 
   Future<void> _createLibrary() async {
@@ -107,6 +109,7 @@ class _LibrariesPageState extends State<LibrariesPage> {
       if (result.library != null) {
         await insertLibrary(result.library!);
       }
+      if (!mounted) return;
       context.read<MyAppState>().setOutOfSync();
     } else {
       final library = Library(id: _uuid.v4(), name: name);

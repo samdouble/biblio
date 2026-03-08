@@ -79,6 +79,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noLibraries => 'No libraries yet. Tap + to create one.';
 
   @override
+  String get plan => 'Plan';
+
+  @override
+  String get planFree => 'Free';
+
+  @override
+  String get planFreeDescription => 'Use the app at no cost.';
+
+  @override
+  String get planPayPerBook => 'Pay per book';
+
+  @override
+  String get planPayPerBookDescription => 'Small fee per book added.';
+
+  @override
   String get recentlyScanned => 'Recently scanned';
 
   @override

@@ -325,9 +325,10 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                         icon: const Icon(Icons.remove_circle_outline),
                         tooltip: 'Remove from library',
                         onPressed: () async {
+                          final appState = context.read<MyAppState>();
                           await removeBookFromLibrary(_library.id, book.id);
                           if (!mounted) return;
-                          context.read<MyAppState>().setOutOfSync();
+                          appState.setOutOfSync();
                           _refreshBooks();
                         },
                       ),
