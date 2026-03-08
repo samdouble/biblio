@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:biblio/l10n/app_localizations.dart';
 import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/screens/libraries_page.dart';
 import 'package:biblio/screens/mybooks_page.dart';
@@ -7,7 +8,7 @@ import 'package:biblio/screens/settings_page.dart';
 import 'package:biblio/services/pending_search_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:biblio/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:biblio/utils/connectivity.dart';
 
 class Navigation extends StatefulWidget {
@@ -68,6 +69,10 @@ class _NavigationExampleState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    final appState = context.watch<MyAppState>();
+    final showSyncBanner =
+        appState.isSignedIn && appState.isOutOfSync;
+
     return Scaffold(
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -100,12 +105,71 @@ class _NavigationExampleState extends State<Navigation> {
           ),
         ],
       ),
-      body: <Widget>[
-        HomePage(),
-        MyBooksPage(),
-        LibrariesPage(),
-        SettingsPage(),
-      ][currentPageIndex],
+      body: showSyncBanner
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Material(
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.cloud_off_outlined,
+                            size: 20,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onErrorContainer,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!
+                                  .changesNotSynced,
+                              style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onErrorContainer,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              context.read<MyAppState>().requestSync();
+                              setState(() => currentPageIndex = 2);
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.syncNow,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: <Widget>[
+                    HomePage(),
+                    MyBooksPage(),
+                    LibrariesPage(),
+                    SettingsPage(),
+                  ][currentPageIndex],
+                ),
+              ],
+            )
+          : <Widget>[
+              HomePage(),
+              MyBooksPage(),
+              LibrariesPage(),
+              SettingsPage(),
+            ][currentPageIndex],
     );
   }
 }

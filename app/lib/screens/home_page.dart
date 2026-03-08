@@ -12,6 +12,8 @@ const _localeKey = 'app_locale';
 const _signedInUserIdKey = 'signed_in_user_id';
 const _signedInEmailKey = 'signed_in_email';
 
+enum SyncStatus { synced, outOfSync, unknown }
+
 class MyAppState extends ChangeNotifier {
   MyAppState() {
     _loadLocale();
@@ -28,6 +30,35 @@ class MyAppState extends ChangeNotifier {
   String? get signedInUserId => _signedInUserId;
   String? get signedInEmail => _signedInEmail;
   bool get isSignedIn => _signedInEmail != null;
+
+  SyncStatus _syncStatus = SyncStatus.unknown;
+  SyncStatus get syncStatus => _syncStatus;
+  bool get isOutOfSync => _syncStatus == SyncStatus.outOfSync;
+
+  int _syncRequestedCount = 0;
+  int get syncRequestedCount => _syncRequestedCount;
+
+  void setSynced() {
+    if (_syncStatus == SyncStatus.synced) return;
+    _syncStatus = SyncStatus.synced;
+    notifyListeners();
+  }
+
+  void setOutOfSync() {
+    if (_syncStatus == SyncStatus.outOfSync) return;
+    _syncStatus = SyncStatus.outOfSync;
+    notifyListeners();
+  }
+
+  void setSyncUnknown() {
+    _syncStatus = SyncStatus.unknown;
+    notifyListeners();
+  }
+
+  void requestSync() {
+    _syncRequestedCount++;
+    notifyListeners();
+  }
 
   Future<void> _loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
@@ -51,6 +82,7 @@ class MyAppState extends ChangeNotifier {
     await prefs.setString(_signedInEmailKey, email);
     _signedInUserId = userId;
     _signedInEmail = email;
+    _syncStatus = SyncStatus.unknown;
     notifyListeners();
   }
 
@@ -60,6 +92,7 @@ class MyAppState extends ChangeNotifier {
     await prefs.remove(_signedInEmailKey);
     _signedInUserId = null;
     _signedInEmail = null;
+    _syncStatus = SyncStatus.unknown;
     notifyListeners();
   }
 

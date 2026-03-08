@@ -30,6 +30,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get codeSent => 'Check your email for the code.';
 
   @override
+  String get changesNotSynced => 'Changes not synced with cloud';
+
+  @override
   String get couldNotLoadBookDetails => 'Could not load book details';
 
   @override
@@ -108,6 +111,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signUpSuccess => 'You\'re signed in.';
+
+  @override
+  String get syncNow => 'Sync now';
 
   @override
   String get title => 'Title';

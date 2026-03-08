@@ -72,6 +72,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     }
     await updateLibraryName(_library.id, newName);
     if (!mounted) return;
+    context.read<MyAppState>().setOutOfSync();
     setState(() => _library = Library(id: _library.id, name: newName));
   }
 
@@ -110,6 +111,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     }
     await deleteLibrary(_library);
     if (!mounted) return;
+    context.read<MyAppState>().setOutOfSync();
     Navigator.of(context).pop(true);
   }
 
@@ -134,6 +136,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     for (final book in selected) {
       await addBookToLibrary(_library.id, book.id);
     }
+    if (mounted) context.read<MyAppState>().setOutOfSync();
     setState(() {});
   }
 
@@ -180,6 +183,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
         thumbnailUrl: thumb,
       ));
       await addBookToLibrary(_library.id, apiBook.id);
+      if (mounted) context.read<MyAppState>().setOutOfSync();
 
       if (!mounted) return;
       messenger.showSnackBar(
@@ -311,6 +315,8 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                         tooltip: 'Remove from library',
                         onPressed: () async {
                           await removeBookFromLibrary(_library.id, book.id);
+                          if (!mounted) return;
+                          context.read<MyAppState>().setOutOfSync();
                           setState(() {});
                         },
                       ),
