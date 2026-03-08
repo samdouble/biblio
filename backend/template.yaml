@@ -94,6 +94,8 @@ Resources:
     Properties:
       CodeUri: .build/BooksGetBooksByAuthor
       Handler: bootstrap
+      Timeout: 60
+      MemorySize: 512
       Events:
         ApiPost:
           Type: HttpApi

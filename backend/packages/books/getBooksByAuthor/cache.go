@@ -10,20 +10,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// Reuse the same "searches" collection. Author cache docs have author/isbns/createdAt
+// (ISBN docs have isbn/result). Only ISBNs are stored; book data lives in "books".
 const searchesCollection = "searches"
 const cacheTTL = 7 * 24 * time.Hour
 
 type authorSearchDoc struct {
-	Author    string      `bson:"author"`
-	Books     interface{} `bson:"books"`
-	CreatedAt time.Time   `bson:"createdAt"`
+	Author    string   `bson:"author"`
+	Isbns     []string `bson:"isbns"`
+	CreatedAt time.Time `bson:"createdAt"`
 }
 
 func normalizeAuthor(author string) string {
 	return strings.TrimSpace(author)
 }
 
-func getCachedBooks(db *mongo.Database, author string) (interface{}, bool, error) {
+// getCachedIsbns returns the list of ISBNs for an author if cached and not expired.
+func getCachedIsbns(db *mongo.Database, author string) ([]string, bool, error) {
 	key := normalizeAuthor(author)
 	if key == "" {
 		return nil, false, nil
@@ -40,16 +43,19 @@ func getCachedBooks(db *mongo.Database, author string) (interface{}, bool, error
 	if time.Since(doc.CreatedAt) > cacheTTL {
 		return nil, false, nil
 	}
-	return doc.Books, true, nil
+	if doc.Isbns == nil {
+		return []string{}, true, nil
+	}
+	return doc.Isbns, true, nil
 }
 
-func setCachedBooks(db *mongo.Database, author string, books interface{}) error {
+func setCachedIsbns(db *mongo.Database, author string, isbns []string) error {
 	key := normalizeAuthor(author)
 	if key == "" {
 		return nil
 	}
 	coll := db.Collection(searchesCollection)
-	doc := authorSearchDoc{Author: key, Books: books, CreatedAt: time.Now()}
+	doc := authorSearchDoc{Author: key, Isbns: isbns, CreatedAt: time.Now()}
 	_, err := coll.UpdateOne(
 		context.TODO(),
 		bson.M{"author": key},
