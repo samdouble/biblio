@@ -23,14 +23,22 @@ class LibraryDetailPage extends StatefulWidget {
 
 class _LibraryDetailPageState extends State<LibraryDetailPage> {
   late Library _library;
+  late Future<List<Book>> _booksFuture;
 
   @override
   void initState() {
     super.initState();
     _library = widget.library;
+    _booksFuture = fetchBooksInLibrary(_library.id);
   }
 
   Future<List<Book>> _loadBooks() => fetchBooksInLibrary(_library.id);
+
+  void _refreshBooks() {
+    setState(() {
+      _booksFuture = _loadBooks();
+    });
+  }
 
   Future<void> _renameLibrary() async {
     final nameController = TextEditingController(text: _library.name);
@@ -137,7 +145,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
       await addBookToLibrary(_library.id, book.id);
     }
     if (mounted) context.read<MyAppState>().setOutOfSync();
-    setState(() {});
+    _refreshBooks();
   }
 
   Future<void> _addBooksByScanning() async {
@@ -183,7 +191,9 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
         thumbnailUrl: thumb,
       ));
       await addBookToLibrary(_library.id, apiBook.id);
-      if (mounted) context.read<MyAppState>().setOutOfSync();
+      if (!mounted) return;
+      context.read<MyAppState>().setOutOfSync();
+      _refreshBooks();
 
       if (!mounted) return;
       messenger.showSnackBar(
@@ -194,7 +204,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
         ),
       );
     }
-    if (mounted) setState(() {});
+    if (mounted) _refreshBooks();
   }
 
   @override
@@ -216,7 +226,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
         ],
       ),
       body: FutureBuilder<List<Book>>(
-        future: _loadBooks(),
+        future: _booksFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -247,35 +257,36 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
               ),
             );
           }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: _addBooks,
-                        icon: const Icon(Icons.add),
-                        label: Text(AppLocalizations.of(context)!.addBooks),
+          return CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: _addBooks,
+                          icon: const Icon(Icons.add),
+                          label: Text(AppLocalizations.of(context)!.addBooks),
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: FilledButton.tonalIcon(
-                        onPressed: _addBooksByScanning,
-                        icon: const Icon(Icons.qr_code_scanner),
-                        label: Text(AppLocalizations.of(context)!.addByScanning),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.tonalIcon(
+                          onPressed: _addBooksByScanning,
+                          icon: const Icon(Icons.qr_code_scanner),
+                          label: Text(AppLocalizations.of(context)!.addByScanning),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: books.length,
-                  itemBuilder: (context, index) {
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
                     final book = books[index];
                     return ListTile(
                       title: Text(book.title),
@@ -317,12 +328,16 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                           await removeBookFromLibrary(_library.id, book.id);
                           if (!mounted) return;
                           context.read<MyAppState>().setOutOfSync();
-                          setState(() {});
+                          _refreshBooks();
                         },
                       ),
                     );
                   },
+                  childCount: books.length,
                 ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 48),
               ),
             ],
           );
