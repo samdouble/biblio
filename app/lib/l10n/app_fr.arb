@@ -35,6 +35,11 @@
     }
   },
   "noLibraries": "Aucune bibliothèque. Appuyez sur + pour en créer une.",
+  "plan": "Formule",
+  "planFree": "Gratuit",
+  "planFreeDescription": "Utilisez l'application gratuitement.",
+  "planPayPerBook": "Paiement par livre",
+  "planPayPerBookDescription": "Petit montant par livre ajouté.",
   "recentlyScanned": "Récemment scannés",
   "recentlyScannedEmpty": "Scannez un livre avec le bouton + pour le voir ici.",
   "searchByHint": "Rechercher par titre, auteur, ISBN…",

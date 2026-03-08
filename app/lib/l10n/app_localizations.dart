@@ -230,6 +230,36 @@ abstract class AppLocalizations {
   /// **'No libraries yet. Tap + to create one.'**
   String get noLibraries;
 
+  /// No description provided for @plan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get plan;
+
+  /// No description provided for @planFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get planFree;
+
+  /// No description provided for @planFreeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the app at no cost.'**
+  String get planFreeDescription;
+
+  /// No description provided for @planPayPerBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay per book'**
+  String get planPayPerBook;
+
+  /// No description provided for @planPayPerBookDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Small fee per book added.'**
+  String get planPayPerBookDescription;
+
   /// No description provided for @recentlyScanned.
   ///
   /// In en, this message translates to:

@@ -11,13 +11,17 @@ import 'package:biblio/widgets/main_drawer.dart';
 const _localeKey = 'app_locale';
 const _signedInUserIdKey = 'signed_in_user_id';
 const _signedInEmailKey = 'signed_in_email';
+const _planKey = 'app_plan';
 
 enum SyncStatus { synced, outOfSync, unknown }
+
+enum Plan { free, payPerBook }
 
 class MyAppState extends ChangeNotifier {
   MyAppState() {
     _loadLocale();
     _loadSignedInUser();
+    _loadPlan();
   }
 
   var current = 'samdouble';
@@ -37,6 +41,26 @@ class MyAppState extends ChangeNotifier {
 
   int _syncRequestedCount = 0;
   int get syncRequestedCount => _syncRequestedCount;
+
+  Plan _plan = Plan.free;
+  Plan get plan => _plan;
+
+  Future<void> _loadPlan() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(_planKey);
+    if (value == 'payPerBook') {
+      _plan = Plan.payPerBook;
+      notifyListeners();
+    }
+  }
+
+  Future<void> setPlan(Plan value) async {
+    if (_plan == value) return;
+    _plan = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_planKey, value == Plan.payPerBook ? 'payPerBook' : 'free');
+    notifyListeners();
+  }
 
   void setSynced() {
     if (_syncStatus == SyncStatus.synced) return;
