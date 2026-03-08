@@ -20,18 +20,19 @@ class LibrariesPage extends StatefulWidget {
 
 class _LibrariesPageState extends State<LibrariesPage> {
   Future<List<(Library library, int bookCount)>> _loadLibraries() async {
-    final userId = context.read<MyAppState>().signedInUserId;
+    final appState = context.read<MyAppState>();
+    final userId = appState.signedInUserId;
     if (userId != null) {
       final result = await getLibraries(userId);
       if (result.error == null) {
-        await syncLibrariesWithServer(
+        final syncOk = await syncLibrariesWithServer(
           result.libraries,
           (name) async {
             final r = await createLibrary(userId, name);
             return (library: r.library, error: r.error);
           },
         );
-        await pushLibraryBooksToServer(
+        final pushOk = await pushLibraryBooksToServer(
           userId,
           (libraryId, bookIds) async {
             final err = await setLibraryBooks(userId, libraryId, bookIds);
@@ -43,6 +44,9 @@ class _LibrariesPageState extends State<LibrariesPage> {
             return err;
           },
         );
+        if (syncOk && pushOk && mounted) {
+          appState.setSynced();
+        }
       }
     }
     final libraries = await fetchLibraries();
@@ -103,6 +107,7 @@ class _LibrariesPageState extends State<LibrariesPage> {
       if (result.library != null) {
         await insertLibrary(result.library!);
       }
+      context.read<MyAppState>().setOutOfSync();
     } else {
       final library = Library(id: _uuid.v4(), name: name);
       await insertLibrary(library);
@@ -134,6 +139,7 @@ class _LibrariesPageState extends State<LibrariesPage> {
           setState(() {});
         },
         child: FutureBuilder<List<(Library library, int bookCount)>>(
+          key: ValueKey(context.watch<MyAppState>().syncRequestedCount),
           future: _loadLibraries(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {

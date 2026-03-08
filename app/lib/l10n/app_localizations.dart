@@ -140,6 +140,12 @@ abstract class AppLocalizations {
   /// **'Check your email for the code.'**
   String get codeSent;
 
+  /// No description provided for @changesNotSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes not synced with cloud'**
+  String get changesNotSynced;
+
   /// No description provided for @couldNotLoadBookDetails.
   ///
   /// In en, this message translates to:
@@ -283,6 +289,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You\'re signed in.'**
   String get signUpSuccess;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncNow;
 
   /// No description provided for @title.
   ///

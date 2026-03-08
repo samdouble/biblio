@@ -84,7 +84,7 @@ Future<void> replaceLocalLibraryId(String oldId, Library newLibrary) async {
   );
 }
 
-Future<void> syncLibrariesWithServer(
+Future<bool> syncLibrariesWithServer(
   List<Library> serverLibraries,
   Future<({Library? library, String? error})> Function(String name) createLibrary,
 ) async {
@@ -94,10 +94,10 @@ Future<void> syncLibrariesWithServer(
   for (final lib in localLibraries) {
     if (serverIds.contains(lib.id)) continue;
     final result = await createLibrary(lib.name);
-    if (result.error == null && result.library != null) {
-      await replaceLocalLibraryId(lib.id, result.library!);
-    }
+    if (result.error != null || result.library == null) return false;
+    await replaceLocalLibraryId(lib.id, result.library!);
   }
+  return true;
 }
 
 Future<int> fetchBookCountInLibrary(String libraryId) async {
@@ -163,15 +163,15 @@ Future<void> removeBookFromLibrary(String libraryId, String bookId) async {
   );
 }
 
-/// Pushes each local library's book IDs to the backend via [setLibraryBooks].
-/// [setLibraryBooks] should return an error message or null on success.
-Future<void> pushLibraryBooksToServer(
+Future<bool> pushLibraryBooksToServer(
   String userId,
   Future<String?> Function(String libraryId, List<String> bookIds) setLibraryBooks,
 ) async {
   final localLibraries = await fetchLibraries();
   for (final lib in localLibraries) {
     final bookIds = await fetchBookIdsInLibrary(lib.id);
-    await setLibraryBooks(lib.id, bookIds);
+    final err = await setLibraryBooks(lib.id, bookIds);
+    if (err != null) return false;
   }
+  return true;
 }
