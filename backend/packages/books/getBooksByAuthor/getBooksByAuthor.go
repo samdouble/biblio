@@ -6,11 +6,24 @@ import (
 	"os"
 	"strings"
 
+	"go.mongodb.org/mongo-driver/mongo"
+
 	"biblio-api/db"
 	"biblio-api/types"
 )
 
+var (
+	getCachedBooksFn   = getCachedBooks
+	setCachedBooksFn   = setCachedBooks
+	fetchAuthorBooksFn = fetchBooksByAuthorFromIsbnDb
+)
+
 func Main(ctx context.Context, event types.GetBooksByAuthorEvent) (types.GetBooksByAuthorResponse, error) {
+	database := db.ResolveClientDB(os.Getenv("MONGO_URL")).Database(os.Getenv("MONGO_DBNAME"))
+	return mainWithDB(ctx, event, database)
+}
+
+func mainWithDB(ctx context.Context, event types.GetBooksByAuthorEvent, database *mongo.Database) (types.GetBooksByAuthorResponse, error) {
 	author := strings.TrimSpace(event.Author)
 	if author == "" {
 		return types.GetBooksByAuthorResponse{
@@ -18,10 +31,7 @@ func Main(ctx context.Context, event types.GetBooksByAuthorEvent) (types.GetBook
 		}, nil
 	}
 
-	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
-	database := client.Database(os.Getenv("MONGO_DBNAME"))
-
-	if cached, ok, err := getCachedBooks(database, author); err != nil {
+	if cached, ok, err := getCachedBooksFn(database, author); err != nil {
 		log.Printf("getCachedBooks: %v", err)
 		return types.GetBooksByAuthorResponse{
 			Body: types.GetBooksByAuthorResponseBody{Error: "cache error"},
@@ -36,7 +46,7 @@ func Main(ctx context.Context, event types.GetBooksByAuthorEvent) (types.GetBook
 		}, nil
 	}
 
-	resp, err := fetchBooksByAuthorFromIsbnDb(author)
+	resp, err := fetchAuthorBooksFn(author)
 	if err != nil {
 		log.Printf("fetchBooksByAuthorFromIsbnDb: %v", err)
 		return types.GetBooksByAuthorResponse{
@@ -50,7 +60,7 @@ func Main(ctx context.Context, event types.GetBooksByAuthorEvent) (types.GetBook
 		out = append(out, bo)
 	}
 
-	_ = setCachedBooks(database, author, out)
+	_ = setCachedBooksFn(database, author, out)
 
 	return types.GetBooksByAuthorResponse{
 		Body: types.GetBooksByAuthorResponseBody{Books: out},

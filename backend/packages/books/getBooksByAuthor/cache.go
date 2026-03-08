@@ -10,13 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const cacheCollection = "author_books_cache"
+const searchesCollection = "searches"
 const cacheTTL = 7 * 24 * time.Hour
 
-type cachedAuthorBooks struct {
+type authorSearchDoc struct {
 	Author    string      `bson:"author"`
 	Books     interface{} `bson:"books"`
-	FetchedAt time.Time   `bson:"fetchedAt"`
+	CreatedAt time.Time   `bson:"createdAt"`
 }
 
 func normalizeAuthor(author string) string {
@@ -28,8 +28,8 @@ func getCachedBooks(db *mongo.Database, author string) (interface{}, bool, error
 	if key == "" {
 		return nil, false, nil
 	}
-	coll := db.Collection(cacheCollection)
-	var doc cachedAuthorBooks
+	coll := db.Collection(searchesCollection)
+	var doc authorSearchDoc
 	err := coll.FindOne(context.TODO(), bson.M{"author": key}).Decode(&doc)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -37,7 +37,7 @@ func getCachedBooks(db *mongo.Database, author string) (interface{}, bool, error
 		}
 		return nil, false, err
 	}
-	if time.Since(doc.FetchedAt) > cacheTTL {
+	if time.Since(doc.CreatedAt) > cacheTTL {
 		return nil, false, nil
 	}
 	return doc.Books, true, nil
@@ -48,8 +48,8 @@ func setCachedBooks(db *mongo.Database, author string, books interface{}) error 
 	if key == "" {
 		return nil
 	}
-	coll := db.Collection(cacheCollection)
-	doc := cachedAuthorBooks{Author: key, Books: books, FetchedAt: time.Now()}
+	coll := db.Collection(searchesCollection)
+	doc := authorSearchDoc{Author: key, Books: books, CreatedAt: time.Now()}
 	_, err := coll.UpdateOne(
 		context.TODO(),
 		bson.M{"author": key},
