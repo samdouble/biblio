@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.0](https://github.com/samdouble/biblio/compare/backend-v0.5.0...backend-v0.6.0) (2026-03-08)
+
+
+### Features
+
+* **backend:** add functions to sync books-libraries relationships ([8e3ffa6](https://github.com/samdouble/biblio/commit/8e3ffa6628cd04b4beb95e0d997ce413d9ef5d8f))
+* **backend:** add getBooksByAuthor function ([3e1e1ce](https://github.com/samdouble/biblio/commit/3e1e1ceaf907b7be53d866639f66a5fcc917f614))
+
 ## [0.5.0](https://github.com/samdouble/biblio/compare/backend-v0.4.0...backend-v0.5.0) (2026-03-04)
 
 
