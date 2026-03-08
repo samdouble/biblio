@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/samdouble/biblio/compare/backend-v0.6.0...backend-v0.6.1) (2026-03-08)
+
+
+### Bug Fixes
+
+* **backend:** fetch books information when books for author are requested ([115f2ef](https://github.com/samdouble/biblio/commit/115f2ef81594cdc24e8d5747157d4980ca75cdd6))
+
 ## [0.6.0](https://github.com/samdouble/biblio/compare/backend-v0.5.0...backend-v0.6.0) (2026-03-08)
 
 
