@@ -288,16 +288,18 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                           );
                           return;
                         }
+                        final navigator = Navigator.of(context);
+                        final messenger = ScaffoldMessenger.of(context);
                         final apiBook = await getBookByIsbn(book.isbn);
                         if (!mounted) return;
                         if (apiBook != null) {
-                          Navigator.of(context).push(
+                          navigator.push(
                             MaterialPageRoute<void>(
                               builder: (context) => BookDetailPage(book: apiBook),
                             ),
                           );
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             const SnackBar(
                               content: Text('Could not load book details'),
                             ),
