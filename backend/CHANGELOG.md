@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/samdouble/biblio/compare/backend-v0.6.1...backend-v0.7.0) (2026-03-09)
+
+
+### Features
+
+* **backend:** allow assigning colors for libraries ([7fc071e](https://github.com/samdouble/biblio/commit/7fc071e980e0c1d37ce0d44fde2c00c02cc6384b))
+
 ## [0.6.1](https://github.com/samdouble/biblio/compare/backend-v0.6.0...backend-v0.6.1) (2026-03-08)
 
 
