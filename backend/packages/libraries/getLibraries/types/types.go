@@ -7,6 +7,7 @@ type GetLibrariesEvent struct {
 type LibraryPayload struct {
 	Id        string `json:"id"`
 	Name      string `json:"name"`
+	Color     *int   `json:"color,omitempty"`
 	CreatedAt string `json:"createdAt"`
 }
 
