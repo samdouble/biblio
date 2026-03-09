@@ -14,6 +14,7 @@ type Library struct {
 	Id        string    `bson:"id" json:"id"`
 	UserId    string    `bson:"userId" json:"userId"`
 	Name      string    `bson:"name" json:"name"`
+	Color     *int      `bson:"color,omitempty" json:"color,omitempty"`
 	CreatedAt time.Time `bson:"createdAt" json:"createdAt"`
 }
 
@@ -56,6 +57,16 @@ func UpdateName(database *mongo.Database, id, userId, name string) error {
 		context.TODO(),
 		bson.M{"id": id, "userId": userId},
 		bson.M{"$set": bson.M{"name": name}},
+	)
+	return err
+}
+
+func UpdateColor(database *mongo.Database, id, userId string, color *int) error {
+	coll := database.Collection(CollectionName)
+	_, err := coll.UpdateOne(
+		context.TODO(),
+		bson.M{"id": id, "userId": userId},
+		bson.M{"$set": bson.M{"color": color}},
 	)
 	return err
 }

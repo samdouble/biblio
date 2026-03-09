@@ -27,11 +27,6 @@ func Main(ctx context.Context, event types.UpdateLibraryEvent) (types.UpdateLibr
 			Body: types.UpdateLibraryResponseBody{Error: "library id is required"},
 		}, fmt.Errorf("library id is required")
 	}
-	if name == "" {
-		return types.UpdateLibraryResponse{
-			Body: types.UpdateLibraryResponseBody{Error: "name is required"},
-		}, fmt.Errorf("name is required")
-	}
 
 	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
@@ -49,8 +44,16 @@ func Main(ctx context.Context, event types.UpdateLibraryEvent) (types.UpdateLibr
 		}, fmt.Errorf("library not found")
 	}
 
-	if err := libraries.UpdateName(database, libraryId, userId, name); err != nil {
-		log.Printf("libraries.UpdateName: %v", err)
+	if name != "" {
+		if err := libraries.UpdateName(database, libraryId, userId, name); err != nil {
+			log.Printf("libraries.UpdateName: %v", err)
+			return types.UpdateLibraryResponse{
+				Body: types.UpdateLibraryResponseBody{Error: "failed to update library"},
+			}, err
+		}
+	}
+	if err := libraries.UpdateColor(database, libraryId, userId, event.Color); err != nil {
+		log.Printf("libraries.UpdateColor: %v", err)
 		return types.UpdateLibraryResponse{
 			Body: types.UpdateLibraryResponseBody{Error: "failed to update library"},
 		}, err

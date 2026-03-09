@@ -38,6 +38,7 @@ func Main(ctx context.Context, event types.GetLibrariesEvent) (types.GetLibrarie
 		out = append(out, types.LibraryPayload{
 			Id:        lib.Id,
 			Name:      lib.Name,
+			Color:     lib.Color,
 			CreatedAt: lib.CreatedAt.Format(time.RFC3339),
 		})
 	}

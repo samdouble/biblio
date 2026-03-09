@@ -38,6 +38,7 @@ func Main(ctx context.Context, event types.CreateLibraryEvent) (types.CreateLibr
 		Id:        uuid.New().String(),
 		UserId:    userId,
 		Name:      name,
+		Color:     event.Color,
 		CreatedAt: now,
 	}
 	if err := libraries.Insert(database, lib); err != nil {
@@ -52,6 +53,7 @@ func Main(ctx context.Context, event types.CreateLibraryEvent) (types.CreateLibr
 			Library: &types.LibraryPayload{
 				Id:        lib.Id,
 				Name:      lib.Name,
+				Color:     lib.Color,
 				CreatedAt: now.Format(time.RFC3339),
 			},
 		},

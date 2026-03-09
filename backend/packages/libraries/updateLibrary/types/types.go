@@ -4,6 +4,7 @@ type UpdateLibraryEvent struct {
 	UserId    string `json:"userId"`
 	LibraryId string `json:"libraryId"`
 	Name      string `json:"name"`
+	Color     *int   `json:"color,omitempty"`
 }
 
 type UpdateLibraryResponseBody struct {
