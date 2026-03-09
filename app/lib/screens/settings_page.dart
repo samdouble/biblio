@@ -37,27 +37,50 @@ class SettingsPage extends StatelessWidget {
           ),
           Consumer<MyAppState>(
             builder: (context, appState, _) {
-              return Column(
-                children: [
-                  RadioListTile<Plan>(
-                    title: Text(l10n.planFree),
-                    subtitle: Text(l10n.planFreeDescription),
-                    value: Plan.free,
-                    groupValue: appState.plan,
-                    onChanged: (Plan? value) {
-                      if (value != null) appState.setPlan(value);
-                    },
-                  ),
-                  RadioListTile<Plan>(
-                    title: Text(l10n.planPayPerBook),
-                    subtitle: Text(l10n.planPayPerBookDescription),
-                    value: Plan.payPerBook,
-                    groupValue: appState.plan,
-                    onChanged: (Plan? value) {
-                      if (value != null) appState.setPlan(value);
-                    },
-                  ),
-                ],
+              final plan = appState.plan;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ToggleButtons(
+                      isSelected: [plan == Plan.free, plan == Plan.payPerBook],
+                      onPressed: (int index) {
+                        context.read<MyAppState>().setPlan(
+                              index == 0 ? Plan.free : Plan.payPerBook,
+                            );
+                      },
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          child: Text(l10n.planFree),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          child: Text(l10n.planPayPerBook),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      plan == Plan.free
+                          ? l10n.planFreeDescription
+                          : l10n.planPayPerBookDescription,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.7),
+                          ),
+                    ),
+                  ],
+                ),
               );
             },
           ),

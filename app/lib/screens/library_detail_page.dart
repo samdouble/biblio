@@ -12,6 +12,12 @@ import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
 import 'package:biblio/utils/connectivity.dart';
 
+/// Result of the color picker dialog. Null = cancelled; non-null = user picked a color (or transparent).
+class _ColorDialogResult {
+  final int? color;
+  const _ColorDialogResult(this.color);
+}
+
 class LibraryDetailPage extends StatefulWidget {
   final Library library;
 
@@ -38,6 +44,77 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     setState(() {
       _booksFuture = _loadBooks();
     });
+  }
+
+  static const List<int?> _colorOptions = [
+    null, // transparent
+    0xFFE57373, // red
+    0xFFF06292, // pink
+    0xFFBA68C8, // purple
+    0xFF9575CD, // deep purple
+    0xFF7986CB, // indigo
+    0xFF64B5F6, // blue
+    0xFF4FC3F7, // light blue
+    0xFF4DD0E1, // cyan
+    0xFF4DB6AC, // teal
+    0xFF81C784, // green
+    0xFFAED581, // light green
+    0xFFDCE775, // lime
+    0xFFFFF176, // yellow
+    0xFFFFB74D, // orange
+    0xFFA1887F, // brown
+  ];
+
+  Future<void> _pickColor() async {
+    final result = await showDialog<_ColorDialogResult>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Library color'),
+        content: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final value in _colorOptions)
+              InkWell(
+                onTap: () => Navigator.of(context).pop(_ColorDialogResult(value)),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: value == null
+                        ? Colors.transparent
+                        : Color(value),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline,
+                      width: value == null ? 2 : 0,
+                    ),
+                  ),
+                  child: value == null
+                      ? Icon(Icons.block, size: 20, color: Theme.of(context).colorScheme.outline)
+                      : null,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (result == null) return;
+    final picked = result.color;
+    if (picked == null && _library.color == null) return;
+    if (picked != null && picked == _library.color) return;
+    if (!mounted) return;
+    final userId = context.read<MyAppState>().signedInUserId;
+    if (userId != null) {
+      final err = await updateLibrary(userId, _library.id, _library.name, color: picked);
+      if (err != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
+        return;
+      }
+    }
+    await updateLibraryColor(_library.id, picked);
+    setState(() => _library = Library(id: _library.id, name: _library.name, color: picked));
   }
 
   Future<void> _renameLibrary() async {
@@ -72,7 +149,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
 
     final userId = context.read<MyAppState>().signedInUserId;
     if (userId != null) {
-      final err = await updateLibrary(userId, _library.id, newName);
+      final err = await updateLibrary(userId, _library.id, newName, color: _library.color);
       if (err != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
         return;
@@ -81,7 +158,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     await updateLibraryName(_library.id, newName);
     if (!mounted) return;
     context.read<MyAppState>().setOutOfSync();
-    setState(() => _library = Library(id: _library.id, name: newName));
+    setState(() => _library = Library(id: _library.id, name: newName, color: _library.color));
   }
 
   Future<void> _deleteLibrary() async {
@@ -213,6 +290,14 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
       appBar: AppBar(
         title: Text(_library.name),
         actions: [
+          IconButton(
+            icon: Icon(
+              Icons.palette_outlined,
+              color: _library.color != null ? Color(_library.color!) : null,
+            ),
+            tooltip: 'Library color',
+            onPressed: _pickColor,
+          ),
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             tooltip: 'Rename library',
