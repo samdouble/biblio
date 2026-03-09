@@ -6,6 +6,7 @@ import 'package:biblio/db/migrations/migration_002_library_tables.dart' as m2;
 import 'package:biblio/db/migrations/migration_003_pending_search.dart' as m3;
 import 'package:biblio/db/migrations/migration_004_books_isbn_thumbnail.dart' as m4;
 import 'package:biblio/db/migrations/migration_005_books_thumbnail_url.dart' as m5;
+import 'package:biblio/db/migrations/migration_006_library_color.dart' as m6;
 import 'package:biblio/models/library.dart';
 
 void main() {
@@ -22,6 +23,7 @@ void main() {
     await m3.run(testDb);
     await m4.run(testDb);
     await m5.run(testDb);
+    await m6.run(testDb);
     databaseResolver = () async => testDb;
   });
 

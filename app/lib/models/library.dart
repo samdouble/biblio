@@ -6,29 +6,37 @@ import 'package:biblio/models/book.dart';
 class Library {
   final String id;
   final String name;
+  /// ARGB color value, or null for transparent (default).
+  final int? color;
 
   const Library({
     required this.id,
     required this.name,
+    this.color,
   });
 
   Map<String, Object?> toMap() {
     return {
       'id': id,
       'name': name,
+      'color': color,
     };
   }
 
   @override
-  String toString() => 'Library{id: $id, name: $name}';
+  String toString() => 'Library{id: $id, name: $name, color: $color}';
 }
 
 Future<List<Library>> fetchLibraries() async {
   final db = await databaseResolver();
   final List<Map<String, Object?>> rows = await db.query('libraries');
   return [
-    for (final {'id': id as String, 'name': name as String} in rows)
-      Library(id: id, name: name),
+    for (final row in rows)
+      Library(
+        id: row['id'] as String,
+        name: row['name'] as String,
+        color: row['color'] as int?,
+      ),
   ];
 }
 
@@ -51,6 +59,16 @@ Future<void> updateLibraryName(String libraryId, String name) async {
   );
 }
 
+Future<void> updateLibraryColor(String libraryId, int? color) async {
+  final db = await databaseResolver();
+  await db.update(
+    'libraries',
+    {'color': color},
+    where: 'id = ?',
+    whereArgs: [libraryId],
+  );
+}
+
 Future<void> deleteLibrary(Library library) async {
   final db = await databaseResolver();
   await db.delete('library_books', where: 'library_id = ?', whereArgs: [library.id]);
@@ -59,10 +77,17 @@ Future<void> deleteLibrary(Library library) async {
 
 Future<void> mergeLibrariesFromServer(List<Library> libraries) async {
   final db = await databaseResolver();
+  final existing = await db.query('libraries', columns: ['id', 'color']);
+  final colorById = {for (final row in existing) row['id'] as String: row['color'] as int?};
   for (final lib in libraries) {
+    final preserveColor = colorById[lib.id];
     await db.insert(
       'libraries',
-      lib.toMap(),
+      {
+        'id': lib.id,
+        'name': lib.name,
+        'color': preserveColor ?? lib.color,
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -70,6 +95,8 @@ Future<void> mergeLibrariesFromServer(List<Library> libraries) async {
 
 Future<void> replaceLocalLibraryId(String oldId, Library newLibrary) async {
   final db = await databaseResolver();
+  final oldRows = await db.query('libraries', columns: ['color'], where: 'id = ?', whereArgs: [oldId]);
+  final preservedColor = oldRows.isNotEmpty ? oldRows.first['color'] as int? : null;
   await db.update(
     'library_books',
     {'library_id': newLibrary.id},
@@ -79,7 +106,7 @@ Future<void> replaceLocalLibraryId(String oldId, Library newLibrary) async {
   await db.delete('libraries', where: 'id = ?', whereArgs: [oldId]);
   await db.insert(
     'libraries',
-    newLibrary.toMap(),
+    {'id': newLibrary.id, 'name': newLibrary.name, 'color': preservedColor ?? newLibrary.color},
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
 }
@@ -145,6 +172,29 @@ Future<List<Book>> fetchBooksInLibrary(String libraryId) async {
   ];
 }
 
+/// Returns all books that appear in at least one library, deduplicated by book id, ordered by title.
+Future<List<Book>> fetchBooksFromAllLibraries() async {
+  final db = await databaseResolver();
+  final rows = await db.rawQuery(
+    '''
+    SELECT DISTINCT b.id, b.title, b.author, b.isbn, b.thumbnail_url
+    FROM books b
+    INNER JOIN library_books lb ON b.id = lb.book_id
+    ORDER BY b.title
+    ''',
+  );
+  return [
+    for (final row in rows)
+      Book(
+        id: row['id'] as String,
+        title: row['title'] as String,
+        author: row['author'] as String,
+        isbn: (row['isbn'] as String?) ?? '',
+        thumbnailUrl: (row['thumbnail_url'] as String?) ?? '',
+      ),
+  ];
+}
+
 Future<void> addBookToLibrary(String libraryId, String bookId) async {
   final db = await databaseResolver();
   await db.insert(
@@ -168,10 +218,11 @@ Future<bool> pushLibraryBooksToServer(
   Future<String?> Function(String libraryId, List<String> bookIds) setLibraryBooks,
 ) async {
   final localLibraries = await fetchLibraries();
+  var anyError = false;
   for (final lib in localLibraries) {
     final bookIds = await fetchBookIdsInLibrary(lib.id);
     final err = await setLibraryBooks(lib.id, bookIds);
-    if (err != null) return false;
+    if (err != null) anyError = true;
   }
-  return true;
+  return !anyError;
 }

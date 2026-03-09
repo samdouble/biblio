@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:biblio/l10n/app_localizations.dart';
 
 import 'package:biblio/models/book.dart';
 
-class BooksList extends StatefulWidget {
+class BooksList extends StatelessWidget {
   final List<Book> books;
 
   const BooksList({
@@ -12,56 +11,32 @@ class BooksList extends StatefulWidget {
   });
 
   @override
-  State<BooksList> createState() => _BooksListState();
-}
-
-class _BooksListState extends State<BooksList> {
-  @override
   Widget build(BuildContext context) {
-    List<bool> selected = List<bool>.generate(widget.books.length, (int index) => false);
-    List<DataRow> rows = [];
-
-    for (int index = 0; index < widget.books.length; index++) {
-      Book book = widget.books[index];
-      rows.add(
-        DataRow(
-          color: WidgetStateProperty.resolveWith<Color?>(
-            (Set<WidgetState> states) {
-              if (states.contains(WidgetState.selected)) {
-                return Theme.of(context).colorScheme.primary.withValues(alpha: 0.08);
-              }
-              if (index.isEven) {
-                return Colors.grey.withValues(alpha: 0.3);
-              }
-              return null;
-            }
-          ),
-          cells: <DataCell>[
-            DataCell(Text(book.title)),
-            DataCell(Text(book.author)),
-          ],
-          selected: selected[index],
-          onSelectChanged: (bool? value) {
-            setState(() {
-              selected[index] = value!;
-            });
-          },
-        )
+    if (books.isEmpty) {
+      return Center(
+        child: Text(
+          'No books in your libraries yet.',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
       );
     }
-
-    return SingleChildScrollView(
-      child: DataTable(
-        columns: <DataColumn>[
-          DataColumn(
-            label: Text(AppLocalizations.of(context)!.title),
+    return ListView.builder(
+      itemCount: books.length,
+      itemBuilder: (context, index) {
+        final book = books[index];
+        return ListTile(
+          title: Text(
+            book.title,
+            overflow: TextOverflow.ellipsis,
           ),
-          DataColumn(
-            label: Text(AppLocalizations.of(context)!.author),
-          ),
-        ],
-        rows: rows,
-      ),
+          subtitle: book.author.isNotEmpty
+              ? Text(
+                  book.author,
+                  overflow: TextOverflow.ellipsis,
+                )
+              : null,
+        );
+      },
     );
   }
 }

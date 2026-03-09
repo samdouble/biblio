@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:biblio/l10n/app_localizations.dart';
 
 import 'package:biblio/models/book.dart';
+import 'package:biblio/models/library.dart';
 import 'package:biblio/widgets/books/add_book_button.dart';
 import 'package:biblio/widgets/books/books_list.dart';
 import 'package:biblio/widgets/main_drawer.dart';
@@ -23,21 +24,19 @@ class MyBooksPage extends StatelessWidget {
         ),
         title: Text(AppLocalizations.of(context)!.myBooks),
       ),
-      body: Row(
-        children: [
-          FutureBuilder<List<Book>>(
-            future: fetchBooks(),
-            builder: (context, AsyncSnapshot<List<Book>> snapshot) {
-              if (snapshot.hasData) {
-                return BooksList(
-                  books: snapshot.data ?? [],
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-            }
-          ),
-        ],
+      body: FutureBuilder<List<Book>>(
+        future: fetchBooksFromAllLibraries(),
+        builder: (context, AsyncSnapshot<List<Book>> snapshot) {
+          if (snapshot.hasData) {
+            return BooksList(
+              books: snapshot.data ?? [],
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
       drawer: MainDrawer(),
       floatingActionButton: FloatingButton(),

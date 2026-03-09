@@ -17,17 +17,19 @@ class GetLibrariesResult {
   final String? error;
 }
 
-Future<CreateLibraryResult> createLibrary(String userId, String name) async {
+Future<CreateLibraryResult> createLibrary(String userId, String name, {int? color}) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return CreateLibraryResult(error: 'API not configured');
 
   final url = Uri.parse('$baseUrl/libraries/createLibrary');
+  final body = <String, dynamic>{'userId': userId, 'name': name};
+  if (color != null) body['color'] = color;
   final response = await http.post(
     url,
     headers: {
       'Content-Type': 'application/json',
     },
-    body: jsonEncode({'userId': userId, 'name': name}),
+    body: jsonEncode(body),
   );
 
   if (response.statusCode != 200) {
@@ -47,8 +49,10 @@ Future<CreateLibraryResult> createLibrary(String userId, String name) async {
       final lib = b['library'] as Map;
       final id = lib['id'] as String?;
       final nameStr = lib['name'] as String?;
+      final colorVal = lib['color'];
+      final color = colorVal is int ? colorVal : null;
       if (id != null && nameStr != null) {
-        return CreateLibraryResult(library: Library(id: id, name: nameStr));
+        return CreateLibraryResult(library: Library(id: id, name: nameStr, color: color));
       }
     }
     return CreateLibraryResult(error: 'Invalid response');
@@ -86,8 +90,13 @@ Future<GetLibrariesResult> getLibraries(String userId) async {
     if (list is List) {
       final libraries = <Library>[
         for (final e in list)
-          if (e is Map && e['id'] != null && e['name'] != null)
-            Library(id: e['id'] as String, name: e['name'] as String),
+          if (e is Map && e['id'] != null && e['name'] != null) ...[
+            Library(
+              id: e['id'] as String,
+              name: e['name'] as String,
+              color: e['color'] is int ? e['color'] as int : null,
+            ),
+          ],
       ];
       return GetLibrariesResult(libraries: libraries);
     }
@@ -97,17 +106,23 @@ Future<GetLibrariesResult> getLibraries(String userId) async {
   }
 }
 
-Future<String?> updateLibrary(String userId, String libraryId, String name) async {
+Future<String?> updateLibrary(String userId, String libraryId, String name, {int? color}) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/updateLibrary');
+  final body = <String, dynamic>{
+    'userId': userId,
+    'libraryId': libraryId,
+    'name': name,
+  };
+  body['color'] = color;
   final response = await http.post(
     url,
     headers: {
       'Content-Type': 'application/json',
     },
-    body: jsonEncode({'userId': userId, 'libraryId': libraryId, 'name': name}),
+    body: jsonEncode(body),
   );
 
   if (response.statusCode != 200) return 'Failed to update library';

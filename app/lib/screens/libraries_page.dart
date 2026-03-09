@@ -175,8 +175,11 @@ class _LibrariesPageState extends State<LibrariesPage> {
               itemBuilder: (context, index) {
                 final (lib, bookCount) = list[index];
                 return ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.folder_outlined),
+                  leading: CircleAvatar(
+                    backgroundColor: lib.color != null
+                        ? Color(lib.color!)
+                        : Theme.of(context).colorScheme.surfaceContainerHighest,
+                    child: const Icon(Icons.folder_outlined),
                   ),
                   title: Text('${lib.name} ($bookCount)'),
                   onTap: () async {
