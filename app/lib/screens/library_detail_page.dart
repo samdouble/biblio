@@ -289,6 +289,10 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                   (context, index) {
                     final book = books[index];
                     return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ).copyWith(right: 0),
                       title: Text(book.title),
                       subtitle: Text(book.author),
                       onTap: () async {
@@ -322,6 +326,11 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                         }
                       },
                       trailing: IconButton(
+                        style: IconButton.styleFrom(
+                          padding: const EdgeInsets.all(12),
+                          minimumSize: const Size(40, 40),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                         icon: const Icon(Icons.remove_circle_outline),
                         tooltip: 'Remove from library',
                         onPressed: () async {
