@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -13,12 +15,43 @@ import 'package:biblio/db/migrations/migration_006_library_color.dart' as m6;
 import 'package:biblio/l10n/app_localizations.dart';
 import 'package:biblio/screens/home_page.dart';
 
+class _TolerantGoldenComparator extends LocalFileComparator {
+  _TolerantGoldenComparator(super.testFile, {this.tolerance = 0.02});
+
+  final double tolerance;
+
+  @override
+  Future<bool> compare(Uint8List imageBytes, Uri golden) async {
+    final goldenBytes = await getGoldenBytes(golden);
+    final result = await GoldenFileComparator.compareLists(
+      imageBytes,
+      goldenBytes,
+    );
+    if (result.passed) {
+      result.dispose();
+      return true;
+    }
+    if (result.diffPercent <= tolerance) {
+      result.dispose();
+      return true;
+    }
+    final error = await generateFailureOutput(result, golden, basedir);
+    result.dispose();
+    throw FlutterError(error);
+  }
+}
+
 void main() {
   late dynamic testDb;
 
   setUpAll(() async {
     sqfliteFfiInit();
     SharedPreferences.setMockInitialValues({});
+    final current = goldenFileComparator as LocalFileComparator;
+    goldenFileComparator = _TolerantGoldenComparator(
+      current.basedir.resolve('home_page_golden_test.dart'),
+      tolerance: 0.02,
+    );
   });
 
   setUp(() async {

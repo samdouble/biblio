@@ -52,8 +52,8 @@ Run `fvm flutter doctor` to verify that everything is installed correctly.
 Make sure you have the correct version of Flutter installed by running these commands from the root of the project:
 
 ```bash
-fvm install 3.29.0
-fvm use 3.29.0
+fvm install 3.41.2
+fvm use 3.41.2
 fvm flutter --version
 ```
 
