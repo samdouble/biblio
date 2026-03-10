@@ -4,10 +4,12 @@ import 'package:biblio/models/book.dart';
 
 class BooksList extends StatelessWidget {
   final List<Book> books;
+  final void Function(Book book)? onBookTap;
 
   const BooksList({
     super.key,
     required this.books,
+    this.onBookTap,
   });
 
   @override
@@ -35,6 +37,7 @@ class BooksList extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 )
               : null,
+          onTap: onBookTap != null ? () => onBookTap!(book) : null,
         );
       },
     );
