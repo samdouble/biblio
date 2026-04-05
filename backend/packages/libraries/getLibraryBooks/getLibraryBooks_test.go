@@ -17,8 +17,8 @@ func TestMain_EmptyUserId(t *testing.T) {
 	if resp.Body.Error != "userId and libraryId are required" {
 		t.Errorf("Main: expected body error 'userId and libraryId are required', got %q", resp.Body.Error)
 	}
-	if resp.Body.BookIds != nil {
-		t.Error("Main: BookIds should be nil on error")
+	if len(resp.Body.Books) != 0 {
+		t.Error("Main: Books should be empty on error")
 	}
 }
 

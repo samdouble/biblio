@@ -39,18 +39,19 @@ func Main(ctx context.Context, event types.GetLibraryBooksEvent) (types.GetLibra
 		}, nil
 	}
 
-	bookIds, err := libraries.GetLibraryBookIds(database, libraryId, userId)
+	entries, err := libraries.GetLibraryBookEntries(database, libraryId, userId)
 	if err != nil {
-		log.Printf("libraries.GetLibraryBookIds: %v", err)
+		log.Printf("libraries.GetLibraryBookEntries: %v", err)
 		return types.GetLibraryBooksResponse{
 			Body: types.GetLibraryBooksResponseBody{Error: "failed to get library books"},
 		}, err
 	}
-	if bookIds == nil {
-		bookIds = []string{}
+	books := make([]types.LibraryBookEntryJSON, len(entries))
+	for i, e := range entries {
+		books[i] = types.LibraryBookEntryJSON{BookId: e.BookId, AddedAt: e.AddedAt.UnixMilli()}
 	}
 
 	return types.GetLibraryBooksResponse{
-		Body: types.GetLibraryBooksResponseBody{BookIds: bookIds},
+		Body: types.GetLibraryBooksResponseBody{Books: books},
 	}, nil
 }
