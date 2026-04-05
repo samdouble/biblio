@@ -1,9 +1,6 @@
 name: Backend Publish
 
 on:
-  pull_request:
-    branches:
-      - master
   push:
     tags:
       - 'backend-v*'

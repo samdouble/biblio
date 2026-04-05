@@ -1,4 +1,5 @@
 {
+  "addBook": "Add book",
   "addBooks": "Add books",
   "addBooksToLibrary": "Add books to library",
   "addByScanning": "Add by scanning",
@@ -24,9 +25,11 @@
   "languageEnglish": "English",
   "languageFrench": "French",
   "libraries": "Libraries",
+  "libraryEmptyAddHint": "Use the + button above to add a book.",
   "libraryName": "Library name",
   "myBooks": "My Books",
   "noBooksFoundFor": "No books found for \"{query}\".",
+  "noBooksInLibrary": "No books in this library",
   "@noBooksFoundFor": {
     "placeholders": {
       "query": {

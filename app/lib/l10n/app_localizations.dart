@@ -98,6 +98,12 @@ abstract class AppLocalizations {
     Locale('fr')
   ];
 
+  /// No description provided for @addBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Add book'**
+  String get addBook;
+
   /// No description provided for @addBooks.
   ///
   /// In en, this message translates to:
@@ -205,6 +211,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Libraries'**
   String get libraries;
+
+  /// No description provided for @libraryEmptyAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the + button above to add a book.'**
+  String get libraryEmptyAddHint;
+
+  /// No description provided for @noBooksInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'No books in this library'**
+  String get noBooksInLibrary;
 
   /// No description provided for @libraryName.
   ///

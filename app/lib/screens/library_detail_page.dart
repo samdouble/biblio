@@ -291,10 +291,52 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         title: Text(_library.name),
         actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.add),
+            tooltip: l10n.addBook,
+            onSelected: (value) {
+              if (value == 'manual') {
+                _addBooks();
+              } else if (value == 'scan') {
+                _addBooksByScanning();
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'manual',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.playlist_add_outlined,
+                      size: 22,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Text(l10n.addBooks)),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'scan',
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.qr_code_scanner,
+                      size: 22,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(child: Text(l10n.addByScanning)),
+                  ],
+                ),
+              ),
+            ],
+          ),
           IconButton(
             icon: Icon(
               Icons.palette_outlined,
@@ -324,56 +366,32 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
           final entries = snapshot.data!;
           if (entries.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'No books in this library',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: _addBooks,
-                    icon: const Icon(Icons.add),
-                    label: Text(AppLocalizations.of(context)!.addBooks),
-                  ),
-                  const SizedBox(height: 8),
-                  FilledButton.tonalIcon(
-                    onPressed: _addBooksByScanning,
-                    icon: const Icon(Icons.qr_code_scanner),
-                    label: Text(AppLocalizations.of(context)!.addByScanning),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      l10n.noBooksInLibrary,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.libraryEmptyAddHint,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             );
           }
           return CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: FilledButton.icon(
-                          onPressed: _addBooks,
-                          icon: const Icon(Icons.add),
-                          label: Text(AppLocalizations.of(context)!.addBooks),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: FilledButton.tonalIcon(
-                          onPressed: _addBooksByScanning,
-                          icon: const Icon(Icons.qr_code_scanner),
-                          label: Text(AppLocalizations.of(context)!.addByScanning),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
