@@ -1,6 +1,6 @@
 {
-  "//app": "Do not remove",
+  "do_not_remove_app": "0.0.0",
   "app": "0.2.0",
-  "//backend": "Do not remove",
+  "do_not_remove_backend": "0.0.0",
   "backend": "0.7.0"
 }

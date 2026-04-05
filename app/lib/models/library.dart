@@ -39,6 +39,29 @@ Future<List<Library>> fetchLibraries() async {
   ];
 }
 
+Future<List<Library>> fetchLibrariesContainingBook(String bookId) async {
+  if (bookId.isEmpty) return [];
+  final db = await databaseResolver();
+  final rows = await db.rawQuery(
+    '''
+    SELECT l.id, l.name, l.color
+    FROM libraries l
+    INNER JOIN library_books lb ON l.id = lb.library_id
+    WHERE lb.book_id = ?
+    ORDER BY LOWER(l.name)
+    ''',
+    [bookId],
+  );
+  return [
+    for (final row in rows)
+      Library(
+        id: row['id'] as String,
+        name: row['name'] as String,
+        color: row['color'] as int?,
+      ),
+  ];
+}
+
 Future<void> insertLibrary(Library library) async {
   final db = await databaseResolver();
   await db.insert(

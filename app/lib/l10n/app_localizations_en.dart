@@ -27,6 +27,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get author => 'Author';
 
   @override
+  String get bookInYourLibraries => 'In your libraries';
+
+  @override
+  String get bookNotInAnyLibrary => 'Not in any of your libraries.';
+
+  @override
+  String get bookPublished => 'Published';
+
+  @override
+  String get bookPublisher => 'Publisher';
+
+  @override
   String get clearSearch => 'Clear search';
 
   @override
