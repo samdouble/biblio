@@ -7,13 +7,13 @@
     "app": {
       "release-type": "dart",
       "path": "app",
-      "skip-labeling": true,
+      "skip-snapshot": true,
       "component": "app"
     },
     "backend": {
       "release-type": "simple",
       "path": "backend",
-      "skip-labeling": true,
+      "skip-snapshot": true,
       "component": "backend"
     }
   },

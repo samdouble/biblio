@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:biblio/l10n/app_localizations.dart';
@@ -12,7 +13,6 @@ import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
 import 'package:biblio/utils/connectivity.dart';
 
-/// Result of the color picker dialog. Null = cancelled; non-null = user picked a color (or transparent).
 class _ColorDialogResult {
   final int? color;
   const _ColorDialogResult(this.color);
@@ -29,21 +29,26 @@ class LibraryDetailPage extends StatefulWidget {
 
 class _LibraryDetailPageState extends State<LibraryDetailPage> {
   late Library _library;
-  late Future<List<Book>> _booksFuture;
+  late Future<List<LibraryBookEntry>> _booksFuture;
 
   @override
   void initState() {
     super.initState();
     _library = widget.library;
-    _booksFuture = fetchBooksInLibrary(_library.id);
+    _booksFuture = fetchBooksInLibraryWithAddedAt(_library.id);
   }
 
-  Future<List<Book>> _loadBooks() => fetchBooksInLibrary(_library.id);
+  Future<List<LibraryBookEntry>> _loadBooks() =>
+      fetchBooksInLibraryWithAddedAt(_library.id);
 
   void _refreshBooks() {
     setState(() {
       _booksFuture = _loadBooks();
     });
+  }
+
+  static String _formatAddedAt(DateTime addedAt) {
+    return DateFormat.yMMMd().format(addedAt.toLocal());
   }
 
   static const List<int?> _colorOptions = [
@@ -310,14 +315,14 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Book>>(
+      body: FutureBuilder<List<LibraryBookEntry>>(
         future: _booksFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          final books = snapshot.data!;
-          if (books.isEmpty) {
+          final entries = snapshot.data!;
+          if (entries.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -372,14 +377,18 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
               SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final book = books[index];
+                    final entry = entries[index];
+                    final book = entry.book;
                     return ListTile(
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 4,
                       ).copyWith(right: 0),
                       title: Text(book.title),
-                      subtitle: Text(book.author),
+                      subtitle: Text(
+                        '${book.author}\n'
+                        'Added ${_formatAddedAt(entry.addedAt)}',
+                      ),
                       onTap: () async {
                         if (book.isbn.isEmpty) {
                           if (!mounted) return;
@@ -428,7 +437,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
                       ),
                     );
                   },
-                  childCount: books.length,
+                  childCount: entries.length,
                 ),
               ),
               const SliverToBoxAdapter(

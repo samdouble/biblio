@@ -6,7 +6,6 @@ import 'package:biblio/models/book.dart';
 class Library {
   final String id;
   final String name;
-  /// ARGB color value, or null for transparent (default).
   final int? color;
 
   const Library({
@@ -148,11 +147,25 @@ Future<List<String>> fetchBookIdsInLibrary(String libraryId) async {
   return [for (final row in rows) row['book_id'] as String];
 }
 
+class LibraryBookEntry {
+  final Book book;
+  final DateTime addedAt;
+
+  const LibraryBookEntry({required this.book, required this.addedAt});
+}
+
 Future<List<Book>> fetchBooksInLibrary(String libraryId) async {
+  final entries = await fetchBooksInLibraryWithAddedAt(libraryId);
+  return [for (final e in entries) e.book];
+}
+
+Future<List<LibraryBookEntry>> fetchBooksInLibraryWithAddedAt(
+  String libraryId,
+) async {
   final db = await databaseResolver();
   final rows = await db.rawQuery(
     '''
-    SELECT b.id, b.title, b.author, b.isbn, b.thumbnail_url
+    SELECT b.id, b.title, b.author, b.isbn, b.thumbnail_url, lb.added_at
     FROM books b
     INNER JOIN library_books lb ON b.id = lb.book_id
     WHERE lb.library_id = ?
@@ -162,17 +175,22 @@ Future<List<Book>> fetchBooksInLibrary(String libraryId) async {
   );
   return [
     for (final row in rows)
-      Book(
-        id: row['id'] as String,
-        title: row['title'] as String,
-        author: row['author'] as String,
-        isbn: (row['isbn'] as String?) ?? '',
-        thumbnailUrl: (row['thumbnail_url'] as String?) ?? '',
+      LibraryBookEntry(
+        book: Book(
+          id: row['id'] as String,
+          title: row['title'] as String,
+          author: row['author'] as String,
+          isbn: (row['isbn'] as String?) ?? '',
+          thumbnailUrl: (row['thumbnail_url'] as String?) ?? '',
+        ),
+        addedAt: DateTime.fromMillisecondsSinceEpoch(
+          (row['added_at'] as num).toInt(),
+          isUtc: true,
+        ),
       ),
   ];
 }
 
-/// Returns all books that appear in at least one library, deduplicated by book id, ordered by title.
 Future<List<Book>> fetchBooksFromAllLibraries() async {
   final db = await databaseResolver();
   final rows = await db.rawQuery(
@@ -199,7 +217,11 @@ Future<void> addBookToLibrary(String libraryId, String bookId) async {
   final db = await databaseResolver();
   await db.insert(
     'library_books',
-    {'library_id': libraryId, 'book_id': bookId},
+    {
+      'library_id': libraryId,
+      'book_id': bookId,
+      'added_at': DateTime.now().toUtc().millisecondsSinceEpoch,
+    },
     conflictAlgorithm: ConflictAlgorithm.ignore,
   );
 }

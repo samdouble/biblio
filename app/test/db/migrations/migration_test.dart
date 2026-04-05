@@ -6,6 +6,7 @@ import 'package:biblio/db/migrations/migration_003_pending_search.dart' as m3;
 import 'package:biblio/db/migrations/migration_004_books_isbn_thumbnail.dart' as m4;
 import 'package:biblio/db/migrations/migration_005_books_thumbnail_url.dart' as m5;
 import 'package:biblio/db/migrations/migration_006_library_color.dart' as m6;
+import 'package:biblio/db/migrations/migration_007_library_books_added_at.dart' as m7;
 
 void main() {
   setUpAll(() {
@@ -92,6 +93,8 @@ void main() {
       addTearDown(() => db.close());
 
       await m1.run(db);
+      await m2.run(db);
+      await m3.run(db);
       await m4.run(db);
 
       await db.insert('books', {
@@ -114,6 +117,9 @@ void main() {
       addTearDown(() => db.close());
 
       await m1.run(db);
+      await m2.run(db);
+      await m3.run(db);
+      await m4.run(db);
       await m5.run(db);
 
       await db.insert('books', {
@@ -132,6 +138,8 @@ void main() {
       addTearDown(() => db.close());
 
       await m1.run(db);
+      await m2.run(db);
+      await m3.run(db);
       await m4.run(db);
       await m5.run(db);
 
@@ -147,6 +155,9 @@ void main() {
 
       await m1.run(db);
       await m2.run(db);
+      await m3.run(db);
+      await m4.run(db);
+      await m5.run(db);
       await m6.run(db);
 
       await db.insert('libraries', {'id': 'lib-1', 'name': 'My Lib', 'color': null});
@@ -157,6 +168,32 @@ void main() {
       await db.update('libraries', {'color': 0xFF4DB6AC}, where: 'id = ?', whereArgs: ['lib-1']);
       rows = await db.query('libraries');
       expect(rows.first['color'], 0xFF4DB6AC);
+    });
+  });
+
+  group('migration_007_library_books_added_at', () {
+    test('adds added_at column to library_books and backfills', () async {
+      final db = await databaseFactoryFfi.openDatabase(inMemoryDatabasePath);
+      addTearDown(() => db.close());
+
+      await m1.run(db);
+      await m2.run(db);
+      await m3.run(db);
+      await m4.run(db);
+      await m5.run(db);
+      await m6.run(db);
+      await m7.run(db);
+
+      await db.insert('books', {'id': 'b-1', 'title': 'T', 'author': 'A'});
+      await db.insert('libraries', {'id': 'lib-1', 'name': 'Lib'});
+      await db.insert('library_books', {
+        'library_id': 'lib-1',
+        'book_id': 'b-1',
+        'added_at': 1234567890123,
+      });
+      final rows = await db.query('library_books');
+      expect(rows, hasLength(1));
+      expect(rows.first['added_at'], 1234567890123);
     });
   });
 
@@ -171,6 +208,7 @@ void main() {
       await m4.run(db);
       await m5.run(db);
       await m6.run(db);
+      await m7.run(db);
 
       final tables = await getTableNames(db);
       expect(tables, containsAll(['books', 'libraries', 'library_books', 'pending_isbn_searches']));
