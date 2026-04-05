@@ -13,11 +13,6 @@ import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
 import 'package:biblio/utils/connectivity.dart';
 
-class _ColorDialogResult {
-  final int? color;
-  const _ColorDialogResult(this.color);
-}
-
 class LibraryDetailPage extends StatefulWidget {
   final Library library;
 
@@ -70,100 +65,42 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     0xFFA1887F, // brown
   ];
 
-  Future<void> _pickColor() async {
-    final result = await showDialog<_ColorDialogResult>(
+  Future<void> _editLibrary() async {
+    final l10n = AppLocalizations.of(context)!;
+    final result = await showDialog<_EditLibraryDialogResult>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Library color'),
-        content: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final value in _colorOptions)
-              InkWell(
-                onTap: () => Navigator.of(context).pop(_ColorDialogResult(value)),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: value == null
-                        ? Colors.transparent
-                        : Color(value),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.outline,
-                      width: value == null ? 2 : 0,
-                    ),
-                  ),
-                  child: value == null
-                      ? Icon(Icons.block, size: 20, color: Theme.of(context).colorScheme.outline)
-                      : null,
-                ),
-              ),
-          ],
-        ),
+      builder: (context) => _EditLibraryDialog(
+        initialName: _library.name,
+        initialColor: _library.color,
+        colorOptions: _colorOptions,
+        nameLabel: l10n.libraryName,
       ),
     );
-    if (result == null) return;
-    final picked = result.color;
-    if (picked == null && _library.color == null) return;
-    if (picked != null && picked == _library.color) return;
-    if (!mounted) return;
+    if (result == null || !mounted) return;
+
+    final newName = result.name.trim();
+    if (newName.isEmpty) return;
+
+    final newColor = result.color;
+    final nameChanged = newName != _library.name;
+    final colorChanged = newColor != _library.color;
+    if (!nameChanged && !colorChanged) return;
+
     final userId = context.read<MyAppState>().signedInUserId;
     if (userId != null) {
-      final err = await updateLibrary(userId, _library.id, _library.name, color: picked);
+      final err = await updateLibrary(userId, _library.id, newName, color: newColor);
       if (err != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
         return;
       }
     }
-    await updateLibraryColor(_library.id, picked);
-    setState(() => _library = Library(id: _library.id, name: _library.name, color: picked));
-  }
-
-  Future<void> _renameLibrary() async {
-    final nameController = TextEditingController(text: _library.name);
-    final newName = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Rename library'),
-        content: TextField(
-          controller: nameController,
-          decoration: const InputDecoration(
-            labelText: 'Name',
-            hintText: 'Library name',
-          ),
-          autofocus: true,
-          onSubmitted: (_) => Navigator.of(context).pop(nameController.text.trim()),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(nameController.text.trim()),
-            child: Text(MaterialLocalizations.of(context).okButtonLabel),
-          ),
-        ],
-      ),
-    );
-    if (newName == null || newName.isEmpty || !mounted) return;
-    if (newName == _library.name) return;
-
-    final userId = context.read<MyAppState>().signedInUserId;
-    if (userId != null) {
-      final err = await updateLibrary(userId, _library.id, newName, color: _library.color);
-      if (err != null && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
-        return;
-      }
-    }
-    await updateLibraryName(_library.id, newName);
+    if (nameChanged) await updateLibraryName(_library.id, newName);
+    if (colorChanged) await updateLibraryColor(_library.id, newColor);
     if (!mounted) return;
-    context.read<MyAppState>().setOutOfSync();
-    setState(() => _library = Library(id: _library.id, name: newName, color: _library.color));
+    if (nameChanged || colorChanged) context.read<MyAppState>().setOutOfSync();
+    setState(
+      () => _library = Library(id: _library.id, name: newName, color: newColor),
+    );
   }
 
   Future<void> _deleteLibrary() async {
@@ -338,17 +275,9 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
             ],
           ),
           IconButton(
-            icon: Icon(
-              Icons.palette_outlined,
-              color: _library.color != null ? Color(_library.color!) : null,
-            ),
-            tooltip: 'Library color',
-            onPressed: _pickColor,
-          ),
-          IconButton(
             icon: const Icon(Icons.edit_outlined),
-            tooltip: 'Rename library',
-            onPressed: _renameLibrary,
+            tooltip: l10n.editLibrary,
+            onPressed: _editLibrary,
           ),
           IconButton(
             icon: const Icon(Icons.delete_outline),
@@ -465,6 +394,135 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
           );
         },
       ),
+    );
+  }
+}
+
+class _EditLibraryDialogResult {
+  const _EditLibraryDialogResult({required this.name, required this.color});
+  final String name;
+  final int? color;
+}
+
+class _EditLibraryDialog extends StatefulWidget {
+  const _EditLibraryDialog({
+    required this.initialName,
+    required this.initialColor,
+    required this.colorOptions,
+    required this.nameLabel,
+  });
+
+  final String initialName;
+  final int? initialColor;
+  final List<int?> colorOptions;
+  final String nameLabel;
+
+  @override
+  State<_EditLibraryDialog> createState() => _EditLibraryDialogState();
+}
+
+class _EditLibraryDialogState extends State<_EditLibraryDialog> {
+  late final TextEditingController _nameCtrl;
+  late int? _selectedColor;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameCtrl = TextEditingController(text: widget.initialName);
+    _selectedColor = widget.initialColor;
+  }
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final name = _nameCtrl.text.trim();
+    if (name.isEmpty) return;
+    Navigator.of(context).pop(
+      _EditLibraryDialogResult(name: name, color: _selectedColor),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    return AlertDialog(
+      title: Text(l10n.editLibrary),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _nameCtrl,
+              decoration: InputDecoration(
+                labelText: widget.nameLabel,
+                hintText: widget.nameLabel,
+              ),
+              autofocus: true,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _submit(),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              l10n.libraryColor,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final value in widget.colorOptions)
+                  InkWell(
+                    onTap: () => setState(() => _selectedColor = value),
+                    borderRadius: BorderRadius.circular(22),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: _selectedColor == value
+                            ? Border.all(color: scheme.primary, width: 3)
+                            : null,
+                      ),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: value != null ? Color(value) : Colors.transparent,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: scheme.outline,
+                            width: value == null ? 2 : 0,
+                          ),
+                        ),
+                        child: value == null
+                            ? Icon(Icons.block, size: 20, color: scheme.outline)
+                            : null,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+        ),
+        FilledButton(
+          onPressed: _submit,
+          child: Text(MaterialLocalizations.of(context).okButtonLabel),
+        ),
+      ],
     );
   }
 }

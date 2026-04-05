@@ -68,7 +68,7 @@ class BookDetailPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 4,
+                          horizontal: 0,
                           vertical: 2,
                         ),
                         child: Text(
