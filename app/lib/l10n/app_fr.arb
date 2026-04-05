@@ -49,6 +49,10 @@
   "recentlyScannedEmpty": "Scannez un livre avec le bouton + pour le voir ici.",
   "searchByHint": "Rechercher par titre, auteur, ISBN…",
   "sendCode": "Envoyer le code",
+  "sortBooks": "Trier les livres",
+  "sortByAuthor": "Auteur (A–Z)",
+  "sortByDateAdded": "Date d’ajout (plus récent d’abord)",
+  "sortByTitle": "Titre (A–Z)",
   "settings": "Paramètres",
   "signedInAs": "Connecté en tant que {email}",
   "@signedInAs": {

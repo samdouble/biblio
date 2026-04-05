@@ -13,6 +13,44 @@ import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
 import 'package:biblio/utils/connectivity.dart';
 
+enum LibraryBookListSort { title, author, dateAdded }
+
+int compareLibraryBookListEntries(
+  LibraryBookEntry a,
+  LibraryBookEntry b,
+  LibraryBookListSort sort,
+) {
+  switch (sort) {
+    case LibraryBookListSort.title:
+      var c = a.book.title.toLowerCase().compareTo(b.book.title.toLowerCase());
+      if (c != 0) return c;
+      c = a.book.author.toLowerCase().compareTo(b.book.author.toLowerCase());
+      if (c != 0) return c;
+      return a.book.id.compareTo(b.book.id);
+    case LibraryBookListSort.author:
+      var c = a.book.author.toLowerCase().compareTo(b.book.author.toLowerCase());
+      if (c != 0) return c;
+      c = a.book.title.toLowerCase().compareTo(b.book.title.toLowerCase());
+      if (c != 0) return c;
+      return a.book.id.compareTo(b.book.id);
+    case LibraryBookListSort.dateAdded:
+      var c = b.addedAt.compareTo(a.addedAt);
+      if (c != 0) return c;
+      c = a.book.title.toLowerCase().compareTo(b.book.title.toLowerCase());
+      if (c != 0) return c;
+      return a.book.id.compareTo(b.book.id);
+  }
+}
+
+List<LibraryBookEntry> sortedLibraryBookListEntries(
+  List<LibraryBookEntry> entries,
+  LibraryBookListSort sort,
+) {
+  final out = List<LibraryBookEntry>.from(entries);
+  out.sort((a, b) => compareLibraryBookListEntries(a, b, sort));
+  return out;
+}
+
 class LibraryDetailPage extends StatefulWidget {
   final Library library;
 
@@ -25,6 +63,7 @@ class LibraryDetailPage extends StatefulWidget {
 class _LibraryDetailPageState extends State<LibraryDetailPage> {
   late Library _library;
   late Future<List<LibraryBookEntry>> _booksFuture;
+  LibraryBookListSort _bookListSort = LibraryBookListSort.title;
 
   @override
   void initState() {
@@ -274,6 +313,40 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
               ),
             ],
           ),
+          PopupMenuButton<LibraryBookListSort>(
+            icon: const Icon(Icons.sort),
+            tooltip: l10n.sortBooks,
+            onSelected: (value) => setState(() => _bookListSort = value),
+            itemBuilder: (context) {
+              final scheme = Theme.of(context).colorScheme;
+              PopupMenuItem<LibraryBookListSort> item(
+                LibraryBookListSort value,
+                String label,
+              ) {
+                final selected = _bookListSort == value;
+                return PopupMenuItem(
+                  value: value,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 24,
+                        child: selected
+                            ? Icon(Icons.check, size: 20, color: scheme.primary)
+                            : null,
+                      ),
+                      Expanded(child: Text(label)),
+                    ],
+                  ),
+                );
+              }
+
+              return [
+                item(LibraryBookListSort.title, l10n.sortByTitle),
+                item(LibraryBookListSort.author, l10n.sortByAuthor),
+                item(LibraryBookListSort.dateAdded, l10n.sortByDateAdded),
+              ];
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.edit_outlined),
             tooltip: l10n.editLibrary,
@@ -292,7 +365,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
-          final entries = snapshot.data!;
+          final entries = sortedLibraryBookListEntries(snapshot.data!, _bookListSort);
           if (entries.isEmpty) {
             return Center(
               child: Padding(

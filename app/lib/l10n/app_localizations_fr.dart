@@ -126,6 +126,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get sendCode => 'Envoyer le code';
 
   @override
+  String get sortBooks => 'Trier les livres';
+
+  @override
+  String get sortByAuthor => 'Auteur (A–Z)';
+
+  @override
+  String get sortByDateAdded => 'Date d’ajout (plus récent d’abord)';
+
+  @override
+  String get sortByTitle => 'Titre (A–Z)';
+
+  @override
   String get settings => 'Paramètres';
 
   @override

@@ -314,6 +314,30 @@ abstract class AppLocalizations {
   /// **'Send code'**
   String get sendCode;
 
+  /// No description provided for @sortBooks.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort books'**
+  String get sortBooks;
+
+  /// No description provided for @sortByAuthor.
+  ///
+  /// In en, this message translates to:
+  /// **'Author (A–Z)'**
+  String get sortByAuthor;
+
+  /// No description provided for @sortByDateAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Date added (newest first)'**
+  String get sortByDateAdded;
+
+  /// No description provided for @sortByTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (A–Z)'**
+  String get sortByTitle;
+
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
