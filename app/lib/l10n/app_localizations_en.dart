@@ -9,6 +9,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get addBook => 'Add book';
+
+  @override
   String get addBooks => 'Add books';
 
   @override
@@ -63,6 +66,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraries => 'Libraries';
+
+  @override
+  String get libraryEmptyAddHint => 'Use the + button above to add a book.';
+
+  @override
+  String get noBooksInLibrary => 'No books in this library';
 
   @override
   String get libraryName => 'Library name';
