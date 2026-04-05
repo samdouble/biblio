@@ -164,6 +164,12 @@ abstract class AppLocalizations {
   /// **'Create library'**
   String get createLibrary;
 
+  /// No description provided for @editLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit library'**
+  String get editLibrary;
+
   /// No description provided for @email.
   ///
   /// In en, this message translates to:
@@ -212,17 +218,17 @@ abstract class AppLocalizations {
   /// **'Libraries'**
   String get libraries;
 
+  /// No description provided for @libraryColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get libraryColor;
+
   /// No description provided for @libraryEmptyAddHint.
   ///
   /// In en, this message translates to:
   /// **'Use the + button above to add a book.'**
   String get libraryEmptyAddHint;
-
-  /// No description provided for @noBooksInLibrary.
-  ///
-  /// In en, this message translates to:
-  /// **'No books in this library'**
-  String get noBooksInLibrary;
 
   /// No description provided for @libraryName.
   ///
@@ -241,6 +247,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No books found for \"{query}\".'**
   String noBooksFoundFor(String query);
+
+  /// No description provided for @noBooksInLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'No books in this library'**
+  String get noBooksInLibrary;
 
   /// No description provided for @noLibraries.
   ///

@@ -44,6 +44,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get createLibrary => 'Créer une bibliothèque';
 
   @override
+  String get editLibrary => 'Modifier la bibliothèque';
+
+  @override
   String get email => 'Courriel';
 
   @override
@@ -70,11 +73,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get libraries => 'Bibliothèques';
 
   @override
-  String get libraryEmptyAddHint =>
-      'Utilisez le bouton + ci-dessus pour ajouter un livre.';
+  String get libraryColor => 'Couleur';
 
   @override
-  String get noBooksInLibrary => 'Aucun livre dans cette bibliothèque';
+  String get libraryEmptyAddHint =>
+      'Utilisez le bouton + ci-dessus pour ajouter un livre.';
 
   @override
   String get libraryName => 'Nom de la bibliothèque';
@@ -86,6 +89,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String noBooksFoundFor(String query) {
     return 'Aucun livre trouvé pour « $query ».';
   }
+
+  @override
+  String get noBooksInLibrary => 'Aucun livre dans cette bibliothèque';
 
   @override
   String get noLibraries =>
