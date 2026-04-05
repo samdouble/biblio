@@ -17,6 +17,12 @@ class GetLibrariesResult {
   final String? error;
 }
 
+class LibraryBookAssociation {
+  const LibraryBookAssociation({required this.bookId, required this.addedAt});
+  final String bookId;
+  final DateTime addedAt;
+}
+
 Future<CreateLibraryResult> createLibrary(String userId, String name, {int? color}) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return CreateLibraryResult(error: 'API not configured');
@@ -158,7 +164,10 @@ Future<String?> deleteLibraryApi(String userId, String libraryId) async {
   }
 }
 
-Future<List<String>?> getLibraryBooks(String userId, String libraryId) async {
+Future<List<LibraryBookAssociation>?> getLibraryBookAssociations(
+  String userId,
+  String libraryId,
+) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return null;
 
@@ -172,14 +181,33 @@ Future<List<String>?> getLibraryBooks(String userId, String libraryId) async {
   if (response.statusCode != 200) return null;
   try {
     final body = jsonDecode(response.body) as Map<String, dynamic>?;
-    final list = body?['body'] is Map ? (body!['body'] as Map)['bookIds'] : null;
-    if (list is List) {
-      return [for (final e in list) if (e is String) e];
-    }
-    return <String>[];
+    final inner = body?['body'];
+    if (inner is! Map) return <LibraryBookAssociation>[];
+    final booksRaw = inner['books'];
+    if (booksRaw is! List) return <LibraryBookAssociation>[];
+    return [
+      for (final e in booksRaw)
+        if (e is Map &&
+            e['bookId'] is String &&
+            e['addedAt'] != null &&
+            e['addedAt'] is num)
+          LibraryBookAssociation(
+            bookId: e['bookId'] as String,
+            addedAt: DateTime.fromMillisecondsSinceEpoch(
+              (e['addedAt'] as num).toInt(),
+              isUtc: true,
+            ),
+          ),
+    ];
   } catch (_) {
     return null;
   }
+}
+
+Future<List<String>?> getLibraryBooks(String userId, String libraryId) async {
+  final associations = await getLibraryBookAssociations(userId, libraryId);
+  if (associations == null) return null;
+  return [for (final a in associations) a.bookId];
 }
 
 Future<String?> setLibraryBooks(String userId, String libraryId, List<String> bookIds) async {
