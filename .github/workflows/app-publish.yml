@@ -13,6 +13,9 @@ jobs:
     defaults:
       run:
         working-directory: app
+    strategy:
+      matrix:
+        flutter-version: ['3.41.2']
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -20,7 +23,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: 3.41.2
+          flutter-version: ${{ matrix.flutter-version }}
           cache: true
       - name: Install dependencies
         run: flutter pub get
@@ -30,7 +33,6 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         run: |
           echo "storePassword=$KEYSTORE_PASSWORD" > android/key.properties
           echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
@@ -40,8 +42,7 @@ jobs:
       - name: Build App Bundle
         run: flutter build appbundle --release
       - name: Upload to Play Store
-        uses: r0adkll/upload-google-play@v1.2.1
-        if: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON != '' && secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT_JSON }}
           packageName: com.samdouble.biblio
@@ -56,20 +57,22 @@ jobs:
     defaults:
       run:
         working-directory: app
+    strategy:
+      matrix:
+        flutter-version: ['3.41.2']
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: 3.41.2
+          flutter-version: ${{ matrix.flutter-version }}
           cache: true
       - name: Install dependencies
         run: flutter pub get
       - name: Import code-signing certificate
         uses: Apple-Actions/import-codesign-certs@v2
-        if: ${{ secrets.CERTIFICATES_P12_BASE64 != '' }}
         with:
           p12-file-base64: ${{ secrets.CERTIFICATES_P12_BASE64 }}
           p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
@@ -77,18 +80,15 @@ jobs:
       - name: Install provisioning profile
         env:
           IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
-        if: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 != '' }}
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
       - name: Build IPA
         run: flutter build ipa --release
-        if: ${{ secrets.CERTIFICATES_P12_BASE64 != '' }}
         env:
           FLUTTER_CODE_SIGNING: true
       - name: Upload to TestFlight
         uses: Apple-Actions/upload-testflight-build@v1
-        if: ${{ secrets.APPSTORE_ISSUER_ID != '' && secrets.APPSTORE_KEY_ID != '' && secrets.APPSTORE_PRIVATE_KEY != '' }}
         with:
           app-path: ${{ github.workspace }}/app/build/ios/ipa/Runner.ipa
           app-type: ios
