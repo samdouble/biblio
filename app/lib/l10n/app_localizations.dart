@@ -134,6 +134,30 @@ abstract class AppLocalizations {
   /// **'Author'**
   String get author;
 
+  /// No description provided for @bookInYourLibraries.
+  ///
+  /// In en, this message translates to:
+  /// **'In your libraries'**
+  String get bookInYourLibraries;
+
+  /// No description provided for @bookNotInAnyLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Not in any of your libraries.'**
+  String get bookNotInAnyLibrary;
+
+  /// No description provided for @bookPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Published'**
+  String get bookPublished;
+
+  /// No description provided for @bookPublisher.
+  ///
+  /// In en, this message translates to:
+  /// **'Publisher'**
+  String get bookPublisher;
+
   /// No description provided for @clearSearch.
   ///
   /// In en, this message translates to:

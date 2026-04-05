@@ -27,6 +27,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get author => 'Auteur';
 
   @override
+  String get bookInYourLibraries => 'Dans vos bibliothèques';
+
+  @override
+  String get bookNotInAnyLibrary => 'Absent de vos bibliothèques.';
+
+  @override
+  String get bookPublished => 'Parution';
+
+  @override
+  String get bookPublisher => 'Éditeur';
+
+  @override
   String get clearSearch => 'Effacer la recherche';
 
   @override
