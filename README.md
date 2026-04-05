@@ -1,6 +1,7 @@
 **App**
 
 [![App CI](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml)
+[![Coverage Status](https://coveralls.io/repos/samdouble/biblio/badge.svg?branch=master&service=github)](https://coveralls.io/github/samdouble/biblio?branch=master)
 
 [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](https://dart.dev/)
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=ffffff)](https://flutter.dev/)
@@ -10,6 +11,7 @@
 **Backend**
 
 [![CI](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/backend-checks.yml)
+[![Coverage Status](https://coveralls.io/repos/samdouble/biblio/badge.svg?branch=master&service=github)](https://coveralls.io/github/samdouble/biblio?branch=master)
 
 [![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?&logo=go&logoColor=white)](https://go.dev/)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?logo=google-cloud&logoColor=white)](https://cloud.google.com/)

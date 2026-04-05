@@ -15,8 +15,10 @@ jobs:
     outputs:
       app--release_created: ${{ steps.release.outputs.app--release_created}}
       backend--release_created: ${{ steps.release.outputs.backend--release_created}}
+    timeout-minutes: 1
     steps:
-      - uses: googleapis/release-please-action@v4
+      - name: Release Please
+        uses: googleapis/release-please-action@v4
         id: release
         with:
           token: ${{ secrets.PAT }}
@@ -34,7 +36,8 @@ jobs:
     needs: release-please
     timeout-minutes: 1
     steps:
-      - uses: googleapis/release-please-action@v4
+      - name: Release Please App
+        uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
@@ -47,7 +50,8 @@ jobs:
     needs: release-please
     timeout-minutes: 1
     steps:
-      - uses: googleapis/release-please-action@v4
+      - name: Release Please Backend
+        uses: googleapis/release-please-action@v4
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
