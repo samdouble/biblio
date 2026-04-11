@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 
 	"biblio-api/db"
 	"biblio-api/types"

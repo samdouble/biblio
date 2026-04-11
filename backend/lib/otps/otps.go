@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 const CollectionName = "otps"
@@ -26,7 +26,7 @@ func Upsert(database *mongo.Database, email, otpHash string) error {
 		"otpHash":   otpHash,
 		"expiresAt": expiresAt,
 	}
-	opts := options.Update().SetUpsert(true)
+	opts := options.UpdateOne().SetUpsert(true)
 	_, err := coll.UpdateOne(
 		context.TODO(),
 		bson.M{"email": email},
