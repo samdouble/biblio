@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func integrationMongoDB(t *testing.T) *mongo.Database {
@@ -19,9 +19,7 @@ func integrationMongoDB(t *testing.T) *mongo.Database {
 	if uri == "" {
 		t.Skip("MONGO_URL not set, skipping integration test")
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().
+	client, err := mongo.Connect(options.Client().
 		ApplyURI(uri).
 		SetConnectTimeout(5*time.Second).
 		SetServerSelectionTimeout(5*time.Second))

@@ -8,9 +8,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/writeconcern"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/writeconcern"
 
 	"biblio-api/db"
 	"biblio-api/models"
@@ -40,7 +39,7 @@ func Main(ctx context.Context, event types.GetBookByIsbnEvent) (types.Response, 
 	}
 	defer session.EndSession(context.TODO())
 
-	insertResults, err := session.WithTransaction(context.TODO(), func(ctx mongo.SessionContext) (interface{}, error) {
+	insertResults, err := session.WithTransaction(context.TODO(), func(ctx context.Context) (interface{}, error) {
 		existingBooks, err := models.GetBooksIfIsbnAlreadyExists(database, event.Isbn)
 		if err != nil {
 			return nil, err
