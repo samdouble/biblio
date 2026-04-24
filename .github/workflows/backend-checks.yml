@@ -1,6 +1,12 @@
 name: Backend Checks
 
-on: [pull_request]
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-checks.yml'
 
 jobs:
   checks:
@@ -40,12 +46,28 @@ jobs:
           mongodb-port: 27017
       - name: Lint and Test
         working-directory: ${{ matrix.dir }}
+        env:
+          MONGO_DBNAME: db
+          MONGO_URL: mongodb://localhost:27017
         run: |
-          export MONGO_DBNAME=db
-          export MONGO_URL=mongodb://localhost:27017
           go get .
           go mod tidy
-          go test
+          go test -coverprofile=coverage.out -covermode=atomic ./...
+      - name: Coverage report
+        working-directory: ${{ matrix.dir }}
+        run: |
+          go tool cover -func=coverage.out > cover-func.txt
+          echo "::group::Coverage (func) — ${{ matrix.dir }}"
+          cat cover-func.txt
+          echo "::endgroup::"
+          {
+            echo "### Coverage — \`${{ matrix.dir }}\`"
+            echo ""
+            echo '```text'
+            cat cover-func.txt
+            echo '```'
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Test build
         working-directory: ${{ matrix.dir }}
         run: |
