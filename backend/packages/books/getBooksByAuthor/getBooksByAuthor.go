@@ -12,7 +12,6 @@ import (
 	"biblio-api/types"
 )
 
-// Test hooks for cache, fetcher, books insert and lookup.
 var (
 	getCachedIsbnsFn    = getCachedIsbns
 	setCachedIsbnsFn    = setCachedIsbns

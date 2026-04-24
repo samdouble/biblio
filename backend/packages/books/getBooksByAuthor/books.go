@@ -11,7 +11,6 @@ import (
 
 const booksCollection = "books"
 
-// bookDoc matches the "books" collection schema used by getBookByIsbn and searchBooks.
 type bookDoc struct {
 	Id          string     `bson:"id" json:"id"`
 	CreatedAt   time.Time  `bson:"createdAt" json:"createdAt"`

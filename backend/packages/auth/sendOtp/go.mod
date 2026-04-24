@@ -6,17 +6,20 @@ replace biblio-api/db => ../../../lib/db
 
 replace biblio-api/otps => ../../../lib/otps
 
+replace biblio-api/testutil => ../../../internal/testutil
+
 require (
 	biblio-api/db v0.0.0
 	biblio-api/otps v0.0.0
+	biblio-api/testutil v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/aws/aws-sdk-go-v2 v1.39.0
 	github.com/aws/aws-sdk-go-v2/config v1.28.5
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.46
 	github.com/aws/aws-sdk-go-v2/service/ses v1.34.2
 )
 
 require (
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.46 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.21 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.7 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.7 // indirect

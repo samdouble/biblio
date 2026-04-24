@@ -13,8 +13,12 @@ import (
 
 const fromAddress = "no-reply.biblio@samdouble.com"
 
+var loadAWSConfig = func(ctx context.Context, region string) (aws.Config, error) {
+	return config.LoadDefaultConfig(ctx, config.WithRegion(region))
+}
+
 func SendOtpEmail(ctx context.Context, toEmail, otpCode string, region string) error {
-	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
+	cfg, err := loadAWSConfig(ctx, region)
 	if err != nil {
 		return fmt.Errorf("load aws config: %w", err)
 	}
