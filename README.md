@@ -32,6 +32,8 @@ Create an `.env` file at the root of the project:
 
 ```
 BIBLIO_API_URL=
+NEW_RELIC_ANDROID_APP_TOKEN=
+NEW_RELIC_IOS_APP_TOKEN=
 ```
 
 #### Install Flutter SDK and its dependencies
