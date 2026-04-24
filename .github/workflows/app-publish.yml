@@ -31,6 +31,8 @@ jobs:
         run: |
           touch .env
           echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.NEW_RELIC_ANDROID_APP_TOKEN }}" >> .env
+          echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.NEW_RELIC_IOS_APP_TOKEN }}" >> .env
       - name: Create key.properties and keystore
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
