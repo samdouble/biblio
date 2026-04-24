@@ -17,8 +17,8 @@ jobs:
         working-directory: backend
     strategy:
       matrix:
-        go-version: ["1.25"]
-        mongodb-version: ["8.0"]
+        go-version: ['1.25']
+        mongodb-version: ['8.0']
         dir:
           - backend/lib/db
           - backend/lib/libraries
@@ -84,7 +84,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.DEPLOY_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.DEPLOY_AWS_SECRET_ACCESS_KEY }}
@@ -92,7 +92,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: "1.25"
+          go-version: '1.25'
       - name: Set up SAM CLI
         uses: aws-actions/setup-sam@v2
       - name: SAM build and validate
