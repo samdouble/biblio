@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/samdouble/biblio/compare/app-v0.3.0...app-v0.4.0) (2026-04-24)
+
+
+### Features
+
+* **app:** add monitoring ([c81254c](https://github.com/samdouble/biblio/commit/c81254c7e1a9334ec7b1881cb3f501776c313c96))
+
 ## [0.3.0](https://github.com/samdouble/biblio/compare/app-v0.2.0...app-v0.3.0) (2026-04-11)
 
 
