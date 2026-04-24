@@ -6,9 +6,12 @@ replace biblio-api/db => ../../../lib/db
 
 replace biblio-api/libraries => ../../../lib/libraries
 
+replace biblio-api/testutil => ../../../internal/testutil
+
 require (
 	biblio-api/db v0.0.0
 	biblio-api/libraries v0.0.0
+	biblio-api/testutil v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/google/uuid v1.6.0
 )
