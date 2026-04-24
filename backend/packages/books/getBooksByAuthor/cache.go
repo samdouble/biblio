@@ -10,8 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
-// Reuse the same "searches" collection. Author cache docs have author/isbns/createdAt
-// (ISBN docs have isbn/result). Only ISBNs are stored; book data lives in "books".
 const searchesCollection = "searches"
 const cacheTTL = 7 * 24 * time.Hour
 
@@ -25,7 +23,6 @@ func normalizeAuthor(author string) string {
 	return strings.TrimSpace(author)
 }
 
-// getCachedIsbns returns the list of ISBNs for an author if cached and not expired.
 func getCachedIsbns(db *mongo.Database, author string) ([]string, bool, error) {
 	key := normalizeAuthor(author)
 	if key == "" {

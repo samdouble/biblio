@@ -6,9 +6,12 @@ replace biblio-api/db => ../../../lib/db
 
 replace biblio-api/otps => ../../../lib/otps
 
+replace biblio-api/testutil => ../../../internal/testutil
+
 require (
 	biblio-api/db v0.0.0
 	biblio-api/otps v0.0.0
+	biblio-api/testutil v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/google/uuid v1.6.0
 	go.mongodb.org/mongo-driver/v2 v2.5.0

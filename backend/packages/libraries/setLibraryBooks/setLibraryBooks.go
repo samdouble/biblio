@@ -25,7 +25,6 @@ func Main(ctx context.Context, event types.SetLibraryBooksEvent) (types.SetLibra
 	client := db.ResolveClientDB(os.Getenv("MONGO_URL"))
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 
-	// Ensure the library belongs to the user
 	lib, err := libraries.GetByIdAndUserId(database, libraryId, userId)
 	if err != nil {
 		log.Printf("libraries.GetByIdAndUserId: %v", err)

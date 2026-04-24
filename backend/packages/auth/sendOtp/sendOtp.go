@@ -18,6 +18,8 @@ import (
 
 const otpDigits = 6
 
+var sendOtpEmail = ses.SendOtpEmail
+
 func Main(ctx context.Context, event types.SendOtpEvent) (types.SendOtpResponse, error) {
 	email := strings.TrimSpace(strings.ToLower(event.Email))
 	if email == "" {
@@ -47,7 +49,7 @@ func Main(ctx context.Context, event types.SendOtpEvent) (types.SendOtpResponse,
 	}
 
 	region := "us-east-1"
-	if err := ses.SendOtpEmail(ctx, email, otpCode, region); err != nil {
+	if err := sendOtpEmail(ctx, email, otpCode, region); err != nil {
 		log.Printf("SendOtpEmail: %v", err)
 		return types.SendOtpResponse{
 			Body: types.SendOtpResponseBody{Error: "failed to send code"},
