@@ -7,6 +7,7 @@ import 'package:biblio/models/book.dart';
 import 'package:biblio/screens/book_detail_page.dart';
 import 'package:biblio/widgets/books/add_book_button.dart';
 import 'package:biblio/widgets/main_drawer.dart';
+import 'package:biblio/widgets/sort_view_toolbar.dart';
 
 const _localeKey = 'app_locale';
 const _signedInUserIdKey = 'signed_in_user_id';
@@ -420,76 +421,25 @@ class _HomePageState extends State<HomePage> {
 
     return Column(
       children: [
-        Material(
-          color: Theme.of(context).colorScheme.surfaceContainerLowest,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Row(
-              children: [
-                PopupMenuButton<SearchResultsSort>(
-                  tooltip: AppLocalizations.of(context)!.sortBooks,
-                  onSelected: (value) => setState(() => _resultsSort = value),
-                  itemBuilder: (context) {
-                    final scheme = Theme.of(context).colorScheme;
-                    PopupMenuItem<SearchResultsSort> item(
-                      SearchResultsSort value,
-                      String label,
-                    ) {
-                      final selected = _resultsSort == value;
-                      return PopupMenuItem(
-                        value: value,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 24,
-                              child: selected
-                                  ? Icon(Icons.check, size: 20, color: scheme.primary)
-                                  : null,
-                            ),
-                            Expanded(child: Text(label)),
-                          ],
-                        ),
-                      );
-                    }
-
-                    return [
-                      item(SearchResultsSort.title, AppLocalizations.of(context)!.sortByTitle),
-                      item(SearchResultsSort.author, AppLocalizations.of(context)!.sortByAuthor),
-                    ];
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.sort),
-                        const SizedBox(width: 6),
-                        Text(AppLocalizations.of(context)!.sortBooks),
-                      ],
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: Icon(
-                    _resultsViewMode == SearchResultsViewMode.list
-                        ? Icons.grid_view
-                        : Icons.view_list,
-                  ),
-                  tooltip: _resultsViewMode == SearchResultsViewMode.list
-                      ? 'Grid view'
-                      : 'List view',
-                  onPressed: () {
-                    setState(() {
-                      _resultsViewMode = _resultsViewMode == SearchResultsViewMode.list
-                          ? SearchResultsViewMode.grid
-                          : SearchResultsViewMode.list;
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
+        SortViewToolbar<SearchResultsSort>(
+          sortOptions: [
+            (value: SearchResultsSort.title, label: AppLocalizations.of(context)!.sortByTitle),
+            (value: SearchResultsSort.author, label: AppLocalizations.of(context)!.sortByAuthor),
+          ],
+          selectedSort: _resultsSort,
+          onSortSelected: (value) => setState(() => _resultsSort = value),
+          sortButtonLabel: AppLocalizations.of(context)!.sortBooks,
+          sortTooltip: AppLocalizations.of(context)!.sortBooks,
+          isGridView: _resultsViewMode == SearchResultsViewMode.grid,
+          onToggleView: () {
+            setState(() {
+              _resultsViewMode = _resultsViewMode == SearchResultsViewMode.list
+                  ? SearchResultsViewMode.grid
+                  : SearchResultsViewMode.list;
+            });
+          },
+          gridTooltip: 'Grid view',
+          listTooltip: 'List view',
         ),
         Expanded(
           child: _resultsViewMode == SearchResultsViewMode.list
