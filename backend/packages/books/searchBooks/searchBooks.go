@@ -17,6 +17,36 @@ import (
 const defaultLimit = 20
 const maxLimit = 100
 
+var diacriticCharClasses = map[rune]string{
+	'a': "[aàáâãäåāăą]",
+	'c': "[cçćĉċč]",
+	'd': "[dďđ]",
+	'e': "[eèéêëēĕėęě]",
+	'g': "[gĝğġģ]",
+	'i': "[iìíîïĩīĭįı]",
+	'l': "[lĺļľł]",
+	'n': "[nñńņňŋ]",
+	'o': "[oòóôõöøōŏő]",
+	'r': "[rŕŗř]",
+	's': "[sśŝşš]",
+	't': "[tţťŧ]",
+	'u': "[uùúûüũūŭůűų]",
+	'y': "[yýÿŷ]",
+	'z': "[zźżž]",
+}
+
+func buildAccentInsensitivePattern(query string) string {
+	var b strings.Builder
+	for _, r := range strings.ToLower(query) {
+		if cls, ok := diacriticCharClasses[r]; ok {
+			b.WriteString(cls)
+			continue
+		}
+		b.WriteString(regexp.QuoteMeta(string(r)))
+	}
+	return b.String()
+}
+
 func Main(ctx context.Context, event types.SearchBooksEvent) (types.SearchBooksResponse, error) {
 	query := strings.TrimSpace(event.Query)
 	if query == "" {
@@ -37,8 +67,7 @@ func Main(ctx context.Context, event types.SearchBooksEvent) (types.SearchBooksR
 	database := client.Database(os.Getenv("MONGO_DBNAME"))
 	coll := database.Collection("books")
 
-	escaped := regexp.QuoteMeta(query)
-	pattern := bson.M{"$regex": escaped, "$options": "i"}
+	pattern := bson.M{"$regex": buildAccentInsensitivePattern(query), "$options": "i"}
 
 	filter := bson.M{
 		"$or": []bson.M{
@@ -48,7 +77,10 @@ func Main(ctx context.Context, event types.SearchBooksEvent) (types.SearchBooksR
 		},
 	}
 
-	opts := options.Find().SetLimit(int64(limit))
+	opts := options.Find().SetLimit(int64(limit)).SetCollation(&options.Collation{
+		Locale:   "en",
+		Strength: 1, // case and diacritic insensitive ordering/comparison where supported
+	})
 	cursor, err := coll.Find(ctx, filter, opts)
 	if err != nil {
 		log.Printf("books.Find: %v", err)
