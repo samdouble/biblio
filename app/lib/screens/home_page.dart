@@ -17,6 +17,10 @@ enum SyncStatus { synced, outOfSync, unknown }
 
 enum Plan { free, payPerBook }
 
+enum SearchResultsViewMode { list, grid }
+
+enum SearchResultsSort { title, author }
+
 class MyAppState extends ChangeNotifier {
   MyAppState() {
     _loadLocale();
@@ -141,6 +145,8 @@ class _HomePageState extends State<HomePage> {
   String _searchQuery = '';
   List<ApiBook> _searchResults = [];
   bool _searching = false;
+  SearchResultsViewMode _resultsViewMode = SearchResultsViewMode.list;
+  SearchResultsSort _resultsSort = SearchResultsSort.title;
 
   @override
   void initState() {
@@ -299,27 +305,207 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     }
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      itemCount: _searchResults.length,
-      itemBuilder: (context, index) {
-        final book = _searchResults[index];
-        final info = book.volumeInfo;
-        final subtitle = info.authors.isNotEmpty
-            ? info.authors.join(', ')
-            : (book.isbn.isNotEmpty ? 'ISBN ${book.isbn}' : '');
-        return ListTile(
-          title: Text(info.title.isEmpty ? AppLocalizations.of(context)!.untitled : info.title),
-          subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (context) => BookDetailPage(book: book),
-              ),
+    final sorted = List<ApiBook>.from(_searchResults)
+      ..sort((a, b) {
+        switch (_resultsSort) {
+          case SearchResultsSort.title:
+            return a.volumeInfo.title.toLowerCase().compareTo(
+              b.volumeInfo.title.toLowerCase(),
             );
-          },
-        );
-      },
+          case SearchResultsSort.author:
+            final aAuthor = a.volumeInfo.authors.isNotEmpty
+                ? a.volumeInfo.authors.first
+                : '';
+            final bAuthor = b.volumeInfo.authors.isNotEmpty
+                ? b.volumeInfo.authors.first
+                : '';
+            final byAuthor = aAuthor.toLowerCase().compareTo(bAuthor.toLowerCase());
+            if (byAuthor != 0) return byAuthor;
+            return a.volumeInfo.title.toLowerCase().compareTo(
+              b.volumeInfo.title.toLowerCase(),
+            );
+        }
+      });
+
+    Widget listContent() {
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: sorted.length,
+        itemBuilder: (context, index) {
+          final book = sorted[index];
+          final info = book.volumeInfo;
+          final subtitle = info.authors.isNotEmpty
+              ? info.authors.join(', ')
+              : (book.isbn.isNotEmpty ? 'ISBN ${book.isbn}' : '');
+          return ListTile(
+            title: Text(info.title.isEmpty ? AppLocalizations.of(context)!.untitled : info.title),
+            subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => BookDetailPage(book: book),
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
+
+    Widget gridContent() {
+      return GridView.builder(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 0.56,
+        ),
+        itemCount: sorted.length,
+        itemBuilder: (context, index) {
+          final book = sorted[index];
+          final info = book.volumeInfo;
+          final thumb = info.imageLinks?.thumbnail.isNotEmpty == true
+              ? info.imageLinks!.thumbnail
+              : info.imageLinks?.smallThumbnail ?? '';
+          return Card(
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => BookDetailPage(book: book),
+                  ),
+                );
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: thumb.isNotEmpty
+                        ? Image.network(
+                            thumb,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _searchCoverPlaceholder(context),
+                          )
+                        : _searchCoverPlaceholder(context),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+                    child: Text(
+                      info.title.isEmpty ? AppLocalizations.of(context)!.untitled : info.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+                    child: Text(
+                      info.authors.isNotEmpty ? info.authors.first : '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return Column(
+      children: [
+        Material(
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Row(
+              children: [
+                PopupMenuButton<SearchResultsSort>(
+                  tooltip: AppLocalizations.of(context)!.sortBooks,
+                  onSelected: (value) => setState(() => _resultsSort = value),
+                  itemBuilder: (context) {
+                    final scheme = Theme.of(context).colorScheme;
+                    PopupMenuItem<SearchResultsSort> item(
+                      SearchResultsSort value,
+                      String label,
+                    ) {
+                      final selected = _resultsSort == value;
+                      return PopupMenuItem(
+                        value: value,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 24,
+                              child: selected
+                                  ? Icon(Icons.check, size: 20, color: scheme.primary)
+                                  : null,
+                            ),
+                            Expanded(child: Text(label)),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return [
+                      item(SearchResultsSort.title, AppLocalizations.of(context)!.sortByTitle),
+                      item(SearchResultsSort.author, AppLocalizations.of(context)!.sortByAuthor),
+                    ];
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.sort),
+                        const SizedBox(width: 6),
+                        Text(AppLocalizations.of(context)!.sortBooks),
+                      ],
+                    ),
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: Icon(
+                    _resultsViewMode == SearchResultsViewMode.list
+                        ? Icons.grid_view
+                        : Icons.view_list,
+                  ),
+                  tooltip: _resultsViewMode == SearchResultsViewMode.list
+                      ? 'Grid view'
+                      : 'List view',
+                  onPressed: () {
+                    setState(() {
+                      _resultsViewMode = _resultsViewMode == SearchResultsViewMode.list
+                          ? SearchResultsViewMode.grid
+                          : SearchResultsViewMode.list;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: _resultsViewMode == SearchResultsViewMode.list
+              ? listContent()
+              : gridContent(),
+        ),
+      ],
+    );
+  }
+
+  Widget _searchCoverPlaceholder(BuildContext context) {
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      child: const Center(
+        child: Icon(Icons.menu_book_outlined, size: 34),
+      ),
     );
   }
 }
