@@ -14,6 +14,7 @@ import 'package:biblio/services/library_api_service.dart';
 import 'package:biblio/utils/connectivity.dart';
 
 enum LibraryBookListSort { title, author, dateAdded }
+enum LibraryBookViewMode { list, grid }
 
 int compareLibraryBookListEntries(
   LibraryBookEntry a,
@@ -64,6 +65,7 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
   late Library _library;
   late Future<List<LibraryBookEntry>> _booksFuture;
   LibraryBookListSort _bookListSort = LibraryBookListSort.title;
+  LibraryBookViewMode _bookViewMode = LibraryBookViewMode.list;
 
   @override
   void initState() {
@@ -265,6 +267,43 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     if (mounted) _refreshBooks();
   }
 
+  Future<void> _openBookDetails(Book book) async {
+    if (book.isbn.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Book details are available for books added by scan.'),
+        ),
+      );
+      return;
+    }
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final apiBook = await getBookByIsbn(book.isbn);
+    if (!mounted) return;
+    if (apiBook != null) {
+      navigator.push(
+        MaterialPageRoute<void>(
+          builder: (context) => BookDetailPage(book: apiBook),
+        ),
+      );
+    } else {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text('Could not load book details'),
+        ),
+      );
+    }
+  }
+
+  Future<void> _removeBookFromLibrary(Book book) async {
+    final appState = context.read<MyAppState>();
+    await removeBookFromLibrary(_library.id, book.id);
+    if (!mounted) return;
+    appState.setOutOfSync();
+    _refreshBooks();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -348,6 +387,23 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
             },
           ),
           IconButton(
+            icon: Icon(
+              _bookViewMode == LibraryBookViewMode.list
+                  ? Icons.grid_view
+                  : Icons.view_list,
+            ),
+            tooltip: _bookViewMode == LibraryBookViewMode.list
+                ? 'Grid view'
+                : 'List view',
+            onPressed: () {
+              setState(() {
+                _bookViewMode = _bookViewMode == LibraryBookViewMode.list
+                    ? LibraryBookViewMode.grid
+                    : LibraryBookViewMode.list;
+              });
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.edit_outlined),
             tooltip: l10n.editLibrary,
             onPressed: _editLibrary,
@@ -394,72 +450,130 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
           return CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final entry = entries[index];
-                    final book = entry.book;
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
-                      ).copyWith(right: 0),
-                      title: Text(book.title),
-                      subtitle: Text(
-                        '${book.author}\n'
-                        'Added ${_formatAddedAt(entry.addedAt)}',
-                      ),
-                      onTap: () async {
-                        if (book.isbn.isEmpty) {
-                          if (!mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Book details are available for books added by scan.',
-                              ),
-                            ),
-                          );
-                          return;
-                        }
-                        final navigator = Navigator.of(context);
-                        final messenger = ScaffoldMessenger.of(context);
-                        final apiBook = await getBookByIsbn(book.isbn);
-                        if (!mounted) return;
-                        if (apiBook != null) {
-                          navigator.push(
-                            MaterialPageRoute<void>(
-                              builder: (context) => BookDetailPage(book: apiBook),
-                            ),
-                          );
-                        } else {
-                          messenger.showSnackBar(
-                            const SnackBar(
-                              content: Text('Could not load book details'),
-                            ),
-                          );
-                        }
-                      },
-                      trailing: IconButton(
-                        style: IconButton.styleFrom(
-                          padding: const EdgeInsets.all(12),
-                          minimumSize: const Size(40, 40),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              if (_bookViewMode == LibraryBookViewMode.list)
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final entry = entries[index];
+                      final book = entry.book;
+                      return ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 4,
+                        ).copyWith(right: 0),
+                        title: Text(book.title),
+                        subtitle: Text(
+                          '${book.author}\n'
+                          'Added ${_formatAddedAt(entry.addedAt)}',
                         ),
-                        icon: const Icon(Icons.remove_circle_outline),
-                        tooltip: 'Remove from library',
-                        onPressed: () async {
-                          final appState = context.read<MyAppState>();
-                          await removeBookFromLibrary(_library.id, book.id);
-                          if (!mounted) return;
-                          appState.setOutOfSync();
-                          _refreshBooks();
-                        },
-                      ),
-                    );
-                  },
-                  childCount: entries.length,
+                        onTap: () => _openBookDetails(book),
+                        trailing: IconButton(
+                          style: IconButton.styleFrom(
+                            padding: const EdgeInsets.all(12),
+                            minimumSize: const Size(40, 40),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          icon: const Icon(Icons.remove_circle_outline),
+                          tooltip: 'Remove from library',
+                          onPressed: () => _removeBookFromLibrary(book),
+                        ),
+                      );
+                    },
+                    childCount: entries.length,
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 0.58,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final entry = entries[index];
+                        final book = entry.book;
+                        final thumb = book.thumbnailUrl.trim();
+                        return Card(
+                          clipBehavior: Clip.antiAlias,
+                          child: InkWell(
+                            onTap: () => _openBookDetails(book),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: thumb.isEmpty
+                                      ? Container(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHighest,
+                                          child: const Center(
+                                            child: Icon(Icons.menu_book_outlined, size: 36),
+                                          ),
+                                        )
+                                      : Image.network(
+                                          thumb,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .surfaceContainerHighest,
+                                              child: const Center(
+                                                child: Icon(
+                                                  Icons.broken_image_outlined,
+                                                  size: 32,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(8, 8, 8, 4),
+                                  child: Text(
+                                    book.title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Text(
+                                    book.author,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    visualDensity: VisualDensity.compact,
+                                    iconSize: 20,
+                                    padding: const EdgeInsets.all(4),
+                                    icon: const Icon(Icons.remove_circle_outline),
+                                    tooltip: 'Remove from library',
+                                    onPressed: () => _removeBookFromLibrary(book),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      childCount: entries.length,
+                    ),
+                  ),
                 ),
-              ),
               const SliverToBoxAdapter(
                 child: SizedBox(height: 48),
               ),

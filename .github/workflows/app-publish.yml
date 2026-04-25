@@ -1,6 +1,7 @@
 name: App Publish
 
 on:
+  pull_request:
   push:
     tags:
       - 'app-v*'
@@ -31,20 +32,20 @@ jobs:
         run: |
           touch .env
           echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
-          echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.NEW_RELIC_ANDROID_APP_TOKEN }}" >> .env
-          echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.NEW_RELIC_IOS_APP_TOKEN }}" >> .env
+          echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
+          echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env
       - name: Create key.properties and keystore
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.APP_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.APP_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.APP_KEY_ALIAS }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.APP_ANDROID_KEYSTORE_BASE64 }}
         run: |
-          echo "storePassword=$KEYSTORE_PASSWORD" > android/key.properties
-          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
-          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "storePassword=$APP_KEYSTORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$APP_KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$APP_KEY_ALIAS" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore.jks
+          echo "$APP_ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore.jks
       - name: Build App Bundle
         run: flutter build appbundle --release
       - name: Upload to Play Store
@@ -80,15 +81,15 @@ jobs:
       - name: Import code-signing certificate
         uses: Apple-Actions/import-codesign-certs@v2
         with:
-          p12-file-base64: ${{ secrets.CERTIFICATES_P12_BASE64 }}
-          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+          p12-file-base64: ${{ secrets.APP_IOS_CERTIFICATES_P12_BASE64 }}
+          p12-password: ${{ secrets.APP_IOS_CERTIFICATES_P12_PASSWORD }}
           keychain: signing_temp
       - name: Install provisioning profile
         env:
-          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          APP_IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.APP_IOS_PROVISIONING_PROFILE_BASE64 }}
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+          echo "$APP_IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
       - name: Build IPA
         run: flutter build ipa --release
         env:
