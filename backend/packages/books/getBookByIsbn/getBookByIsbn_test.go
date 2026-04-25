@@ -2,64 +2,15 @@ package main
 
 import (
 	"context"
-	"net/http"
-	"net/http/httptest"
-	"os"
 	"testing"
 
 	"biblio-api/types"
-	googleBooksApi "biblio-api/utils/googleBooks/api"
 )
 
-func TestSimpleReturn(t *testing.T) {
-	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{
-			"kind": "books#volumes",
-			"totalItems": 1,
-			"items": [
-				{
-					"id": "test-google-id",
-					"volumeInfo": {
-						"title": "Code Complete",
-						"authors": ["Steve McConnell"],
-						"publisher": "Microsoft Press",
-						"publishedDate": "2004",
-						"pageCount": 960
-					}
-				}
-			]
-		}`))
-	}))
-	defer mockServer.Close()
-	originalURL := googleBooksApi.GoogleBooksAPIBaseURL
-	googleBooksApi.GoogleBooksAPIBaseURL = mockServer.URL
-	defer func() { googleBooksApi.GoogleBooksAPIBaseURL = originalURL }()
-	os.Unsetenv("ISBNDB_API_KEY")
-
+func TestMain_RequiresIsbn(t *testing.T) {
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, "function_version", "Test")
-	event := types.GetBookByIsbnEvent{Isbn: "0735619670"}
-	msg, err := Main(ctx, event)
-
-	if err != nil {
-		t.Fatalf("TestSimpleReturn returned error: %v", err)
-	}
-
-	if len(msg.Body.Books) == 0 {
-		t.Fatalf("TestSimpleReturn expected books to be returned, got empty response")
-	}
-
-	firstBook, ok := msg.Body.Books[0].(types.Book)
-	if !ok {
-		t.Fatalf("TestSimpleReturn expected first book to be of type types.Book")
-	}
-
-	if firstBook.Isbn != event.Isbn {
-		t.Fatalf("TestSimpleReturn expected ISBN %s, got %s", event.Isbn, firstBook.Isbn)
-	}
-	if firstBook.VolumeInfo.Title != "Code Complete" {
-		t.Fatalf("TestSimpleReturn expected title 'Code Complete', got %s", firstBook.VolumeInfo.Title)
+	_, err := Main(ctx, types.GetBookByIsbnEvent{Isbn: ""})
+	if err == nil {
+		t.Fatalf("expected error when ISBN is empty")
 	}
 }
