@@ -15,6 +15,7 @@ import 'package:biblio/screens/library_detail/types.dart';
 import 'package:biblio/screens/home_page.dart';
 import 'package:biblio/services/library_api_service.dart';
 import 'package:biblio/utils/connectivity.dart';
+import 'package:biblio/widgets/sort_view_toolbar.dart';
 
 class LibraryDetailPage extends StatefulWidget {
   final Library library;
@@ -330,81 +331,27 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
       ),
       body: Column(
         children: [
-          Material(
-            color: Theme.of(context).colorScheme.surfaceContainerLowest,
-            child: SafeArea(
-              top: false,
-              bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: Row(
-                  children: [
-                    PopupMenuButton<LibraryBookListSort>(
-                      tooltip: l10n.sortBooks,
-                      onSelected: (value) => setState(() => _bookListSort = value),
-                      itemBuilder: (context) {
-                        final scheme = Theme.of(context).colorScheme;
-                        PopupMenuItem<LibraryBookListSort> item(
-                          LibraryBookListSort value,
-                          String label,
-                        ) {
-                          final selected = _bookListSort == value;
-                          return PopupMenuItem(
-                            value: value,
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 24,
-                                  child: selected
-                                      ? Icon(Icons.check, size: 20, color: scheme.primary)
-                                      : null,
-                                ),
-                                Expanded(child: Text(label)),
-                              ],
-                            ),
-                          );
-                        }
-
-                        return [
-                          item(LibraryBookListSort.title, l10n.sortByTitle),
-                          item(LibraryBookListSort.author, l10n.sortByAuthor),
-                          item(LibraryBookListSort.dateAdded, l10n.sortByDateAdded),
-                        ];
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.sort),
-                            const SizedBox(width: 6),
-                            Text(l10n.sortBooks),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: Icon(
-                        _bookViewMode == LibraryBookViewMode.list
-                            ? Icons.grid_view
-                            : Icons.view_list,
-                      ),
-                      tooltip: _bookViewMode == LibraryBookViewMode.list
-                          ? 'Grid view'
-                          : 'List view',
-                      onPressed: () {
-                        setState(() {
-                          _bookViewMode = _bookViewMode == LibraryBookViewMode.list
-                              ? LibraryBookViewMode.grid
-                              : LibraryBookViewMode.list;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          SortViewToolbar<LibraryBookListSort>(
+            sortOptions: [
+              (value: LibraryBookListSort.title, label: l10n.sortByTitle),
+              (value: LibraryBookListSort.author, label: l10n.sortByAuthor),
+              (value: LibraryBookListSort.dateAdded, label: l10n.sortByDateAdded),
+            ],
+            selectedSort: _bookListSort,
+            onSortSelected: (value) => setState(() => _bookListSort = value),
+            sortButtonLabel: l10n.sortBooks,
+            sortTooltip: l10n.sortBooks,
+            isGridView: _bookViewMode == LibraryBookViewMode.grid,
+            onToggleView: () {
+              setState(() {
+                _bookViewMode = _bookViewMode == LibraryBookViewMode.list
+                    ? LibraryBookViewMode.grid
+                    : LibraryBookViewMode.list;
+              });
+            },
+            gridTooltip: 'Grid view',
+            listTooltip: 'List view',
+            useSafeArea: true,
           ),
           Expanded(
             child: FutureBuilder<List<LibraryBookEntry>>(
