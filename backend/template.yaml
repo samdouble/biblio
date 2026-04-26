@@ -117,6 +117,20 @@ Resources:
             Path: /books/searchBooks
             Method: POST
 
+  # --- feedback ---
+  FeedbackSubmitFeedback:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/FeedbackSubmitFeedback
+      Handler: bootstrap
+      Events:
+        ApiPost:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref BiblioHttpApi
+            Path: /feedback/submitFeedback
+            Method: POST
+
   # --- libraries ---
   LibrariesCreateLibrary:
     Type: AWS::Serverless::Function
