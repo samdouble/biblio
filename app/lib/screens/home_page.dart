@@ -12,6 +12,7 @@ import 'package:biblio/widgets/sort_view_toolbar.dart';
 const _localeKey = 'app_locale';
 const _signedInUserIdKey = 'signed_in_user_id';
 const _signedInEmailKey = 'signed_in_email';
+const _authTokenKey = 'auth_token';
 const _planKey = 'app_plan';
 
 enum SyncStatus { synced, outOfSync, unknown }
@@ -36,8 +37,10 @@ class MyAppState extends ChangeNotifier {
 
   String? _signedInUserId;
   String? _signedInEmail;
+  String? _authToken;
   String? get signedInUserId => _signedInUserId;
   String? get signedInEmail => _signedInEmail;
+  String? get authToken => _authToken;
   bool get isSignedIn => _signedInEmail != null;
 
   SyncStatus _syncStatus = SyncStatus.unknown;
@@ -102,15 +105,18 @@ class MyAppState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _signedInUserId = prefs.getString(_signedInUserIdKey);
     _signedInEmail = prefs.getString(_signedInEmailKey);
+    _authToken = prefs.getString(_authTokenKey);
     notifyListeners();
   }
 
-  Future<void> setSignedIn(String userId, String email) async {
+  Future<void> setSignedIn(String userId, String email, String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_signedInUserIdKey, userId);
     await prefs.setString(_signedInEmailKey, email);
+    await prefs.setString(_authTokenKey, token);
     _signedInUserId = userId;
     _signedInEmail = email;
+    _authToken = token;
     _syncStatus = SyncStatus.unknown;
     notifyListeners();
   }
@@ -119,8 +125,10 @@ class MyAppState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_signedInUserIdKey);
     await prefs.remove(_signedInEmailKey);
+    await prefs.remove(_authTokenKey);
     _signedInUserId = null;
     _signedInEmail = null;
+    _authToken = null;
     _syncStatus = SyncStatus.unknown;
     notifyListeners();
   }

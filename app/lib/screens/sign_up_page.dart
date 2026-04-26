@@ -63,8 +63,8 @@ class _SignUpPageState extends State<SignUpPage> {
     if (!mounted) return;
     setState(() => _loading = false);
 
-    if (result.userId != null && result.email != null) {
-      await context.read<MyAppState>().setSignedIn(result.userId!, result.email!);
+    if (result.userId != null && result.email != null && result.token != null) {
+      await context.read<MyAppState>().setSignedIn(result.userId!, result.email!, result.token!);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.signUpSuccess)),

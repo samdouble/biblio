@@ -47,6 +47,7 @@ jobs:
       - name: Lint and Test
         working-directory: ${{ matrix.dir }}
         env:
+          AUTH_JWT_SECRET: abcdefg123
           MONGO_DBNAME: db
           MONGO_URL: mongodb://localhost:27017
         run: |

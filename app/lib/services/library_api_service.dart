@@ -23,18 +23,23 @@ class LibraryBookAssociation {
   final DateTime addedAt;
 }
 
-Future<CreateLibraryResult> createLibrary(String userId, String name, {int? color}) async {
+Map<String, String> _jsonAuthHeaders(String token) {
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+}
+
+Future<CreateLibraryResult> createLibrary(String token, String name, {int? color}) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return CreateLibraryResult(error: 'API not configured');
 
   final url = Uri.parse('$baseUrl/libraries');
-  final body = <String, dynamic>{'userId': userId, 'name': name};
+  final body = <String, dynamic>{'name': name};
   if (color != null) body['color'] = color;
   final response = await http.post(
     url,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: _jsonAuthHeaders(token),
     body: jsonEncode(body),
   );
 
@@ -67,18 +72,14 @@ Future<CreateLibraryResult> createLibrary(String userId, String name, {int? colo
   }
 }
 
-Future<GetLibrariesResult> getLibraries(String userId) async {
+Future<GetLibrariesResult> getLibraries(String token) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return GetLibrariesResult(error: 'API not configured');
 
-  final url = Uri.parse('$baseUrl/libraries').replace(
-    queryParameters: {'userId': userId},
-  );
+  final url = Uri.parse('$baseUrl/libraries');
   final response = await http.get(
     url,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: _jsonAuthHeaders(token),
   );
 
   if (response.statusCode != 200) {
@@ -113,22 +114,19 @@ Future<GetLibrariesResult> getLibraries(String userId) async {
   }
 }
 
-Future<String?> updateLibrary(String userId, String libraryId, String name, {int? color}) async {
+Future<String?> updateLibrary(String token, String libraryId, String name, {int? color}) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/$libraryId');
   final body = <String, dynamic>{
-    'userId': userId,
     'libraryId': libraryId,
     'name': name,
   };
   body['color'] = color;
   final response = await http.patch(
     url,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: _jsonAuthHeaders(token),
     body: jsonEncode(body),
   );
 
@@ -142,17 +140,14 @@ Future<String?> updateLibrary(String userId, String libraryId, String name, {int
   }
 }
 
-Future<String?> deleteLibraryApi(String userId, String libraryId) async {
+Future<String?> deleteLibraryApi(String token, String libraryId) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/$libraryId');
   final response = await http.delete(
     url,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({'userId': userId}),
+    headers: _jsonAuthHeaders(token),
   );
 
   if (response.statusCode != 200) return 'Failed to delete library';
@@ -166,18 +161,16 @@ Future<String?> deleteLibraryApi(String userId, String libraryId) async {
 }
 
 Future<List<LibraryBookAssociation>?> getLibraryBookAssociations(
-  String userId,
+  String token,
   String libraryId,
 ) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return null;
 
-  final url = Uri.parse('$baseUrl/libraries/$libraryId/books').replace(
-    queryParameters: {'userId': userId},
-  );
+  final url = Uri.parse('$baseUrl/libraries/$libraryId/books');
   final response = await http.get(
     url,
-    headers: {'Content-Type': 'application/json'},
+    headers: _jsonAuthHeaders(token),
   );
 
   if (response.statusCode != 200) return null;
@@ -206,21 +199,21 @@ Future<List<LibraryBookAssociation>?> getLibraryBookAssociations(
   }
 }
 
-Future<List<String>?> getLibraryBooks(String userId, String libraryId) async {
-  final associations = await getLibraryBookAssociations(userId, libraryId);
+Future<List<String>?> getLibraryBooks(String token, String libraryId) async {
+  final associations = await getLibraryBookAssociations(token, libraryId);
   if (associations == null) return null;
   return [for (final a in associations) a.bookId];
 }
 
-Future<String?> setLibraryBooks(String userId, String libraryId, List<String> bookIds) async {
+Future<String?> setLibraryBooks(String token, String libraryId, List<String> bookIds) async {
   final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/$libraryId/books');
   final response = await http.put(
     url,
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({'userId': userId, 'bookIds': bookIds}),
+    headers: _jsonAuthHeaders(token),
+    body: jsonEncode({'bookIds': bookIds}),
   );
 
   if (response.statusCode != 200) return 'Failed to sync library books';

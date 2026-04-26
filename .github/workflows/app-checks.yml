@@ -22,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
           flutter-version: ${{ matrix.flutter-version }}
@@ -85,7 +85,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: stable
           flutter-version: ${{ matrix.flutter-version }}
@@ -94,11 +94,10 @@ jobs:
         with:
           java-version: 17
           distribution: 'adopt'
-      - name: Setup iOS SDK
-        uses: apple-actions/setup-ios@v1
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1.7.0
         with:
-          device: iPhone 15 Pro
-          os: 17.5
+          xcode-version: latest-stable
       - name: Install
         run: |
           flutter pub get
@@ -117,7 +116,7 @@ jobs:
           flutter test --coverage
       - name: Coverage summary
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y lcov
+          brew install lcov
           lcov --summary coverage/lcov.info
           echo "## Test coverage" >> $GITHUB_STEP_SUMMARY
           lcov --summary coverage/lcov.info >> $GITHUB_STEP_SUMMARY
@@ -128,7 +127,7 @@ jobs:
           path: app/coverage/
       - name: Build
         run: |
-          flutter build ipa
+          flutter build ios --release --no-codesign
       - name: Upload Test Reports
         if: failure()
         uses: actions/upload-artifact@v7

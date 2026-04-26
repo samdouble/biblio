@@ -92,9 +92,9 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     final colorChanged = newColor != _library.color;
     if (!nameChanged && !colorChanged) return;
 
-    final userId = context.read<MyAppState>().signedInUserId;
-    if (userId != null) {
-      final err = await updateLibrary(userId, _library.id, newName, color: newColor);
+    final token = context.read<MyAppState>().authToken;
+    if (token != null) {
+      final err = await updateLibrary(token, _library.id, newName, color: newColor);
       if (err != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
         return;
@@ -134,9 +134,9 @@ class _LibraryDetailPageState extends State<LibraryDetailPage> {
     );
     if (confirmed != true || !mounted) return;
 
-    final userId = context.read<MyAppState>().signedInUserId;
-    if (userId != null) {
-      final err = await deleteLibraryApi(userId, _library.id);
+    final token = context.read<MyAppState>().authToken;
+    if (token != null) {
+      final err = await deleteLibraryApi(token, _library.id);
       if (err != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(err)));
         return;
