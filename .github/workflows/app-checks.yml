@@ -8,7 +8,7 @@ on:
       - 'app/**'
 
 jobs:
-  android_test:
+  android:
     name: Test on Android
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -26,7 +26,7 @@ jobs:
         with:
           channel: stable
           flutter-version: ${{ matrix.flutter-version }}
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v5
         with:
           java-version: 17
@@ -70,3 +70,68 @@ jobs:
         with:
           name: android-test-report
           path: '**/build/reports/androidTests/connected/'
+
+  ios:
+    name: Test on iOS
+    runs-on: macos-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: app
+    strategy:
+      matrix:
+        flutter-version: ['3.41.2']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ matrix.flutter-version }}
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: 'adopt'
+      - name: Setup iOS SDK
+        uses: apple-actions/setup-ios@v1
+        with:
+          device: iPhone 15 Pro
+          os: 17.5
+      - name: Install
+        run: |
+          flutter pub get
+          flutter gen-l10n --verbose
+      - name: Create .env for build
+        run: |
+          touch .env
+          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.NEW_RELIC_ANDROID_APP_TOKEN }}" >> .env
+          echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.NEW_RELIC_IOS_APP_TOKEN }}" >> .env
+      - name: Lint
+        run: |
+          flutter analyze
+      - name: Tests
+        run: |
+          flutter test --coverage
+      - name: Coverage summary
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y lcov
+          lcov --summary coverage/lcov.info
+          echo "## Test coverage" >> $GITHUB_STEP_SUMMARY
+          lcov --summary coverage/lcov.info >> $GITHUB_STEP_SUMMARY
+      - name: Upload coverage
+        uses: actions/upload-artifact@v7
+        with:
+          name: app-coverage
+          path: app/coverage/
+      - name: Build
+        run: |
+          flutter build ipa
+      - name: Upload Test Reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-test-report
+          path: '**/build/reports/iosTests/connected/'

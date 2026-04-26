@@ -1,7 +1,6 @@
 GOBUILD = CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bootstrap .
 BUILD_DIR = .build
 
-# Pre-build all Lambda binaries into .build/<id>/ so SAM gets per-function CodeUri.
 # Run: make build-all && sam build
 build-all:
 	@mkdir -p $(BUILD_DIR)/AuthSendOtp $(BUILD_DIR)/AuthVerifyOtp $(BUILD_DIR)/BooksGetBookByIsbn $(BUILD_DIR)/BooksSearchBooks $(BUILD_DIR)/BooksGetBooksByAuthor \
