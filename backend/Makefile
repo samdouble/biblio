@@ -5,7 +5,8 @@ BUILD_DIR = .build
 # Run: make build-all && sam build
 build-all:
 	@mkdir -p $(BUILD_DIR)/AuthSendOtp $(BUILD_DIR)/AuthVerifyOtp $(BUILD_DIR)/BooksGetBookByIsbn $(BUILD_DIR)/BooksSearchBooks $(BUILD_DIR)/BooksGetBooksByAuthor \
-		$(BUILD_DIR)/LibrariesCreateLibrary $(BUILD_DIR)/LibrariesGetLibraries $(BUILD_DIR)/LibrariesGetLibraryBooks $(BUILD_DIR)/LibrariesSetLibraryBooks $(BUILD_DIR)/LibrariesUpdateLibrary $(BUILD_DIR)/LibrariesDeleteLibrary
+		$(BUILD_DIR)/LibrariesCreateLibrary $(BUILD_DIR)/LibrariesGetLibraries $(BUILD_DIR)/LibrariesGetLibraryBooks $(BUILD_DIR)/LibrariesSetLibraryBooks $(BUILD_DIR)/LibrariesUpdateLibrary $(BUILD_DIR)/LibrariesDeleteLibrary \
+		$(BUILD_DIR)/FeedbackSubmitFeedback
 	cd packages/auth/sendOtp && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/AuthSendOtp/
 	cd packages/auth/verifyOtp && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/AuthVerifyOtp/
 	cd packages/books/getBookByIsbn && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/BooksGetBookByIsbn/
@@ -17,7 +18,8 @@ build-all:
 	cd packages/libraries/setLibraryBooks && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesSetLibraryBooks/
 	cd packages/libraries/updateLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesUpdateLibrary/
 	cd packages/libraries/deleteLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesDeleteLibrary/
-	@for id in AuthSendOtp AuthVerifyOtp BooksGetBookByIsbn BooksSearchBooks BooksGetBooksByAuthor LibrariesCreateLibrary LibrariesGetLibraries LibrariesGetLibraryBooks LibrariesSetLibraryBooks LibrariesUpdateLibrary LibrariesDeleteLibrary; do \
+	cd packages/feedback/submitFeedback && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/FeedbackSubmitFeedback/
+	@for id in AuthSendOtp AuthVerifyOtp BooksGetBookByIsbn BooksSearchBooks BooksGetBooksByAuthor LibrariesCreateLibrary LibrariesGetLibraries LibrariesGetLibraryBooks LibrariesSetLibraryBooks LibrariesUpdateLibrary LibrariesDeleteLibrary FeedbackSubmitFeedback; do \
 		printf 'build-%s:\n\tcp bootstrap $$(ARTIFACTS_DIR)/\n' "$$id" > $(BUILD_DIR)/$$id/Makefile; \
 	done
 
@@ -43,3 +45,5 @@ build-LibrariesUpdateLibrary:
 	cd packages/libraries/updateLibrary && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
 build-LibrariesDeleteLibrary:
 	cd packages/libraries/deleteLibrary && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
+build-FeedbackSubmitFeedback:
+	cd packages/feedback/submitFeedback && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/

@@ -1,3 +1,7 @@
+# biblio
+
+A cross-platform mobile app to keep track of your books.
+
 **App**
 
 [![App CI](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/biblio/actions/workflows/app-checks.yml)
@@ -17,10 +21,6 @@
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?logo=google-cloud&logoColor=white)](https://cloud.google.com/)
 [![AWS Lambda](https://custom-icon-badges.demolab.com/badge/AWS%20Lambda-%23FF9900.svg?logo=aws-lambda&logoColor=white)](https://aws.amazon.com/lambda/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-
-# biblio
-
-A cross-platform mobile app to keep track of your books.
 
 ## Development
 
