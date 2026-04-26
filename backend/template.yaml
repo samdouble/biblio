@@ -142,7 +142,7 @@ Resources:
           Type: HttpApi
           Properties:
             ApiId: !Ref BiblioHttpApi
-            Path: /libraries/createLibrary
+            Path: /libraries
             Method: POST
 
   LibrariesGetLibraries:
@@ -151,12 +151,12 @@ Resources:
       CodeUri: .build/LibrariesGetLibraries
       Handler: bootstrap
       Events:
-        ApiPost:
+        ApiGet:
           Type: HttpApi
           Properties:
             ApiId: !Ref BiblioHttpApi
-            Path: /libraries/getLibraries
-            Method: POST
+            Path: /libraries
+            Method: GET
 
   LibrariesUpdateLibrary:
     Type: AWS::Serverless::Function
@@ -164,12 +164,12 @@ Resources:
       CodeUri: .build/LibrariesUpdateLibrary
       Handler: bootstrap
       Events:
-        ApiPost:
+        ApiPatch:
           Type: HttpApi
           Properties:
             ApiId: !Ref BiblioHttpApi
-            Path: /libraries/updateLibrary
-            Method: POST
+            Path: /libraries/{id}
+            Method: PATCH
 
   LibrariesDeleteLibrary:
     Type: AWS::Serverless::Function
@@ -177,12 +177,12 @@ Resources:
       CodeUri: .build/LibrariesDeleteLibrary
       Handler: bootstrap
       Events:
-        ApiPost:
+        ApiDelete:
           Type: HttpApi
           Properties:
             ApiId: !Ref BiblioHttpApi
-            Path: /libraries/deleteLibrary
-            Method: POST
+            Path: /libraries/{id}
+            Method: DELETE
 
   LibrariesGetLibraryBooks:
     Type: AWS::Serverless::Function
@@ -190,12 +190,12 @@ Resources:
       CodeUri: .build/LibrariesGetLibraryBooks
       Handler: bootstrap
       Events:
-        ApiPost:
+        ApiGet:
           Type: HttpApi
           Properties:
             ApiId: !Ref BiblioHttpApi
-            Path: /libraries/getLibraryBooks
-            Method: POST
+            Path: /libraries/{id}/books
+            Method: GET
 
   LibrariesSetLibraryBooks:
     Type: AWS::Serverless::Function
@@ -203,12 +203,12 @@ Resources:
       CodeUri: .build/LibrariesSetLibraryBooks
       Handler: bootstrap
       Events:
-        ApiPost:
+        ApiPut:
           Type: HttpApi
           Properties:
             ApiId: !Ref BiblioHttpApi
-            Path: /libraries/setLibraryBooks
-            Method: POST
+            Path: /libraries/{id}/books
+            Method: PUT
 
 Outputs:
   ApiUrl:

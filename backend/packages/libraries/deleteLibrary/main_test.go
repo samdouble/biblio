@@ -50,6 +50,30 @@ func TestHandler_InvalidBodyReturnsValidationError(t *testing.T) {
 	}
 }
 
+func TestHandler_UsesPathParameterForLibraryId(t *testing.T) {
+	resp, err := handler(context.Background(), events.APIGatewayV2HTTPRequest{
+		PathParameters: map[string]string{"id": "lib-1"},
+		Body:           `{}`,
+	})
+	if err != nil {
+		t.Fatalf("handler returned error: %v", err)
+	}
+	if resp.StatusCode != http.StatusInternalServerError {
+		t.Fatalf("expected 500 status, got %d", resp.StatusCode)
+	}
+	var payload map[string]any
+	if uErr := json.Unmarshal([]byte(resp.Body), &payload); uErr != nil {
+		t.Fatalf("invalid body json: %v", uErr)
+	}
+	body, ok := payload["body"].(map[string]any)
+	if !ok {
+		t.Fatalf("missing body object: %#v", payload)
+	}
+	if body["error"] != "user id is required" {
+		t.Fatalf("expected user id validation error, got %#v", body["error"])
+	}
+}
+
 func TestJsonResponse_Success(t *testing.T) {
 	in := types.DeleteLibraryResponse{Body: types.DeleteLibraryResponseBody{}}
 	resp, err := jsonResponse(in, nil)

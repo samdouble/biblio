@@ -82,6 +82,21 @@ MONGO_DBNAME=
 MONGO_URL=
 ```
 
+#### API routes
+
+Libraries:
+
+- `POST /libraries` (create)
+- `GET /libraries?userId=<id>` (list for a user)
+- `PATCH /libraries/{id}` (update)
+- `DELETE /libraries/{id}` (delete)
+- `GET /libraries/{id}/books?userId=<id>` (get books in library)
+- `PUT /libraries/{id}/books` (set books in library)
+
+Feedback:
+
+- `POST /feedback/submitFeedback` (submit feature idea or bug report)
+
 #### Instantiate the MongoDB replica set
 
 ```sh

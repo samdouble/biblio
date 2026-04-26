@@ -15,6 +15,9 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.AP
 	if req.Body != "" {
 		_ = json.Unmarshal([]byte(req.Body), &event)
 	}
+	if event.LibraryId == "" {
+		event.LibraryId = req.PathParameters["id"]
+	}
 	resp, err := Main(ctx, event)
 	return jsonResponse(resp, err)
 }
