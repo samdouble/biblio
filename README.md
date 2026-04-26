@@ -76,6 +76,7 @@ Shortly after, you should see the app running on your device.
 Create a `.env` file with the following variables:
 
 ```
+AUTH_JWT_SECRET=
 GOOGLE_BOOKS_API_TOKEN=
 ISBNDB_API_KEY=
 MONGO_DBNAME=
@@ -84,18 +85,28 @@ MONGO_URL=
 
 #### API routes
 
-Libraries:
-
-- `POST /libraries` (create)
-- `GET /libraries?userId=<id>` (list for a user)
-- `PATCH /libraries/{id}` (update)
-- `DELETE /libraries/{id}` (delete)
-- `GET /libraries/{id}/books?userId=<id>` (get books in library)
-- `PUT /libraries/{id}/books` (set books in library)
+Authentication:
+- `POST /auth/sendOtp` (send OTP)
+- `POST /auth/verifyOtp` (verify OTP)
 
 Feedback:
 
 - `POST /feedback/submitFeedback` (submit feature idea or bug report)
+
+Feedback routes require `Authorization: Bearer <token>`.
+The token is returned by `POST /auth/verifyOtp`.
+
+Libraries:
+
+- `POST /libraries` (create)
+- `GET /libraries` (list)
+- `PATCH /libraries/{id}` (update)
+- `DELETE /libraries/{id}` (delete)
+- `GET /libraries/{id}/books` (get books in library)
+- `PUT /libraries/{id}/books` (set books in library)
+
+Library routes require `Authorization: Bearer <token>`.  
+The token is returned by `POST /auth/verifyOtp`.
 
 #### Instantiate the MongoDB replica set
 

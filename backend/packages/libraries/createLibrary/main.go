@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 
+	"biblio-api/auth"
 	"biblio-api/types"
 )
 
@@ -15,6 +16,11 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.AP
 	if req.Body != "" {
 		_ = json.Unmarshal([]byte(req.Body), &event)
 	}
+	userID, err := auth.UserIDFromAuthorizationHeader(req.Headers["authorization"])
+	if err != nil {
+		return jsonResponse(nil, err)
+	}
+	event.UserId = userID
 	resp, err := Main(ctx, event)
 	return jsonResponse(resp, err)
 }

@@ -4,11 +4,14 @@ go 1.25
 
 replace biblio-api/db => ../../../lib/db
 
+replace biblio-api/auth => ../../../lib/auth
+
 replace biblio-api/libraries => ../../../lib/libraries
 
 replace biblio-api/testutil => ../../../internal/testutil
 
 require (
+	biblio-api/auth v0.0.0
 	biblio-api/db v0.0.0
 	biblio-api/libraries v0.0.0
 	biblio-api/testutil v0.0.0
@@ -17,6 +20,7 @@ require (
 )
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
 	github.com/klauspost/compress v1.17.6 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.2.0 // indirect

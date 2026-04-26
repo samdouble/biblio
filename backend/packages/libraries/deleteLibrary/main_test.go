@@ -9,8 +9,19 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 
+	"biblio-api/auth"
 	"biblio-api/types"
 )
+
+func authHeaderForTest(t *testing.T) string {
+	t.Helper()
+	t.Setenv("AUTH_JWT_SECRET", "test-secret")
+	token, err := auth.IssueUserToken("user-1")
+	if err != nil {
+		t.Fatalf("IssueUserToken: %v", err)
+	}
+	return "Bearer " + token
+}
 
 func TestMain_RequiresUserId(t *testing.T) {
 	resp, err := Main(context.Background(), types.DeleteLibraryEvent{
@@ -40,7 +51,8 @@ func TestMain_RequiresLibraryId(t *testing.T) {
 
 func TestHandler_InvalidBodyReturnsValidationError(t *testing.T) {
 	resp, err := handler(context.Background(), events.APIGatewayV2HTTPRequest{
-		Body: "{invalid json",
+		Body:    "{invalid json",
+		Headers: map[string]string{"authorization": authHeaderForTest(t)},
 	})
 	if err != nil {
 		t.Fatalf("handler returned error: %v", err)
@@ -52,8 +64,8 @@ func TestHandler_InvalidBodyReturnsValidationError(t *testing.T) {
 
 func TestHandler_UsesPathParameterForLibraryId(t *testing.T) {
 	resp, err := handler(context.Background(), events.APIGatewayV2HTTPRequest{
-		PathParameters: map[string]string{"id": "lib-1"},
 		Body:           `{}`,
+		Headers:        map[string]string{"authorization": authHeaderForTest(t)},
 	})
 	if err != nil {
 		t.Fatalf("handler returned error: %v", err)
@@ -69,8 +81,8 @@ func TestHandler_UsesPathParameterForLibraryId(t *testing.T) {
 	if !ok {
 		t.Fatalf("missing body object: %#v", payload)
 	}
-	if body["error"] != "user id is required" {
-		t.Fatalf("expected user id validation error, got %#v", body["error"])
+	if body["error"] != "library id is required" {
+		t.Fatalf("expected library id validation error, got %#v", body["error"])
 	}
 }
 
