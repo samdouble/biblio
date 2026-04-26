@@ -17,6 +17,7 @@ type User struct {
 type VerifyOtpResponseBody struct {
 	UserId string `json:"userId,omitempty"`
 	Email  string `json:"email,omitempty"`
+	Token  string `json:"token,omitempty"`
 	Error  string `json:"error,omitempty"`
 }
 

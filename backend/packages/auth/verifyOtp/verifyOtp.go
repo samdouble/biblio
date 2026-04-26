@@ -13,6 +13,7 @@ import (
 	"github.com/google/uuid"
 
 	"biblio-api/db"
+	"biblio-api/auth"
 	"biblio-api/models"
 	"biblio-api/otps"
 	"biblio-api/types"
@@ -90,10 +91,19 @@ func Main(ctx context.Context, event types.VerifyOtpEvent) (types.VerifyOtpRespo
 		}
 	}
 
+	token, err := auth.IssueUserToken(user.Id)
+	if err != nil {
+		log.Printf("IssueUserToken: %v", err)
+		return types.VerifyOtpResponse{
+			Body: types.VerifyOtpResponseBody{Error: "sign-in failed"},
+		}, err
+	}
+
 	return types.VerifyOtpResponse{
 		Body: types.VerifyOtpResponseBody{
 			UserId: user.Id,
 			Email:  user.Email,
+			Token:  token,
 		},
 	}, nil
 }
