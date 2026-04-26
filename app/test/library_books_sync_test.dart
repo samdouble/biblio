@@ -58,7 +58,6 @@ void main() {
 
       final calls = <(String, List<String>)>[];
       await pushLibraryBooksToServer(
-        'user-1',
         (libraryId, bookIds) async {
           calls.add((libraryId, List.from(bookIds)));
           return null;
@@ -76,7 +75,6 @@ void main() {
 
       final calls = <(String, List<String>)>[];
       await pushLibraryBooksToServer(
-        'user-1',
         (libraryId, bookIds) async {
           calls.add((libraryId, bookIds));
           return null;
@@ -94,7 +92,6 @@ void main() {
 
       final calls = <String>[];
       await pushLibraryBooksToServer(
-        'user-1',
         (libraryId, bookIds) async {
           calls.add(libraryId);
           if (libraryId == 'lib-1') return 'Network error';

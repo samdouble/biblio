@@ -259,7 +259,6 @@ Future<void> removeBookFromLibrary(String libraryId, String bookId) async {
 }
 
 Future<bool> pushLibraryBooksToServer(
-  String userId,
   Future<String?> Function(String libraryId, List<String> bookIds) setLibraryBooks,
 ) async {
   final localLibraries = await fetchLibraries();

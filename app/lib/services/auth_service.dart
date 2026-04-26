@@ -10,9 +10,10 @@ class SendOtpResult {
 }
 
 class VerifyOtpResult {
-  VerifyOtpResult({this.userId, this.email, this.error});
+  VerifyOtpResult({this.userId, this.email, this.token, this.error});
   final String? userId;
   final String? email;
+  final String? token;
   final String? error;
 }
 
@@ -83,6 +84,7 @@ Future<VerifyOtpResult> verifyOtp(String email, String otp) async {
       return VerifyOtpResult(
         userId: b['userId'] as String?,
         email: b['email'] as String?,
+        token: b['token'] as String?,
         error: b['error'] as String?,
       );
     }

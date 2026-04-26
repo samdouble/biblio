@@ -21,21 +21,20 @@ class LibrariesPage extends StatefulWidget {
 class _LibrariesPageState extends State<LibrariesPage> {
   Future<List<(Library library, int bookCount)>> _loadLibraries() async {
     final appState = context.read<MyAppState>();
-    final userId = appState.signedInUserId;
-    if (userId != null) {
-      final result = await getLibraries(userId);
+    final token = appState.authToken;
+    if (token != null) {
+      final result = await getLibraries(token);
       if (result.error == null) {
         final syncOk = await syncLibrariesWithServer(
           result.libraries,
           (name) async {
-            final r = await createLibrary(userId, name);
+            final r = await createLibrary(token, name);
             return (library: r.library, error: r.error);
           },
         );
         final pushOk = await pushLibraryBooksToServer(
-          userId,
           (libraryId, bookIds) async {
-            final err = await setLibraryBooks(userId, libraryId, bookIds);
+            final err = await setLibraryBooks(token, libraryId, bookIds);
             if (err != null && mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(err)),
@@ -63,7 +62,7 @@ class _LibrariesPageState extends State<LibrariesPage> {
 
   Future<void> _createLibrary() async {
     final l10n = AppLocalizations.of(context)!;
-    final userId = context.read<MyAppState>().signedInUserId;
+    final token = context.read<MyAppState>().authToken;
     final nameController = TextEditingController();
     final created = await showDialog<bool>(
       context: context,
@@ -98,8 +97,8 @@ class _LibrariesPageState extends State<LibrariesPage> {
       return;
     }
 
-    if (userId != null) {
-      final result = await createLibrary(userId, name);
+    if (token != null) {
+      final result = await createLibrary(token, name);
       if (result.error != null && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(result.error!)),

@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: 'stable'
           flutter-version: ${{ matrix.flutter-version }}
@@ -46,6 +46,7 @@ jobs:
           echo "keyAlias=$APP_ANDROID_KEY_ALIAS" >> android/key.properties
           echo "storeFile=keystore.jks" >> android/key.properties
           echo "$APP_ANDROID_KEYSTORE_BASE64" | base64 -d > android/keystore.jks
+          test -f android/keystore.jks
       - name: Build App Bundle
         run: flutter build appbundle --release
       - name: Verify App Bundle output
@@ -59,7 +60,7 @@ jobs:
           packageName: com.samdouble.biblio
           releaseFiles: app/build/app/outputs/bundle/release/*.aab
           tracks: internal
-          status: completed
+          status: draft # completed
 
   ios:
     name: Publish to App Store
@@ -75,34 +76,122 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
           channel: 'stable'
           flutter-version: ${{ matrix.flutter-version }}
           cache: true
       - name: Install dependencies
         run: flutter pub get
+      - name: Create .env for build
+        run: |
+          touch .env
+          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
+          echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1.7.0
+        with:
+          xcode-version: latest-stable
       - name: Import code-signing certificate
-        uses: Apple-Actions/import-codesign-certs@v2
+        uses: Apple-Actions/import-codesign-certs@v7.0.0
         with:
           p12-file-base64: ${{ secrets.APP_IOS_CERTIFICATES_P12_BASE64 }}
           p12-password: ${{ secrets.APP_IOS_CERTIFICATES_P12_PASSWORD }}
           keychain: signing_temp
-      - name: Install provisioning profile
+      - name: Install provisioning profile and CI signing overrides
         env:
           APP_IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.APP_IOS_PROVISIONING_PROFILE_BASE64 }}
         run: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "$APP_IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+          set -euo pipefail
+          if [ -z "${APP_IOS_PROVISIONING_PROFILE_BASE64:-}" ]; then
+            echo "::error::Secret APP_IOS_PROVISIONING_PROFILE_BASE64 is empty. Add the provisioning profile as base64 (see README)."
+            exit 1
+          fi
+          PP_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PP_DIR"
+          TMP_PROFILE="$(mktemp)"
+          PLIST_TMP="$(mktemp)"
+          echo "$APP_IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > "$TMP_PROFILE"
+          BYTES=$(wc -c < "$TMP_PROFILE" | tr -d ' ')
+          if [ "${BYTES:-0}" -eq 0 ]; then
+            echo "::error::Decoded provisioning profile is empty. Use base64 of the .mobileprovision file (not the plist alone)."
+            exit 1
+          fi
+          # Write plist to a file — piping empty input into PlistBuddy causes: Cannot parse a NULL or zero-length data
+          if ! security cms -D -i "$TMP_PROFILE" -o "$PLIST_TMP" 2>cms.err; then
+            echo "::error::security cms -D failed — profile may not be a valid .mobileprovision file."
+            cat cms.err || true
+            exit 1
+          fi
+          if [ ! -s "$PLIST_TMP" ]; then
+            echo "::error::Decoded CMS plist is empty."
+            cat cms.err || true
+            exit 1
+          fi
+          UUID=$(/usr/libexec/PlistBuddy -c 'Print UUID' "$PLIST_TMP" | tr -d '\r\n' | xargs)
+          NAME=$(/usr/libexec/PlistBuddy -c 'Print Name' "$PLIST_TMP" | tr -d '\r\n' | xargs)
+          rm -f cms.err "$PLIST_TMP"
+          cp "$TMP_PROFILE" "$PP_DIR/${UUID}.mobileprovision"
+          rm -f "$TMP_PROFILE"
+          echo "Installed provisioning profile: UUID=$UUID name=$NAME"
+          security find-identity -v -p codesigning || true
+          # Strip accidental quote characters from plist Name (avoids Xcode looking for \"samdouble\")
+          NAME_CLEAN=$(printf '%s' "$NAME" | tr -d '"' | xargs)
+          # Separate xcconfig so Flutter migration does not wipe signing (see CIReleaseSigning.xcconfig).
+          # No quotes around the specifier value — xcconfig + Xcode treat embedded \" as part of the name.
+          {
+            echo '// Generated on CI — manual App Store signing'
+            echo 'CODE_SIGN_STYLE = Manual'
+            echo 'DEVELOPMENT_TEAM = C4BYX684P3'
+            echo 'CODE_SIGN_IDENTITY = Apple Distribution'
+            printf 'PROVISIONING_PROFILE_SPECIFIER = %s\n' "$NAME_CLEAN"
+          } > ios/Flutter/CIReleaseSigning.xcconfig
+      - name: Ensure CI signing include (Flutter may rewrite Release.xcconfig during upgrade)
+        working-directory: app
+        run: |
+          set -euo pipefail
+          if ! grep -qF 'CIReleaseSigning.xcconfig' ios/Flutter/Release.xcconfig; then
+            printf '\n#include? "CIReleaseSigning.xcconfig"\n' >> ios/Flutter/Release.xcconfig
+          fi
+          test -f ios/Flutter/CIReleaseSigning.xcconfig
       - name: Build IPA
-        run: flutter build ipa --release
+        working-directory: app
+        run: flutter build ipa --release --export-method app-store
         env:
           FLUTTER_CODE_SIGNING: true
+      # Flutter writes under app/build/ios/…. Use an absolute cd so this step never
+      # runs from repo root (where build/ios/ipa does not exist).
+      - name: Resolve built IPA path
+        id: ipa
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${GITHUB_WORKSPACE}/app"
+          if [ ! -d build/ios ]; then
+            echo "::error::build/ios missing after flutter build ipa (cwd=$(pwd))"
+            ls -la build 2>&1 || ls -la . 2>&1 || true
+            exit 1
+          fi
+          first="$(find build/ios -name '*.ipa' | sort | head -n 1)"
+          if [ -z "$first" ]; then
+            echo "::error::No .ipa under app/build/ios (cwd=$(pwd))"
+            find . -name '*.ipa' -print 2>/dev/null || true
+            ls -la build/ios 2>&1 || true
+            exit 1
+          fi
+          count="$(find build/ios -name '*.ipa' | wc -l | tr -d ' ')"
+          if [ "$count" -gt 1 ]; then
+            echo "::warning::Multiple IPAs under build/ios; uploading: ${first}"
+          fi
+          IPA_ABS="$(cd "$(dirname "$first")" && pwd)/$(basename "$first")"
+          echo "path=${IPA_ABS}" >> "${GITHUB_OUTPUT}"
+          echo "Using IPA: ${IPA_ABS}"
       - name: Upload to TestFlight
-        uses: Apple-Actions/upload-testflight-build@v1
+        uses: Apple-Actions/upload-testflight-build@v5.0.0
         with:
-          app-path: ${{ github.workspace }}/app/build/ios/ipa/Runner.ipa
+          app-path: ${{ steps.ipa.outputs.path }}
           app-type: ios
-          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
-          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
-          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+          issuer-id: ${{ secrets.APP_IOS_APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APP_IOS_APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APP_IOS_APPSTORE_PRIVATE_KEY }}

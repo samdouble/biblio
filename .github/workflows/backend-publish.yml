@@ -39,6 +39,7 @@ jobs:
             --capabilities CAPABILITY_IAM \
             --resolve-s3 \
             --parameter-overrides \
+              AuthJwtSecret=${{ secrets.SERVER_AUTH_JWT_SECRET }} \
               MongoUrl=${{ secrets.MONGO_URL }} \
               MongoDbname=${{ secrets.MONGO_DBNAME }} \
               GoogleBooksApiToken=${{ secrets.GOOGLE_BOOKS_API_TOKEN }} \

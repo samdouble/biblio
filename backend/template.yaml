@@ -15,11 +15,6 @@ Globals:
         ISBNDB_API_KEY: !Ref IsbnDbApiKey
         MONGO_DBNAME: !Ref MongoDbname
         MONGO_URL: !Ref MongoUrl
-    # Optional: replace with API Key / IAM / Lambda authorizer for auth
-    # Events:
-    #   HttpApi:
-    #     Auth:
-    #       ApiKeyRequired: true
 
 Parameters:
   AuthJwtSecret:
