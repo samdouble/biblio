@@ -3,7 +3,7 @@ BUILD_DIR = .build
 
 # Run: make build-all && sam build
 build-all:
-	@mkdir -p $(BUILD_DIR)/AuthSendOtp $(BUILD_DIR)/AuthVerifyOtp $(BUILD_DIR)/BooksGetBookByIsbn $(BUILD_DIR)/BooksSearchBooks $(BUILD_DIR)/BooksGetBooksByAuthor \
+	@mkdir -p $(BUILD_DIR)/AuthSendOtp $(BUILD_DIR)/AuthVerifyOtp $(BUILD_DIR)/BooksGetBookByIsbn $(BUILD_DIR)/BooksSearchBooks $(BUILD_DIR)/BooksGetBooksByAuthor $(BUILD_DIR)/BooksIngestCatalog \
 		$(BUILD_DIR)/LibrariesCreateLibrary $(BUILD_DIR)/LibrariesGetLibraries $(BUILD_DIR)/LibrariesGetLibraryBooks $(BUILD_DIR)/LibrariesSetLibraryBooks $(BUILD_DIR)/LibrariesUpdateLibrary $(BUILD_DIR)/LibrariesDeleteLibrary \
 		$(BUILD_DIR)/FeedbackSubmitFeedback
 	cd packages/auth/sendOtp && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/AuthSendOtp/
@@ -11,6 +11,7 @@ build-all:
 	cd packages/books/getBookByIsbn && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/BooksGetBookByIsbn/
 	cd packages/books/searchBooks && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/BooksSearchBooks/
 	cd packages/books/getBooksByAuthor && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/BooksGetBooksByAuthor/
+	cd packages/books/ingestCatalog && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/BooksIngestCatalog/
 	cd packages/libraries/createLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesCreateLibrary/
 	cd packages/libraries/getLibraries && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesGetLibraries/
 	cd packages/libraries/getLibraryBooks && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesGetLibraryBooks/
@@ -18,7 +19,7 @@ build-all:
 	cd packages/libraries/updateLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesUpdateLibrary/
 	cd packages/libraries/deleteLibrary && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/LibrariesDeleteLibrary/
 	cd packages/feedback/submitFeedback && $(GOBUILD) && mv bootstrap ../../../$(BUILD_DIR)/FeedbackSubmitFeedback/
-	@for id in AuthSendOtp AuthVerifyOtp BooksGetBookByIsbn BooksSearchBooks BooksGetBooksByAuthor LibrariesCreateLibrary LibrariesGetLibraries LibrariesGetLibraryBooks LibrariesSetLibraryBooks LibrariesUpdateLibrary LibrariesDeleteLibrary FeedbackSubmitFeedback; do \
+	@for id in AuthSendOtp AuthVerifyOtp BooksGetBookByIsbn BooksSearchBooks BooksGetBooksByAuthor BooksIngestCatalog LibrariesCreateLibrary LibrariesGetLibraries LibrariesGetLibraryBooks LibrariesSetLibraryBooks LibrariesUpdateLibrary LibrariesDeleteLibrary FeedbackSubmitFeedback; do \
 		printf 'build-%s:\n\tcp bootstrap $$(ARTIFACTS_DIR)/\n' "$$id" > $(BUILD_DIR)/$$id/Makefile; \
 	done
 
@@ -32,6 +33,8 @@ build-BooksSearchBooks:
 	cd packages/books/searchBooks && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
 build-BooksGetBooksByAuthor:
 	cd packages/books/getBooksByAuthor && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
+build-BooksIngestCatalog:
+	cd packages/books/ingestCatalog && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
 build-LibrariesCreateLibrary:
 	cd packages/libraries/createLibrary && $(GOBUILD) && cp bootstrap $(ARTIFACTS_DIR)/
 build-LibrariesGetLibraries:

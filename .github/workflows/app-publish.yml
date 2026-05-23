@@ -89,17 +89,14 @@ jobs:
           echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env
-      - name: Set up Xcode
-        uses: maxim-lobanov/setup-xcode@v1.7.0
-        with:
-          xcode-version: latest-stable
       - name: Import code-signing certificate
-        uses: Apple-Actions/import-codesign-certs@v7.0.0
+        uses: Apple-Actions/import-codesign-certs@v4
         with:
           p12-file-base64: ${{ secrets.APP_IOS_CERTIFICATES_P12_BASE64 }}
           p12-password: ${{ secrets.APP_IOS_CERTIFICATES_P12_PASSWORD }}
           keychain: signing_temp
       - name: Install provisioning profile and CI signing overrides
+        id: ios_signing
         env:
           APP_IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.APP_IOS_PROVISIONING_PROFILE_BASE64 }}
         run: |
@@ -146,7 +143,43 @@ jobs:
             echo 'DEVELOPMENT_TEAM = C4BYX684P3'
             echo 'CODE_SIGN_IDENTITY = Apple Distribution'
             printf 'PROVISIONING_PROFILE_SPECIFIER = %s\n' "$NAME_CLEAN"
+            printf 'PROVISIONING_PROFILE = %s\n' "$UUID"
           } > ios/Flutter/CIReleaseSigning.xcconfig
+          # Xcode 15.4+ expects app-store-connect; older Xcode uses app-store.
+          XCODE_VERSION="$(xcodebuild -version | head -n 1 | awk '{print $2}')"
+          XCODE_MAJOR="${XCODE_VERSION%%.*}"
+          XCODE_MINOR_PATCH="${XCODE_VERSION#*.}"
+          XCODE_MINOR="${XCODE_MINOR_PATCH%%.*}"
+          if [ "$XCODE_MAJOR" -gt 15 ] || { [ "$XCODE_MAJOR" -eq 15 ] && [ "$XCODE_MINOR" -ge 4 ]; }; then
+            EXPORT_METHOD="app-store-connect"
+          else
+            EXPORT_METHOD="app-store"
+          fi
+          echo "Using export method: ${EXPORT_METHOD} (Xcode ${XCODE_VERSION})"
+          {
+            printf '%s\n' '<?xml version="1.0" encoding="UTF-8"?>'
+            printf '%s\n' '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'
+            printf '%s\n' '<plist version="1.0">'
+            printf '%s\n' '<dict>'
+            printf '%s\n' '  <key>method</key>'
+            printf '  <string>%s</string>\n' "$EXPORT_METHOD"
+            printf '%s\n' '  <key>teamID</key>'
+            printf '%s\n' '  <string>C4BYX684P3</string>'
+            printf '%s\n' '  <key>signingStyle</key>'
+            printf '%s\n' '  <string>manual</string>'
+            printf '%s\n' '  <key>provisioningProfiles</key>'
+            printf '%s\n' '  <dict>'
+            printf '%s\n' '    <key>com.samdouble.biblio</key>'
+            printf '    <string>%s</string>\n' "$UUID"
+            printf '%s\n' '  </dict>'
+            printf '%s\n' '  <key>uploadBitcode</key>'
+            printf '%s\n' '  <false/>'
+            printf '%s\n' '  <key>stripSwiftSymbols</key>'
+            printf '%s\n' '  <true/>'
+            printf '%s\n' '</dict>'
+            printf '%s\n' '</plist>'
+          } > ios/ExportOptions.ci.plist
+          echo "export_method=${EXPORT_METHOD}" >> "${GITHUB_OUTPUT}"
       - name: Ensure CI signing include (Flutter may rewrite Release.xcconfig during upgrade)
         working-directory: app
         run: |
@@ -155,43 +188,48 @@ jobs:
             printf '\n#include? "CIReleaseSigning.xcconfig"\n' >> ios/Flutter/Release.xcconfig
           fi
           test -f ios/Flutter/CIReleaseSigning.xcconfig
-      - name: Build IPA
-        working-directory: app
-        run: flutter build ipa --release --export-method app-store
-        env:
-          FLUTTER_CODE_SIGNING: true
-      # Flutter writes under app/build/ios/…. Use an absolute cd so this step never
-      # runs from repo root (where build/ios/ipa does not exist).
-      - name: Resolve built IPA path
+      - name: Build and export IPA
         id: ipa
+        working-directory: app
         shell: bash
         run: |
           set -euo pipefail
-          cd "${GITHUB_WORKSPACE}/app"
-          if [ ! -d build/ios ]; then
-            echo "::error::build/ios missing after flutter build ipa (cwd=$(pwd))"
-            ls -la build 2>&1 || ls -la . 2>&1 || true
-            exit 1
-          fi
-          first="$(find build/ios -name '*.ipa' | sort | head -n 1)"
+          flutter build ipa --release --export-options-plist=ios/ExportOptions.ci.plist
+          find_ipa() {
+            find build/ios -name '*.ipa' 2>/dev/null | sort | head -n 1
+          }
+          first="$(find_ipa || true)"
           if [ -z "$first" ]; then
-            echo "::error::No .ipa under app/build/ios (cwd=$(pwd))"
-            find . -name '*.ipa' -print 2>/dev/null || true
-            ls -la build/ios 2>&1 || true
-            exit 1
+            echo "::warning::flutter build ipa finished without an .ipa (export likely failed); retrying xcodebuild -exportArchive"
+            ARCHIVE="$(find build/ios/archive -name '*.xcarchive' | sort | head -n 1)"
+            if [ -z "$ARCHIVE" ]; then
+              echo "::error::No .xcarchive under build/ios/archive"
+              ls -la build/ios || true
+              exit 1
+            fi
+            mkdir -p build/ios/ipa
+            xcodebuild -exportArchive \
+              -archivePath "$ARCHIVE" \
+              -exportPath build/ios/ipa \
+              -exportOptionsPlist ios/ExportOptions.ci.plist
+            first="$(find_ipa || true)"
           fi
-          count="$(find build/ios -name '*.ipa' | wc -l | tr -d ' ')"
-          if [ "$count" -gt 1 ]; then
-            echo "::warning::Multiple IPAs under build/ios; uploading: ${first}"
+          if [ -z "$first" ]; then
+            echo "::error::IPA export failed — archive exists but no .ipa was produced. Check export/signing logs above."
+            ls -la build/ios || true
+            exit 1
           fi
           IPA_ABS="$(cd "$(dirname "$first")" && pwd)/$(basename "$first")"
           echo "path=${IPA_ABS}" >> "${GITHUB_OUTPUT}"
-          echo "Using IPA: ${IPA_ABS}"
+          echo "Built IPA: ${IPA_ABS}"
+        env:
+          FLUTTER_CODE_SIGNING: true
       - name: Upload to TestFlight
-        uses: Apple-Actions/upload-testflight-build@v5.0.0
+        uses: Apple-Actions/upload-testflight-build@v4.1.0
         with:
           app-path: ${{ steps.ipa.outputs.path }}
           app-type: ios
+          backend: appstore-api
           issuer-id: ${{ secrets.APP_IOS_APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APP_IOS_APPSTORE_KEY_ID }}
           api-private-key: ${{ secrets.APP_IOS_APPSTORE_PRIVATE_KEY }}
