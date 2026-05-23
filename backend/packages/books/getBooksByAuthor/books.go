@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
+
+	"biblio-api/authors"
 )
 
 const booksCollection = "books"
@@ -38,6 +40,7 @@ type imageLinksDoc struct {
 func insertAuthorBooks(db *mongo.Database, books []isbnDbBook) ([]string, error) {
 	coll := db.Collection(booksCollection)
 	isbns := make([]string, 0, len(books))
+	authorNames := make([]string, 0)
 	for i := range books {
 		b := &books[i]
 		doc := isbnDbBookToBookDoc(b)
@@ -45,6 +48,7 @@ func insertAuthorBooks(db *mongo.Database, books []isbnDbBook) ([]string, error)
 		if err != nil {
 			continue
 		}
+		authorNames = append(authorNames, b.Authors...)
 		isbn := b.ISBN13
 		if isbn == "" {
 			isbn = b.ISBN
@@ -52,6 +56,9 @@ func insertAuthorBooks(db *mongo.Database, books []isbnDbBook) ([]string, error)
 		if isbn != "" {
 			isbns = append(isbns, isbn)
 		}
+	}
+	if err := authors.UpsertNames(db, authorNames); err != nil {
+		return isbns, err
 	}
 	return isbns, nil
 }
