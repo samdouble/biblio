@@ -11,6 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/writeconcern"
 
+	"biblio-api/authors"
 	"biblio-api/db"
 	"biblio-api/models"
 	"biblio-api/types"
@@ -105,6 +106,9 @@ func Main(ctx context.Context, event types.GetBookByIsbnEvent) (types.Response, 
 				if err != nil {
 					return nil, err
 				}
+				if err = authors.UpsertNames(database, authorNamesFromBooks(books)); err != nil {
+					return nil, err
+				}
 				return books, nil
 			}
 			search = types.Search{Id: searchId, CreatedAt: time.Now().UTC(), Isbn: event.Isbn}
@@ -124,6 +128,9 @@ func Main(ctx context.Context, event types.GetBookByIsbnEvent) (types.Response, 
 			if err != nil {
 				return nil, err
 			}
+			if err = authors.UpsertNames(database, authorNamesFromBooks(existingBooks)); err != nil {
+				return nil, err
+			}
 			return existingBooks, nil
 		}
 	}, transactionOptions)
@@ -141,4 +148,12 @@ func Main(ctx context.Context, event types.GetBookByIsbnEvent) (types.Response, 
 			Books: booksInterface,
 		},
 	}, nil
+}
+
+func authorNamesFromBooks(books []types.Book) []string {
+	var names []string
+	for _, book := range books {
+		names = append(names, book.VolumeInfo.Authors...)
+	}
+	return names
 }

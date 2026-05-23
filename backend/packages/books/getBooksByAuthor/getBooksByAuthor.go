@@ -8,6 +8,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
+	"biblio-api/authors"
 	"biblio-api/db"
 	"biblio-api/types"
 )
@@ -48,6 +49,11 @@ func mainWithDB(ctx context.Context, event types.GetBooksByAuthorEvent, database
 				Body: types.GetBooksByAuthorResponseBody{Error: "failed to load books"},
 			}, err
 		}
+		if database != nil {
+			if err := authors.UpsertNames(database, authorNamesFromBookDocs(books)); err != nil {
+				log.Printf("authors.UpsertNames: %v", err)
+			}
+		}
 		return types.GetBooksByAuthorResponse{
 			Body: types.GetBooksByAuthorResponseBody{Books: books},
 		}, nil
@@ -74,8 +80,51 @@ func mainWithDB(ctx context.Context, event types.GetBooksByAuthorEvent, database
 			Body: types.GetBooksByAuthorResponseBody{Error: "failed to load books"},
 		}, err
 	}
+	if database != nil {
+		if err := authors.UpsertNames(database, authorNamesFromBookDocs(books)); err != nil {
+			log.Printf("authors.UpsertNames: %v", err)
+		}
+	}
 
 	return types.GetBooksByAuthorResponse{
 		Body: types.GetBooksByAuthorResponseBody{Books: books},
 	}, nil
+}
+
+func authorNamesFromBookDocs(books []interface{}) []string {
+	var names []string
+	for _, item := range books {
+		switch doc := item.(type) {
+		case bookDoc:
+			names = append(names, doc.VolumeInfo.Authors...)
+		case types.BookOutput:
+			names = append(names, doc.VolumeInfo.Authors...)
+		case map[string]interface{}:
+			if vol, ok := doc["volumeInfo"].(map[string]interface{}); ok {
+				names = append(names, authorNamesFromVolumeInfo(vol)...)
+			}
+		}
+	}
+	return names
+}
+
+func authorNamesFromVolumeInfo(vol map[string]interface{}) []string {
+	raw, ok := vol["authors"]
+	if !ok {
+		return nil
+	}
+	switch authors := raw.(type) {
+	case []string:
+		return authors
+	case []interface{}:
+		out := make([]string, 0, len(authors))
+		for _, item := range authors {
+			if name, ok := item.(string); ok {
+				out = append(out, name)
+			}
+		}
+		return out
+	default:
+		return nil
+	}
 }
