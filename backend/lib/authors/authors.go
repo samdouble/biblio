@@ -14,9 +14,11 @@ import (
 const CollectionName = "authors"
 
 type Author struct {
-	Id        string    `bson:"id" json:"id"`
-	Name      string    `bson:"name" json:"name"`
-	CreatedAt time.Time `bson:"createdAt" json:"createdAt"`
+	Id              string     `bson:"id" json:"id"`
+	Name            string     `bson:"name" json:"name"`
+	CreatedAt       time.Time  `bson:"createdAt" json:"createdAt"`
+	LastIngestedAt  *time.Time `bson:"lastIngestedAt,omitempty" json:"lastIngestedAt,omitempty"`
+	LastIngestError string     `bson:"lastIngestError,omitempty" json:"lastIngestError,omitempty"`
 }
 
 func NormalizeName(name string) string {

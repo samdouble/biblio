@@ -24,6 +24,16 @@ A cross-platform mobile app to keep track of your books.
 
 ## Development
 
+```mermaid
+
+sequenceDiagram
+    App->>Backend: GET /books/searchBooks
+    Backend->>ISBNdb: GET /search/books
+    ISBNdb->>Backend: JSON response
+    Backend->>App: JSON response
+
+```
+
 ### App
 
 #### Set up environment variables
@@ -83,6 +93,28 @@ MONGO_DBNAME=
 MONGO_URL=
 ```
 
+#### Scheduled catalog ingest
+
+A Lambda (`BooksIngestCatalog`) runs every hour via EventBridge and pulls books from ISBNdb into MongoDB:
+
+1. **Updated ISBN feed** — fetches recently updated ISBNs (Premium plans), then bulk-fetches book metadata via `POST /books`.
+2. **Author crawl** — picks authors from the `authors` collection that have not been ingested recently and fetches their books.
+
+Tune quota usage with these environment variables (defaults shown):
+
+```
+INGEST_FEED_ENABLED=true
+INGEST_MAX_FEED_PAGES=3
+INGEST_FEED_PAGE_SIZE=100
+INGEST_MAX_AUTHORS_PER_RUN=3
+INGEST_MAX_PAGES_PER_AUTHOR=2
+INGEST_AUTHOR_PAGE_SIZE=100
+INGEST_AUTHOR_STALE_DAYS=30
+INGEST_BULK_ISBN_BATCH_SIZE=100
+```
+
+If the updated ISBN feed is unavailable on your plan, the job skips it and continues with author crawl only.
+
 #### API routes
 
 Authentication:
@@ -124,21 +156,4 @@ Run the Docker container with the book's ISBN as a command line argument:
 
 ```sh
 docker run --env-file .env --network biblio-api_default -e "MONGO_URL=mongodb://biblio-api-mongo0:27017,biblio-api-mongo1:27017,biblio-api-mongo2:27017/?replicaSet=rs0" biblio-api <isbn>
-```
-
-### CI
-
-Install [act](https://nektosact.com/installation/index.html):
-
-```sh
-brew install act
-```
-
-**Release Please**
-
-```sh
-act push --container-architecture linux/amd64 \
-  -P ubuntu-latest=node:20-bookworm-slim \
-  -W .github/workflows/release-please.yml \
-  -s PAT=XXXXX
 ```

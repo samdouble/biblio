@@ -116,6 +116,31 @@ Resources:
             Path: /books/searchBooks
             Method: POST
 
+  BooksIngestCatalog:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/BooksIngestCatalog
+      Handler: bootstrap
+      Timeout: 300
+      MemorySize: 512
+      Events:
+        HourlyIngest:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 hour)
+            Description: Fetch recently updated ISBNs and crawl stale authors from ISBNdb
+            Enabled: true
+      Environment:
+        Variables:
+          INGEST_FEED_ENABLED: 'true'
+          INGEST_MAX_FEED_PAGES: '3'
+          INGEST_FEED_PAGE_SIZE: '100'
+          INGEST_MAX_AUTHORS_PER_RUN: '3'
+          INGEST_MAX_PAGES_PER_AUTHOR: '2'
+          INGEST_AUTHOR_PAGE_SIZE: '100'
+          INGEST_AUTHOR_STALE_DAYS: '30'
+          INGEST_BULK_ISBN_BATCH_SIZE: '100'
+
   # --- feedback ---
   FeedbackSubmitFeedback:
     Type: AWS::Serverless::Function
