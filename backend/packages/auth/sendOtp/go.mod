@@ -1,17 +1,17 @@
-module tsundoku-api
+module tsunbooku-api
 
 go 1.25
 
-replace tsundoku-api/db => ../../../lib/db
+replace tsunbooku-api/db => ../../../lib/db
 
-replace tsundoku-api/otps => ../../../lib/otps
+replace tsunbooku-api/otps => ../../../lib/otps
 
-replace tsundoku-api/testutil => ../../../internal/testutil
+replace tsunbooku-api/testutil => ../../../internal/testutil
 
 require (
-	tsundoku-api/db v0.0.0
-	tsundoku-api/otps v0.0.0
-	tsundoku-api/testutil v0.0.0
+	tsunbooku-api/db v0.0.0
+	tsunbooku-api/otps v0.0.0
+	tsunbooku-api/testutil v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/aws/aws-sdk-go-v2 v1.39.0
 	github.com/aws/aws-sdk-go-v2/config v1.28.5

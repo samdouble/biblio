@@ -1,15 +1,15 @@
-module tsundoku-api
+module tsunbooku-api
 
 go 1.25
 
 replace (
-	tsundoku-api/authors => ../../../lib/authors
-	tsundoku-api/db => ../../../lib/db
+	tsunbooku-api/authors => ../../../lib/authors
+	tsunbooku-api/db => ../../../lib/db
 )
 
 require (
-	tsundoku-api/authors v0.0.0
-	tsundoku-api/db v0.0.0
+	tsunbooku-api/authors v0.0.0
+	tsunbooku-api/db v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/google/uuid v1.6.0
 	go.mongodb.org/mongo-driver/v2 v2.5.0

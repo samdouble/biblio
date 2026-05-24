@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:tsundoku/config/env.dart';
+import 'package:tsunbooku/config/env.dart';
 
 class SendOtpResult {
   SendOtpResult({required this.sent, this.error});

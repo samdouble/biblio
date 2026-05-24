@@ -6,8 +6,12 @@ type GetLibraryBooksEvent struct {
 }
 
 type LibraryBookEntryJSON struct {
-	BookId  string `json:"bookId"`
-	AddedAt int64  `json:"addedAt"`
+	BookId       string `json:"bookId"`
+	AddedAt      int64  `json:"addedAt"`
+	Isbn         string `json:"isbn,omitempty"`
+	Title        string `json:"title,omitempty"`
+	Author       string `json:"author,omitempty"`
+	ThumbnailUrl string `json:"thumbnailUrl,omitempty"`
 }
 
 type GetLibraryBooksResponseBody struct {

@@ -1,4 +1,4 @@
-module tsundoku-api/db
+module tsunbooku-api/db
 
 go 1.25
 

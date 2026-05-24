@@ -1,4 +1,4 @@
-module tsundoku-api/libraries
+module tsunbooku-api/libraries
 
 go 1.25
 

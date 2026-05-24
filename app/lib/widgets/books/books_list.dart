@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tsundoku/models/book.dart';
+import 'package:tsunbooku/models/book.dart';
 
 class BooksList extends StatelessWidget {
   final List<Book> books;

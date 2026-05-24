@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:tsundoku/l10n/app_localizations.dart';
-import 'package:tsundoku/screens/home_page.dart';
-import 'package:tsundoku/screens/libraries_page.dart';
-import 'package:tsundoku/screens/mybooks_page.dart';
-import 'package:tsundoku/screens/settings_page.dart';
-import 'package:tsundoku/services/pending_search_service.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
+import 'package:tsunbooku/screens/home_page.dart';
+import 'package:tsunbooku/screens/libraries_page.dart';
+import 'package:tsunbooku/screens/mybooks_page.dart';
+import 'package:tsunbooku/screens/settings_page.dart';
+import 'package:tsunbooku/services/pending_search_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tsundoku/utils/connectivity.dart';
+import 'package:tsunbooku/utils/connectivity.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({super.key});

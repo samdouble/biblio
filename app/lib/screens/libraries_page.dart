@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:tsundoku/l10n/app_localizations.dart';
-import 'package:tsundoku/models/library.dart';
-import 'package:tsundoku/screens/home_page.dart';
-import 'package:tsundoku/screens/library_detail_page.dart';
-import 'package:tsundoku/services/library_api_service.dart';
-import 'package:tsundoku/widgets/main_drawer.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
+import 'package:tsunbooku/models/library.dart';
+import 'package:tsunbooku/screens/home_page.dart';
+import 'package:tsunbooku/screens/library_detail_page.dart';
+import 'package:tsunbooku/services/library_api_service.dart';
+import 'package:tsunbooku/services/library_sync_service.dart';
+import 'package:tsunbooku/widgets/main_drawer.dart';
 
 final _uuid = Uuid();
 
@@ -23,29 +24,16 @@ class _LibrariesPageState extends State<LibrariesPage> {
     final appState = context.read<MyAppState>();
     final token = appState.authToken;
     if (token != null) {
-      final result = await getLibraries(token);
-      if (result.error == null) {
-        final syncOk = await syncLibrariesWithServer(
-          result.libraries,
-          (name) async {
-            final r = await createLibrary(token, name);
-            return (library: r.library, error: r.error);
-          },
+      final result = await syncAccountWithServer(token);
+      if (result.error != null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.error!)),
         );
-        final pushOk = await pushLibraryBooksToServer(
-          (libraryId, bookIds) async {
-            final err = await setLibraryBooks(token, libraryId, bookIds);
-            if (err != null && mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(err)),
-              );
-            }
-            return err;
-          },
-        );
-        if (syncOk && pushOk && mounted) {
-          appState.setSynced();
-        }
+      }
+      if (result.success && mounted) {
+        appState.setSynced();
+      } else if (!result.success && mounted) {
+        appState.setOutOfSync();
       }
     }
     final libraries = await fetchLibraries();

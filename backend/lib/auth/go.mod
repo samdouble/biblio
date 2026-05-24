@@ -1,4 +1,4 @@
-module tsundoku-api/auth
+module tsunbooku-api/auth
 
 go 1.25
 

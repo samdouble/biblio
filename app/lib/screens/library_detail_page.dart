@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'package:tsundoku/l10n/app_localizations.dart';
-import 'package:tsundoku/models/api_book.dart';
-import 'package:tsundoku/models/book.dart';
-import 'package:tsundoku/models/library.dart';
-import 'package:tsundoku/screens/barcode_scanner_page.dart';
-import 'package:tsundoku/screens/book_detail_page.dart';
-import 'package:tsundoku/screens/library_detail/books_content.dart';
-import 'package:tsundoku/screens/library_detail/dialogs.dart';
-import 'package:tsundoku/screens/library_detail/types.dart';
-import 'package:tsundoku/screens/home_page.dart';
-import 'package:tsundoku/services/library_api_service.dart';
-import 'package:tsundoku/utils/connectivity.dart';
-import 'package:tsundoku/widgets/sort_view_toolbar.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
+import 'package:tsunbooku/models/api_book.dart';
+import 'package:tsunbooku/models/book.dart';
+import 'package:tsunbooku/models/library.dart';
+import 'package:tsunbooku/screens/barcode_scanner_page.dart';
+import 'package:tsunbooku/screens/book_detail_page.dart';
+import 'package:tsunbooku/screens/library_detail/books_content.dart';
+import 'package:tsunbooku/screens/library_detail/dialogs.dart';
+import 'package:tsunbooku/screens/library_detail/types.dart';
+import 'package:tsunbooku/screens/home_page.dart';
+import 'package:tsunbooku/services/library_api_service.dart';
+import 'package:tsunbooku/utils/connectivity.dart';
+import 'package:tsunbooku/widgets/sort_view_toolbar.dart';
 
 class LibraryDetailPage extends StatefulWidget {
   final Library library;

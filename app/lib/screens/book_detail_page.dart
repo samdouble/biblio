@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:tsundoku/l10n/app_localizations.dart';
-import 'package:tsundoku/models/api_book.dart';
-import 'package:tsundoku/models/library.dart';
-import 'package:tsundoku/screens/books_by_author_page.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
+import 'package:tsunbooku/models/api_book.dart';
+import 'package:tsunbooku/models/library.dart';
+import 'package:tsunbooku/screens/books_by_author_page.dart';
 
 String formatPublishedDateForDisplay(BuildContext context, String raw) {
   final trimmed = raw.trim();

@@ -7,9 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"tsundoku-api/db"
-	"tsundoku-api/libraries"
-	"tsundoku-api/types"
+	"tsunbooku-api/books"
+	"tsunbooku-api/db"
+	"tsunbooku-api/libraries"
+	"tsunbooku-api/types"
 )
 
 func Main(ctx context.Context, event types.GetLibraryBooksEvent) (types.GetLibraryBooksResponse, error) {
@@ -45,12 +46,30 @@ func Main(ctx context.Context, event types.GetLibraryBooksEvent) (types.GetLibra
 			Body: types.GetLibraryBooksResponseBody{Error: "failed to get library books"},
 		}, err
 	}
-	books := make([]types.LibraryBookEntryJSON, len(entries))
+	bookIds := make([]string, len(entries))
 	for i, e := range entries {
-		books[i] = types.LibraryBookEntryJSON{BookId: e.BookId, AddedAt: e.AddedAt.UnixMilli()}
+		bookIds[i] = e.BookId
+	}
+	summaries, err := books.SummariesByIDs(database, bookIds)
+	if err != nil {
+		log.Printf("books.SummariesByIDs: %v", err)
+		return types.GetLibraryBooksResponse{
+			Body: types.GetLibraryBooksResponseBody{Error: "failed to get library books"},
+		}, err
+	}
+	booksJSON := make([]types.LibraryBookEntryJSON, len(entries))
+	for i, e := range entries {
+		entry := types.LibraryBookEntryJSON{BookId: e.BookId, AddedAt: e.AddedAt.UnixMilli()}
+		if summary, ok := summaries[e.BookId]; ok {
+			entry.Isbn = summary.ISBN
+			entry.Title = summary.Title
+			entry.Author = summary.Author
+			entry.ThumbnailUrl = summary.ThumbnailURL
+		}
+		booksJSON[i] = entry
 	}
 
 	return types.GetLibraryBooksResponse{
-		Body: types.GetLibraryBooksResponseBody{Books: books},
+		Body: types.GetLibraryBooksResponseBody{Books: booksJSON},
 	}, nil
 }

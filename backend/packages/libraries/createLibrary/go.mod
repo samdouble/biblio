@@ -1,20 +1,20 @@
-module tsundoku-api
+module tsunbooku-api
 
 go 1.25
 
-replace tsundoku-api/db => ../../../lib/db
+replace tsunbooku-api/db => ../../../lib/db
 
-replace tsundoku-api/auth => ../../../lib/auth
+replace tsunbooku-api/auth => ../../../lib/auth
 
-replace tsundoku-api/libraries => ../../../lib/libraries
+replace tsunbooku-api/libraries => ../../../lib/libraries
 
-replace tsundoku-api/testutil => ../../../internal/testutil
+replace tsunbooku-api/testutil => ../../../internal/testutil
 
 require (
-	tsundoku-api/auth v0.0.0
-	tsundoku-api/db v0.0.0
-	tsundoku-api/libraries v0.0.0
-	tsundoku-api/testutil v0.0.0
+	tsunbooku-api/auth v0.0.0
+	tsunbooku-api/db v0.0.0
+	tsunbooku-api/libraries v0.0.0
+	tsunbooku-api/testutil v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/google/uuid v1.6.0
 )

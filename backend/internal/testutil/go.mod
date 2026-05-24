@@ -1,4 +1,4 @@
-module tsundoku-api/testutil
+module tsunbooku-api/testutil
 
 go 1.25
 

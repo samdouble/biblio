@@ -3,8 +3,8 @@ package types
 import (
 	"time"
 
-	"tsundoku-api/utils/googleBooks/isbnSearch"
-	googleBooksTypes "tsundoku-api/utils/googleBooks"
+	"tsunbooku-api/utils/googleBooks/isbnSearch"
+	googleBooksTypes "tsunbooku-api/utils/googleBooks"
 )
 
 type Book struct {

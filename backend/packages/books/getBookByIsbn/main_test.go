@@ -9,7 +9,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 
-	"tsundoku-api/types"
+	"tsunbooku-api/types"
 )
 
 func TestMain_EmptyIsbnReturnsError(t *testing.T) {

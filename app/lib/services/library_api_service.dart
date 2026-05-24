@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'package:tsundoku/config/env.dart';
-import 'package:tsundoku/models/library.dart';
+import 'package:tsunbooku/config/env.dart';
+import 'package:tsunbooku/models/library.dart';
 
 class CreateLibraryResult {
   CreateLibraryResult({this.library, this.error});
@@ -18,9 +18,23 @@ class GetLibrariesResult {
 }
 
 class LibraryBookAssociation {
-  const LibraryBookAssociation({required this.bookId, required this.addedAt});
+  const LibraryBookAssociation({
+    required this.bookId,
+    required this.addedAt,
+    this.isbn = '',
+    this.title = '',
+    this.author = '',
+    this.thumbnailUrl = '',
+  });
   final String bookId;
   final DateTime addedAt;
+  final String isbn;
+  final String title;
+  final String author;
+  final String thumbnailUrl;
+
+  bool get hasMetadata =>
+      title.isNotEmpty || author.isNotEmpty || isbn.isNotEmpty || thumbnailUrl.isNotEmpty;
 }
 
 Map<String, String> _jsonAuthHeaders(String token) {
@@ -192,6 +206,10 @@ Future<List<LibraryBookAssociation>?> getLibraryBookAssociations(
               (e['addedAt'] as num).toInt(),
               isUtc: true,
             ),
+            isbn: e['isbn'] as String? ?? '',
+            title: e['title'] as String? ?? '',
+            author: e['author'] as String? ?? '',
+            thumbnailUrl: e['thumbnailUrl'] as String? ?? '',
           ),
     ];
   } catch (_) {

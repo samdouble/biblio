@@ -1,11 +1,11 @@
-# Tsundoku
+# Tsunbooku
 
 A cross-platform mobile app to keep track of your books.
 
 **App**
 
-[![App CI](https://github.com/samdouble/tsundoku/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/tsundoku/actions/workflows/app-checks.yml)
-[![Coverage Status](https://coveralls.io/repos/samdouble/tsundoku/badge.svg?branch=master&service=github)](https://coveralls.io/github/samdouble/tsundoku?branch=master)
+[![App CI](https://github.com/samdouble/tsunbooku/actions/workflows/app-checks.yml/badge.svg)](https://github.com/samdouble/tsunbooku/actions/workflows/app-checks.yml)
+[![Coverage Status](https://coveralls.io/repos/samdouble/tsunbooku/badge.svg?branch=master&service=github)](https://coveralls.io/github/samdouble/tsunbooku?branch=master)
 
 [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](https://dart.dev/)
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=ffffff)](https://flutter.dev/)
@@ -14,8 +14,8 @@ A cross-platform mobile app to keep track of your books.
 
 **Backend**
 
-[![CI](https://github.com/samdouble/tsundoku/actions/workflows/backend-checks.yml/badge.svg)](https://github.com/samdouble/tsundoku/actions/workflows/backend-checks.yml)
-[![Coverage Status](https://coveralls.io/repos/samdouble/tsundoku/badge.svg?branch=master&service=github)](https://coveralls.io/github/samdouble/tsundoku?branch=master)
+[![CI](https://github.com/samdouble/tsunbooku/actions/workflows/backend-checks.yml/badge.svg)](https://github.com/samdouble/tsunbooku/actions/workflows/backend-checks.yml)
+[![Coverage Status](https://coveralls.io/repos/samdouble/tsunbooku/badge.svg?branch=master&service=github)](https://coveralls.io/github/samdouble/tsunbooku?branch=master)
 
 [![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?&logo=go&logoColor=white)](https://go.dev/)
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-%234285F4.svg?logo=google-cloud&logoColor=white)](https://cloud.google.com/)
@@ -41,12 +41,10 @@ sequenceDiagram
 Create an `.env` file at the root of the project:
 
 ```
-TSUNDOKU_API_URL=
+TSUNBOOKU_API_URL=
 NEW_RELIC_ANDROID_APP_TOKEN=
 NEW_RELIC_IOS_APP_TOKEN=
 ```
-
-`BIBLIO_API_URL` is still accepted as a legacy alias for `TSUNDOKU_API_URL`.
 
 #### Install Flutter SDK and its dependencies
 
@@ -77,7 +75,7 @@ fvm flutter --version
 
 If you are using a hardware device, make sure Developer Mode is enabled on your device and that you have USB debugging enabled.
 
-In VSCode/Cursor, search for `Flutter: Select Device` and select your device. Then, in the `Run & Debug` pane, select `tsundoku` and click the green play button.
+In VSCode/Cursor, search for `Flutter: Select Device` and select your device. Then, in the `Run & Debug` pane, select `tsunbooku` and click the green play button.
 
 Shortly after, you should see the app running on your device.
 
@@ -151,11 +149,11 @@ docker compose up -d
 Build the Docker image:
 
 ```sh
-docker build -t tsundoku-api .
+docker build -t tsunbooku-api .
 ```
 
 Run the Docker container with the book's ISBN as a command line argument:
 
 ```sh
-docker run --env-file .env --network tsundoku-api_default -e "MONGO_URL=mongodb://tsundoku-api-mongo0:27017,tsundoku-api-mongo1:27017,tsundoku-api-mongo2:27017/?replicaSet=rs0" tsundoku-api <isbn>
+docker run --env-file .env --network tsunbooku-api_default -e "MONGO_URL=mongodb://tsunbooku-api-mongo0:27017,tsunbooku-api-mongo1:27017,tsunbooku-api-mongo2:27017/?replicaSet=rs0" tsunbooku-api <isbn>
 ```

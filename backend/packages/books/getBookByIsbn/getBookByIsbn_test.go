@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"tsundoku-api/types"
+	"tsunbooku-api/types"
 )
 
 func TestMain_RequiresIsbn(t *testing.T) {

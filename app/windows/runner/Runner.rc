@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.samdouble" "\0"
-            VALUE "FileDescription", "biblio" "\0"
+            VALUE "FileDescription", "tsunbooku" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "biblio" "\0"
+            VALUE "InternalName", "tsunbooku" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.samdouble. All rights reserved." "\0"
-            VALUE "OriginalFilename", "biblio.exe" "\0"
-            VALUE "ProductName", "biblio" "\0"
+            VALUE "OriginalFilename", "tsunbooku.exe" "\0"
+            VALUE "ProductName", "tsunbooku" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

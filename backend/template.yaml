@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Tsundoku API – auth, books, libraries
+Description: Tsunbooku API – auth, books, libraries
 
 Globals:
   Function:
@@ -43,10 +43,10 @@ Conditions:
   ScheduledIngestEnabled: !Equals [!Ref EnableScheduledIngest, 'true']
 
 Resources:
-  TsundokuHttpApi:
+  TsunbookuHttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
-      Description: Tsundoku API Gateway
+      Description: Tsunbooku API Gateway
 
   # --- auth ---
   AuthSendOtp:
@@ -64,7 +64,7 @@ Resources:
         ApiPost:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /auth/sendOtp
             Method: POST
       Environment:
@@ -80,7 +80,7 @@ Resources:
         ApiPost:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /auth/verifyOtp
             Method: POST
 
@@ -94,7 +94,7 @@ Resources:
         ApiGet:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /books/getBookByIsbn
             Method: GET
 
@@ -109,7 +109,7 @@ Resources:
         ApiPost:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /books/getBooksByAuthor
             Method: POST
 
@@ -122,7 +122,7 @@ Resources:
         ApiPost:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /books/searchBooks
             Method: POST
 
@@ -174,7 +174,7 @@ Resources:
         ApiPost:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /feedback/submitFeedback
             Method: POST
 
@@ -188,7 +188,7 @@ Resources:
         ApiPost:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /libraries
             Method: POST
 
@@ -201,7 +201,7 @@ Resources:
         ApiGet:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /libraries
             Method: GET
 
@@ -214,7 +214,7 @@ Resources:
         ApiPatch:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /libraries/{id}
             Method: PATCH
 
@@ -227,7 +227,7 @@ Resources:
         ApiDelete:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /libraries/{id}
             Method: DELETE
 
@@ -240,7 +240,7 @@ Resources:
         ApiGet:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /libraries/{id}/books
             Method: GET
 
@@ -253,15 +253,15 @@ Resources:
         ApiPut:
           Type: HttpApi
           Properties:
-            ApiId: !Ref TsundokuHttpApi
+            ApiId: !Ref TsunbookuHttpApi
             Path: /libraries/{id}/books
             Method: PUT
 
 Outputs:
   ApiUrl:
-    Description: Base URL of the HTTP API (use this as TSUNDOKU_API_URL in the app)
+    Description: Base URL of the HTTP API (use this as TSUNBOOKU_API_URL in the app)
     Value: !Sub
       - 'https://${ApiId}.execute-api.${Region}.amazonaws.com'
-      - { ApiId: !Ref TsundokuHttpApi, Region: !Ref AWS::Region }
+      - { ApiId: !Ref TsunbookuHttpApi, Region: !Ref AWS::Region }
     Export:
       Name: !Sub '${AWS::StackName}-ApiUrl'

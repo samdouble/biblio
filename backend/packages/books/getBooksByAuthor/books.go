@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
-	"tsundoku-api/authors"
+	"tsunbooku-api/authors"
 )
 
 const booksCollection = "books"

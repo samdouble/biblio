@@ -2,15 +2,15 @@ services:
   mongodb-init:
     build: ./db
     depends_on:
-      - tsundoku-api-mongo0
-      - tsundoku-api-mongo1
-      - tsundoku-api-mongo2
+      - tsunbooku-api-mongo0
+      - tsunbooku-api-mongo1
+      - tsunbooku-api-mongo2
     logging:
       driver: none
 
-  tsundoku-api-mongo0:
-    hostname: tsundoku-api-mongo0
-    container_name: tsundoku-api-mongo0
+  tsunbooku-api-mongo0:
+    hostname: tsunbooku-api-mongo0
+    container_name: tsunbooku-api-mongo0
     image: mongo:8.0.13
     ports:
       - 27017:27017
@@ -23,9 +23,9 @@ services:
     volumes:
       - ./volume-database:/data/db
 
-  tsundoku-api-mongo1:
-    hostname: tsundoku-api-mongo1
-    container_name: tsundoku-api-mongo1
+  tsunbooku-api-mongo1:
+    hostname: tsunbooku-api-mongo1
+    container_name: tsunbooku-api-mongo1
     image: mongo:8.0.13
     ports:
       - 27018:27017
@@ -35,9 +35,9 @@ services:
     entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0"]
     attach: false
 
-  tsundoku-api-mongo2:
-    hostname: tsundoku-api-mongo2
-    container_name: tsundoku-api-mongo2
+  tsunbooku-api-mongo2:
+    hostname: tsunbooku-api-mongo2
+    container_name: tsunbooku-api-mongo2
     image: mongo:8.0.13
     ports:
       - 27019:27017
@@ -49,20 +49,20 @@ services:
 
   mongo-express:
     image: mongo-express:1.0.2
-    container_name: tsundoku-api-mongo-express
+    container_name: tsunbooku-api-mongo-express
     restart: always
     ports:
       - 8082:8081
     environment:
-      - ME_CONFIG_MONGODB_SERVER=tsundoku-api-mongo0
+      - ME_CONFIG_MONGODB_SERVER=tsunbooku-api-mongo0
       - ME_CONFIG_MONGODB_PORT=27017
       - ME_CONFIG_MONGODB_ADMINUSERNAME=
       - ME_CONFIG_MONGODB_ADMINPASSWORD=
       - ME_CONFIG_BASICAUTH_USERNAME=admin
       - ME_CONFIG_BASICAUTH_PASSWORD=admin
-      - ME_CONFIG_MONGODB_URL=mongodb://tsundoku-api-mongo0:27017,tsundoku-api-mongo1:27017,tsundoku-api-mongo2:27017/?replicaSet=rs0
+      - ME_CONFIG_MONGODB_URL=mongodb://tsunbooku-api-mongo0:27017,tsunbooku-api-mongo1:27017,tsunbooku-api-mongo2:27017/?replicaSet=rs0
     depends_on:
-      - tsundoku-api-mongo0
-      - tsundoku-api-mongo1
-      - tsundoku-api-mongo2
+      - tsunbooku-api-mongo0
+      - tsunbooku-api-mongo1
+      - tsunbooku-api-mongo2
     attach: false

@@ -40,8 +40,8 @@ jobs:
       - name: Create .env for build
         run: |
           touch .env
-          echo "TSUNDOKU_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
-          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.NEW_RELIC_ANDROID_APP_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.NEW_RELIC_IOS_APP_TOKEN }}" >> .env
       - name: Lint
@@ -106,8 +106,8 @@ jobs:
       - name: Create .env for build
         run: |
           touch .env
-          echo "TSUNDOKU_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
-          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.NEW_RELIC_ANDROID_APP_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.NEW_RELIC_IOS_APP_TOKEN }}" >> .env
       - name: Lint

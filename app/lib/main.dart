@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:tsundoku/l10n/app_localizations.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
 import 'package:newrelic_mobile/config.dart';
 import 'package:newrelic_mobile/newrelic_mobile.dart';
 import 'package:newrelic_mobile/newrelic_navigation_observer.dart';
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
             locale: appState.locale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
-            title: 'Tsundoku',
+            title: 'Tsunbooku',
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: const Color(0xFF2E7D32),

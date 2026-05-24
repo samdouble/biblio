@@ -31,8 +31,8 @@ jobs:
       - name: Create .env for build
         run: |
           touch .env
-          echo "TSUNDOKU_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
-          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env
       - name: Create key.properties and keystore
@@ -87,8 +87,8 @@ jobs:
       - name: Create .env for build
         run: |
           touch .env
-          echo "TSUNDOKU_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
-          echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
+          echo "TSUNBOOKU_API_URL=${{ secrets.TSUNBOOKU_API_URL }}" >> .env
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env
       - name: Import code-signing certificate
@@ -235,3 +235,4 @@ jobs:
           issuer-id: ${{ secrets.APP_IOS_APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APP_IOS_APPSTORE_KEY_ID }}
           api-private-key: ${{ secrets.APP_IOS_APPSTORE_PRIVATE_KEY }}
+          wait-for-processing: 'false'

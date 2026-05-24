@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"tsundoku-api/isbndb"
+	"tsunbooku-api/isbndb"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
