@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:biblio/models/book.dart';
-import 'package:biblio/models/library.dart';
-import 'package:biblio/screens/library_detail/types.dart';
+import 'package:tsundoku/models/book.dart';
+import 'package:tsundoku/models/library.dart';
+import 'package:tsundoku/screens/library_detail/types.dart';
 
 class LibraryBooksContent extends StatelessWidget {
   const LibraryBooksContent({

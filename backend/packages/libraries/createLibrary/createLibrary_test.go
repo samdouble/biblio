@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"biblio-api/db"
-	"biblio-api/libraries"
-	"biblio-api/testutil"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/libraries"
+	"tsundoku-api/testutil"
+	"tsundoku-api/types"
 )
 
 func TestMain_EmptyUserId(t *testing.T) {

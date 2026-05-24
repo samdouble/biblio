@@ -31,6 +31,7 @@ jobs:
       - name: Create .env for build
         run: |
           touch .env
+          echo "TSUNDOKU_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
           echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env
@@ -86,6 +87,7 @@ jobs:
       - name: Create .env for build
         run: |
           touch .env
+          echo "TSUNDOKU_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
           echo "BIBLIO_API_URL=${{ secrets.BIBLIO_API_URL }}" >> .env
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env

@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"biblio-api/db"
-	"biblio-api/testutil"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/testutil"
+	"tsundoku-api/types"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )

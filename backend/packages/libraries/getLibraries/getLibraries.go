@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"biblio-api/db"
-	"biblio-api/libraries"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/libraries"
+	"tsundoku-api/types"
 )
 
 func Main(ctx context.Context, event types.GetLibrariesEvent) (types.GetLibrariesResponse, error) {

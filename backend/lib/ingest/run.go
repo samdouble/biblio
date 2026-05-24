@@ -11,9 +11,9 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 
-	"biblio-api/authors"
-	"biblio-api/books"
-	"biblio-api/isbndb"
+	"tsundoku-api/authors"
+	"tsundoku-api/books"
+	"tsundoku-api/isbndb"
 )
 
 const stateCollection = "ingest_state"

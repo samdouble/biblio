@@ -10,10 +10,10 @@ import (
 	"os"
 	"strings"
 
-	"biblio-api/db"
-	"biblio-api/otps"
-	"biblio-api/ses"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/otps"
+	"tsundoku-api/ses"
+	"tsundoku-api/types"
 )
 
 const otpDigits = 6

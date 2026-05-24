@@ -1,4 +1,4 @@
-module biblio-api/otps
+module tsundoku-api/otps
 
 go 1.20
 

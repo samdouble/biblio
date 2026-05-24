@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:biblio/l10n/app_localizations.dart';
+import 'package:tsundoku/l10n/app_localizations.dart';
 
-import 'package:biblio/models/api_book.dart';
-import 'package:biblio/models/book.dart';
-import 'package:biblio/models/library.dart';
-import 'package:biblio/screens/book_detail_page.dart';
-import 'package:biblio/widgets/books/add_book_button.dart';
-import 'package:biblio/widgets/books/books_list.dart';
-import 'package:biblio/widgets/main_drawer.dart';
-import 'package:biblio/widgets/sort_view_toolbar.dart';
+import 'package:tsundoku/models/api_book.dart';
+import 'package:tsundoku/models/book.dart';
+import 'package:tsundoku/models/library.dart';
+import 'package:tsundoku/screens/book_detail_page.dart';
+import 'package:tsundoku/widgets/books/add_book_button.dart';
+import 'package:tsundoku/widgets/books/books_list.dart';
+import 'package:tsundoku/widgets/main_drawer.dart';
+import 'package:tsundoku/widgets/sort_view_toolbar.dart';
 
 enum MyBooksSort { title, author }
 

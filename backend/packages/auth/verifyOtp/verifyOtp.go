@@ -12,11 +12,11 @@ import (
 
 	"github.com/google/uuid"
 
-	"biblio-api/db"
-	"biblio-api/auth"
-	"biblio-api/models"
-	"biblio-api/otps"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/auth"
+	"tsundoku-api/models"
+	"tsundoku-api/otps"
+	"tsundoku-api/types"
 )
 
 func Main(ctx context.Context, event types.VerifyOtpEvent) (types.VerifyOtpResponse, error) {

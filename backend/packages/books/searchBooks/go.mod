@@ -1,11 +1,11 @@
-module biblio-api
+module tsundoku-api
 
 go 1.25
 
-replace biblio-api/db => ../../../lib/db
+replace tsundoku-api/db => ../../../lib/db
 
 require (
-	biblio-api/db v0.0.0
+	tsundoku-api/db v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	go.mongodb.org/mongo-driver/v2 v2.5.0
 )

@@ -1,17 +1,17 @@
-module biblio-api
+module tsundoku-api
 
 go 1.25
 
-replace biblio-api/db => ../../../lib/db
+replace tsundoku-api/db => ../../../lib/db
 
-replace biblio-api/otps => ../../../lib/otps
+replace tsundoku-api/otps => ../../../lib/otps
 
-replace biblio-api/testutil => ../../../internal/testutil
+replace tsundoku-api/testutil => ../../../internal/testutil
 
 require (
-	biblio-api/db v0.0.0
-	biblio-api/otps v0.0.0
-	biblio-api/testutil v0.0.0
+	tsundoku-api/db v0.0.0
+	tsundoku-api/otps v0.0.0
+	tsundoku-api/testutil v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 	github.com/aws/aws-sdk-go-v2 v1.39.0
 	github.com/aws/aws-sdk-go-v2/config v1.28.5

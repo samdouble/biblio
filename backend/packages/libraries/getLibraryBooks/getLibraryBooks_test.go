@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"biblio-api/types"
+	"tsundoku-api/types"
 )
 
 func TestMain_EmptyUserId(t *testing.T) {

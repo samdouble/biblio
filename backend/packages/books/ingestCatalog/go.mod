@@ -1,25 +1,25 @@
-module biblio-api
+module tsundoku-api
 
 go 1.25
 
 replace (
-	biblio-api/authors => ../../../lib/authors
-	biblio-api/books => ../../../lib/books
-	biblio-api/db => ../../../lib/db
-	biblio-api/ingest => ../../../lib/ingest
-	biblio-api/isbndb => ../../../lib/isbndb
+	tsundoku-api/authors => ../../../lib/authors
+	tsundoku-api/books => ../../../lib/books
+	tsundoku-api/db => ../../../lib/db
+	tsundoku-api/ingest => ../../../lib/ingest
+	tsundoku-api/isbndb => ../../../lib/isbndb
 )
 
 require (
-	biblio-api/db v0.0.0
-	biblio-api/ingest v0.0.0
-	biblio-api/isbndb v0.0.0
+	tsundoku-api/db v0.0.0
+	tsundoku-api/ingest v0.0.0
+	tsundoku-api/isbndb v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 )
 
 require (
-	biblio-api/authors v0.0.0 // indirect
-	biblio-api/books v0.0.0 // indirect
+	tsundoku-api/authors v0.0.0 // indirect
+	tsundoku-api/books v0.0.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.17.6 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect

@@ -1,11 +1,11 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:biblio/db/db.dart';
+import 'package:tsundoku/config/env.dart';
+import 'package:tsundoku/db/db.dart';
 
 Future<int> processPendingSearches() async {
-  final biblioApiUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-  if (biblioApiUrl.isEmpty) {
+  final apiUrl = apiBaseUrl;
+  if (apiUrl.isEmpty) {
     return 0;
   }
 
@@ -15,7 +15,7 @@ Future<int> processPendingSearches() async {
   for (final row in pending) {
     final id = row['id'] as int;
     final isbn = row['isbn'] as String;
-    final url = '$biblioApiUrl/books/getBookByIsbn?isbn=$isbn';
+    final url = '$apiUrl/books/getBookByIsbn?isbn=$isbn';
     try {
       final response = await http.get(
         Uri.parse(url),

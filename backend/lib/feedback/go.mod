@@ -1,4 +1,4 @@
-module biblio-api/feedback
+module tsundoku-api/feedback
 
 go 1.25
 

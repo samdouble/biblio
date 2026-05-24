@@ -12,7 +12,7 @@ import (
 
 const (
 	bearerPrefix = "Bearer "
-	issuer       = "biblio-api"
+	issuer       = "tsundoku-api"
 )
 
 func secret() (string, error) {

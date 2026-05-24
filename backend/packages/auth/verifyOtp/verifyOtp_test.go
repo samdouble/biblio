@@ -12,11 +12,11 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
-	"biblio-api/db"
-	"biblio-api/models"
-	"biblio-api/otps"
-	"biblio-api/testutil"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/models"
+	"tsundoku-api/otps"
+	"tsundoku-api/testutil"
+	"tsundoku-api/types"
 )
 
 func TestHashOtp(t *testing.T) {

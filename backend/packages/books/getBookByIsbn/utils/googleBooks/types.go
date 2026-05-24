@@ -1,7 +1,7 @@
 package types
 
 import (
-	"biblio-api/utils/googleBooks/isbnSearch"
+	"tsundoku-api/utils/googleBooks/isbnSearch"
 )
 
 type Item struct {

@@ -6,7 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
-	"biblio-api/types"
+	"tsundoku-api/types"
 )
 
 func TestMain_EmptyAuthor(t *testing.T) {

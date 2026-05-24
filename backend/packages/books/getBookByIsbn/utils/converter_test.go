@@ -3,7 +3,7 @@ package utils
 import (
 	"testing"
 
-	isbnDbTypes "biblio-api/utils/isbnDb"
+	isbnDbTypes "tsundoku-api/utils/isbnDb"
 )
 
 func TestIsbnDbBookToVolumeInfo_UsesOverviewAndImageAndPages(t *testing.T) {

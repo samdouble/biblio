@@ -10,9 +10,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"biblio-api/db"
-	"biblio-api/libraries"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/libraries"
+	"tsundoku-api/types"
 )
 
 func Main(ctx context.Context, event types.CreateLibraryEvent) (types.CreateLibraryResponse, error) {

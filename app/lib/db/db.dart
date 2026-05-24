@@ -3,13 +3,13 @@ import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import 'package:biblio/db/migrations/migration_001_books.dart' as m1;
-import 'package:biblio/db/migrations/migration_002_library_tables.dart' as m2;
-import 'package:biblio/db/migrations/migration_003_pending_search.dart' as m3;
-import 'package:biblio/db/migrations/migration_004_books_isbn_thumbnail.dart' as m4;
-import 'package:biblio/db/migrations/migration_005_books_thumbnail_url.dart' as m5;
-import 'package:biblio/db/migrations/migration_006_library_color.dart' as m6;
-import 'package:biblio/db/migrations/migration_007_library_books_added_at.dart' as m7;
+import 'package:tsundoku/db/migrations/migration_001_books.dart' as m1;
+import 'package:tsundoku/db/migrations/migration_002_library_tables.dart' as m2;
+import 'package:tsundoku/db/migrations/migration_003_pending_search.dart' as m3;
+import 'package:tsundoku/db/migrations/migration_004_books_isbn_thumbnail.dart' as m4;
+import 'package:tsundoku/db/migrations/migration_005_books_thumbnail_url.dart' as m5;
+import 'package:tsundoku/db/migrations/migration_006_library_color.dart' as m6;
+import 'package:tsundoku/db/migrations/migration_007_library_books_added_at.dart' as m7;
 
 const int _dbVersion = 7;
 
@@ -27,7 +27,7 @@ Future<Database> initDatabase() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final database = openDatabase(
-    join(await getDatabasesPath(), 'biblio_database.db'),
+    join(await getDatabasesPath(), 'tsundoku_database.db'),
     onCreate: (db, version) async {
       for (final migration in _migrations) {
         await migration(db);
