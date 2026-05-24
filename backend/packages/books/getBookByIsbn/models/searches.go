@@ -2,7 +2,7 @@ package models
 
 import (
 	"context"
-	"tsundoku-api/types"
+	"tsunbooku-api/types"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 

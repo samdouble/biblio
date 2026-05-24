@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 
-	"tsundoku-api/db"
-	"tsundoku-api/ingest"
-	"tsundoku-api/isbndb"
+	"tsunbooku-api/db"
+	"tsunbooku-api/ingest"
+	"tsunbooku-api/isbndb"
 )
 
 func Main(ctx context.Context) (ingest.Result, error) {

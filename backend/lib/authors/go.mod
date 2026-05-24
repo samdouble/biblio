@@ -1,4 +1,4 @@
-module tsundoku-api/authors
+module tsunbooku-api/authors
 
 go 1.25
 

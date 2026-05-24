@@ -10,10 +10,10 @@ import (
 	"os"
 	"strings"
 
-	"tsundoku-api/db"
-	"tsundoku-api/otps"
-	"tsundoku-api/ses"
-	"tsundoku-api/types"
+	"tsunbooku-api/db"
+	"tsunbooku-api/otps"
+	"tsunbooku-api/ses"
+	"tsunbooku-api/types"
 )
 
 const otpDigits = 6

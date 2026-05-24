@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:tsundoku/l10n/app_localizations.dart';
-import 'package:tsundoku/screens/home_page.dart';
-import 'package:tsundoku/screens/settings_page.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
+import 'package:tsunbooku/screens/home_page.dart';
+import 'package:tsunbooku/screens/settings_page.dart';
 
 void main() {
   setUpAll(() async {

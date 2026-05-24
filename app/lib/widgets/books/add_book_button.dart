@@ -2,13 +2,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:tsundoku/config/env.dart';
-import 'package:tsundoku/db/db.dart';
-import 'package:tsundoku/models/api_book.dart';
-import 'package:tsundoku/models/book.dart';
-import 'package:tsundoku/screens/barcode_scanner_page.dart';
-import 'package:tsundoku/screens/book_detail_page.dart';
-import 'package:tsundoku/utils/connectivity.dart';
+import 'package:tsunbooku/config/env.dart';
+import 'package:tsunbooku/db/db.dart';
+import 'package:tsunbooku/models/api_book.dart';
+import 'package:tsunbooku/models/book.dart';
+import 'package:tsunbooku/screens/barcode_scanner_page.dart';
+import 'package:tsunbooku/screens/book_detail_page.dart';
+import 'package:tsunbooku/utils/connectivity.dart';
 
 class FloatingButton extends StatelessWidget {
   const FloatingButton({super.key});
@@ -55,7 +55,7 @@ class FloatingButton extends StatelessWidget {
         if (apiUrl.isEmpty) {
           messenger.showSnackBar(
             const SnackBar(
-              content: Text('TSUNDOKU_API_URL is not set in .env'),
+              content: Text('TSUNBOOKU_API_URL is not set in .env'),
             ),
           );
           return;

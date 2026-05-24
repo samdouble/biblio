@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 
-	"tsundoku-api/auth"
-	"tsundoku-api/types"
+	"tsunbooku-api/auth"
+	"tsunbooku-api/types"
 )
 
 func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {

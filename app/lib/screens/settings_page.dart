@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tsundoku/l10n/app_localizations.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'package:tsundoku/screens/home_page.dart';
-import 'package:tsundoku/screens/sign_up_page.dart';
-import 'package:tsundoku/widgets/main_drawer.dart';
+import 'package:tsunbooku/screens/home_page.dart';
+import 'package:tsunbooku/screens/sign_up_page.dart';
+import 'package:tsunbooku/widgets/main_drawer.dart';
 
 class SettingsPage extends StatelessWidget {
   @override

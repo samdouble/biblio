@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"tsundoku-api/db"
-	"tsundoku-api/libraries"
-	"tsundoku-api/types"
+	"tsunbooku-api/db"
+	"tsunbooku-api/libraries"
+	"tsunbooku-api/types"
 )
 
 func Main(ctx context.Context, event types.SetLibraryBooksEvent) (types.SetLibraryBooksResponse, error) {

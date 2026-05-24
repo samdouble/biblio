@@ -12,11 +12,11 @@ import (
 
 	"github.com/google/uuid"
 
-	"tsundoku-api/db"
-	"tsundoku-api/auth"
-	"tsundoku-api/models"
-	"tsundoku-api/otps"
-	"tsundoku-api/types"
+	"tsunbooku-api/db"
+	"tsunbooku-api/auth"
+	"tsunbooku-api/models"
+	"tsunbooku-api/otps"
+	"tsunbooku-api/types"
 )
 
 func Main(ctx context.Context, event types.VerifyOtpEvent) (types.VerifyOtpResponse, error) {

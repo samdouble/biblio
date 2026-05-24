@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tsundoku/l10n/app_localizations.dart';
-import 'package:tsundoku/models/api_book.dart';
-import 'package:tsundoku/screens/book_detail_page.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
+import 'package:tsunbooku/models/api_book.dart';
+import 'package:tsunbooku/screens/book_detail_page.dart';
 
 class BooksByAuthorPage extends StatelessWidget {
   const BooksByAuthorPage({super.key, required this.authorName});

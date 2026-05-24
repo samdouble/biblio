@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:tsundoku/l10n/app_localizations.dart';
-import 'package:tsundoku/models/api_book.dart';
-import 'package:tsundoku/models/book.dart';
-import 'package:tsundoku/screens/book_detail_page.dart';
-import 'package:tsundoku/widgets/books/add_book_button.dart';
-import 'package:tsundoku/widgets/main_drawer.dart';
-import 'package:tsundoku/widgets/sort_view_toolbar.dart';
+import 'package:tsunbooku/l10n/app_localizations.dart';
+import 'package:tsunbooku/models/api_book.dart';
+import 'package:tsunbooku/models/book.dart';
+import 'package:tsunbooku/screens/book_detail_page.dart';
+import 'package:tsunbooku/services/library_sync_service.dart';
+import 'package:tsunbooku/widgets/books/add_book_button.dart';
+import 'package:tsunbooku/widgets/main_drawer.dart';
+import 'package:tsunbooku/widgets/sort_view_toolbar.dart';
 
 const _localeKey = 'app_locale';
 const _signedInUserIdKey = 'signed_in_user_id';
@@ -107,6 +108,21 @@ class MyAppState extends ChangeNotifier {
     _signedInEmail = prefs.getString(_signedInEmailKey);
     _authToken = prefs.getString(_authTokenKey);
     notifyListeners();
+    if (_authToken != null) {
+      await syncAccountFromServer();
+    }
+  }
+
+  Future<void> syncAccountFromServer() async {
+    final token = _authToken;
+    if (token == null) return;
+
+    final result = await syncAccountWithServer(token);
+    if (result.success) {
+      setSynced();
+    } else {
+      setOutOfSync();
+    }
   }
 
   Future<void> setSignedIn(String userId, String email, String token) async {
@@ -119,6 +135,7 @@ class MyAppState extends ChangeNotifier {
     _authToken = token;
     _syncStatus = SyncStatus.unknown;
     notifyListeners();
+    await syncAccountFromServer();
   }
 
   Future<void> signOut() async {

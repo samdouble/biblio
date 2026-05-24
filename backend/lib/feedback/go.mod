@@ -1,4 +1,4 @@
-module tsundoku-api/feedback
+module tsunbooku-api/feedback
 
 go 1.25
 

@@ -8,9 +8,9 @@ import (
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 
-	"tsundoku-api/authors"
-	"tsundoku-api/db"
-	"tsundoku-api/types"
+	"tsunbooku-api/authors"
+	"tsunbooku-api/db"
+	"tsunbooku-api/types"
 )
 
 var (

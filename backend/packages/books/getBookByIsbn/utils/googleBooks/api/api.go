@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"os"
 
-	googleBooksTypes "tsundoku-api/utils/googleBooks"
+	googleBooksTypes "tsunbooku-api/utils/googleBooks"
 )
 
 var GoogleBooksAPIBaseURL = "https://www.googleapis.com/books/v1/volumes"

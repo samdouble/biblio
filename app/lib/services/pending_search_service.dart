@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 
-import 'package:tsundoku/config/env.dart';
-import 'package:tsundoku/db/db.dart';
+import 'package:tsunbooku/config/env.dart';
+import 'package:tsunbooku/db/db.dart';
 
 Future<int> processPendingSearches() async {
   final apiUrl = apiBaseUrl;

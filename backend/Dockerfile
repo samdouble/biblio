@@ -13,7 +13,7 @@ RUN printf 'package main\n\
 import (\n\
 	"context"\n\
 	"os"\n\
-	"tsundoku-api/types"\n\
+	"tsunbooku-api/types"\n\
 )\n\
 \n\
 func main() {\n\

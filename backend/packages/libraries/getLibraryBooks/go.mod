@@ -1,22 +1,30 @@
-module tsundoku-api
+module tsunbooku-api
 
 go 1.25
 
-replace tsundoku-api/db => ../../../lib/db
+replace tsunbooku-api/db => ../../../lib/db
 
-replace tsundoku-api/auth => ../../../lib/auth
+replace tsunbooku-api/auth => ../../../lib/auth
 
-replace tsundoku-api/libraries => ../../../lib/libraries
+replace tsunbooku-api/libraries => ../../../lib/libraries
+
+replace tsunbooku-api/books => ../../../lib/books
+
+replace tsunbooku-api/authors => ../../../lib/authors
+
+replace tsunbooku-api/isbndb => ../../../lib/isbndb
 
 require (
-	tsundoku-api/auth v0.0.0
-	tsundoku-api/db v0.0.0
-	tsundoku-api/libraries v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
+	tsunbooku-api/auth v0.0.0
+	tsunbooku-api/books v0.0.0
+	tsunbooku-api/db v0.0.0
+	tsunbooku-api/libraries v0.0.0
 )
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.2 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.17.6 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.2.0 // indirect
@@ -26,4 +34,6 @@ require (
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
+	tsunbooku-api/authors v0.0.0 // indirect
+	tsunbooku-api/isbndb v0.0.0 // indirect
 )

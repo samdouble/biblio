@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:tsundoku/db/migrations/migration_001_books.dart' as m1;
-import 'package:tsundoku/db/migrations/migration_002_library_tables.dart' as m2;
-import 'package:tsundoku/db/migrations/migration_003_pending_search.dart' as m3;
-import 'package:tsundoku/db/migrations/migration_004_books_isbn_thumbnail.dart' as m4;
-import 'package:tsundoku/db/migrations/migration_005_books_thumbnail_url.dart' as m5;
-import 'package:tsundoku/db/migrations/migration_006_library_color.dart' as m6;
-import 'package:tsundoku/db/migrations/migration_007_library_books_added_at.dart' as m7;
+import 'package:tsunbooku/db/migrations/migration_001_books.dart' as m1;
+import 'package:tsunbooku/db/migrations/migration_002_library_tables.dart' as m2;
+import 'package:tsunbooku/db/migrations/migration_003_pending_search.dart' as m3;
+import 'package:tsunbooku/db/migrations/migration_004_books_isbn_thumbnail.dart' as m4;
+import 'package:tsunbooku/db/migrations/migration_005_books_thumbnail_url.dart' as m5;
+import 'package:tsunbooku/db/migrations/migration_006_library_color.dart' as m6;
+import 'package:tsunbooku/db/migrations/migration_007_library_books_added_at.dart' as m7;
 
 void main() {
   setUpAll(() {

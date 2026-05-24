@@ -1,10 +1,10 @@
 version = 0.1
 
 [default.global.parameters]
-stack_name = "tsundoku-api"
+stack_name = "tsunbooku-api"
 
 [default.deploy.parameters]
-stack_name = "tsundoku-api"
+stack_name = "tsunbooku-api"
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = false
 resolve_s3 = true

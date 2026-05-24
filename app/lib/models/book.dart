@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
-import 'package:tsundoku/db/db.dart';
+import 'package:tsunbooku/db/db.dart';
 
 class Book {
   final String id;

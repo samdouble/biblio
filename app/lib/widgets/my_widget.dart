@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:tsundoku/services/title.dart';
+import 'package:tsunbooku/services/title.dart';
 
 class MyWidget extends StatelessWidget {
   @override

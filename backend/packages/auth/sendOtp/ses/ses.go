@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ses/types"
 )
 
-const fromAddress = "no-reply.tsundoku@samdouble.com"
+const fromAddress = "no-reply.tsunbooku@samdouble.com"
 
 var loadAWSConfig = func(ctx context.Context, region string) (aws.Config, error) {
 	return config.LoadDefaultConfig(ctx, config.WithRegion(region))
@@ -25,7 +25,7 @@ func SendOtpEmail(ctx context.Context, toEmail, otpCode string, region string) e
 
 	client := ses.NewFromConfig(cfg)
 
-	subject := "Your Tsundoku sign-in code"
+	subject := "Your Tsunbooku sign-in code"
 	bodyText := fmt.Sprintf("Your sign-in code is: %s\n\nThis code expires in 10 minutes. If you didn't request it, you can ignore this email.", otpCode)
 	bodyHTML := fmt.Sprintf("<p>Your sign-in code is: <strong>%s</strong></p><p>This code expires in 10 minutes. If you didn't request it, you can ignore this email.</p>", otpCode)
 

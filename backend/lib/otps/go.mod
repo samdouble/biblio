@@ -1,4 +1,4 @@
-module tsundoku-api/otps
+module tsunbooku-api/otps
 
 go 1.20
 

@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"os"
 
-	isbnDbTypes "tsundoku-api/utils/isbnDb"
+	isbnDbTypes "tsunbooku-api/utils/isbnDb"
 )
 
 type GetAuthorBooksResponse struct {

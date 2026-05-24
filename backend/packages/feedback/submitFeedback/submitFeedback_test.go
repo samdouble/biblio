@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"tsundoku-api/db"
-	"tsundoku-api/testutil"
-	"tsundoku-api/types"
+	"tsunbooku-api/db"
+	"tsunbooku-api/testutil"
+	"tsunbooku-api/types"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 )

@@ -2,10 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "tsundoku",
+      "name": "tsunbooku",
       "request": "launch",
       "type": "dart",
       "cwd": "${workspaceFolder}/app",
+      "program": "lib/main.dart",
       "console": "debugConsole"
     }
   ]
