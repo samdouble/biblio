@@ -107,3 +107,16 @@ jobs:
           make build-all
           sam build
           sam validate
+          sam deploy \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --stack-name tsundoku-api \
+            --capabilities CAPABILITY_IAM \
+            --resolve-s3 \
+            --parameter-overrides \
+              AuthJwtSecret=${{ secrets.SERVER_AUTH_JWT_SECRET }} \
+              MongoUrl=${{ secrets.MONGO_URL }} \
+              MongoDbname=${{ secrets.MONGO_DBNAME }} \
+              GoogleBooksApiToken=${{ secrets.GOOGLE_BOOKS_API_TOKEN }} \
+              IsbnDbApiKey=${{ secrets.ISBNDB_API_KEY }} \
+              EnableScheduledIngest=${{ vars.ENABLE_SCHEDULED_INGEST || 'false' }}

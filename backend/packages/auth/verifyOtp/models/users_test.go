@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"biblio-api/db"
-	"biblio-api/models"
-	"biblio-api/testutil"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/models"
+	"tsundoku-api/testutil"
+	"tsundoku-api/types"
 )
 
 func TestGetUserByEmail_notFound(t *testing.T) {

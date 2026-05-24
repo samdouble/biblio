@@ -1,4 +1,4 @@
-module biblio-api/auth
+module tsundoku-api/auth
 
 go 1.25
 

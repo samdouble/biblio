@@ -10,10 +10,10 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 
-	"biblio-api/db"
-	"biblio-api/otps"
-	"biblio-api/testutil"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/otps"
+	"tsundoku-api/testutil"
+	"tsundoku-api/types"
 )
 
 func TestGenerateOtp(t *testing.T) {

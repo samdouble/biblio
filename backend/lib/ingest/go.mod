@@ -1,17 +1,17 @@
-module biblio-api/ingest
+module tsundoku-api/ingest
 
 go 1.25
 
 replace (
-	biblio-api/authors => ../authors
-	biblio-api/books => ../books
-	biblio-api/isbndb => ../isbndb
+	tsundoku-api/authors => ../authors
+	tsundoku-api/books => ../books
+	tsundoku-api/isbndb => ../isbndb
 )
 
 require (
-	biblio-api/authors v0.0.0
-	biblio-api/books v0.0.0
-	biblio-api/isbndb v0.0.0
+	tsundoku-api/authors v0.0.0
+	tsundoku-api/books v0.0.0
+	tsundoku-api/isbndb v0.0.0
 	go.mongodb.org/mongo-driver/v2 v2.5.0
 )
 

@@ -3,7 +3,7 @@ package models
 import (
 	"context"
 
-	"biblio-api/types"
+	"tsundoku-api/types"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )

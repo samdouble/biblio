@@ -11,13 +11,13 @@ import (
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/writeconcern"
 
-	"biblio-api/authors"
-	"biblio-api/db"
-	"biblio-api/models"
-	"biblio-api/types"
-	"biblio-api/utils"
-	googleBooksApi "biblio-api/utils/googleBooks/api"
-	isbnDbApi "biblio-api/utils/isbnDb/api"
+	"tsundoku-api/authors"
+	"tsundoku-api/db"
+	"tsundoku-api/models"
+	"tsundoku-api/types"
+	"tsundoku-api/utils"
+	googleBooksApi "tsundoku-api/utils/googleBooks/api"
+	isbnDbApi "tsundoku-api/utils/isbnDb/api"
 )
 
 func Main(ctx context.Context, event types.GetBookByIsbnEvent) (types.Response, error) {

@@ -1,14 +1,14 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:biblio/db/db.dart';
-import 'package:biblio/models/api_book.dart';
-import 'package:biblio/models/book.dart';
-import 'package:biblio/screens/barcode_scanner_page.dart';
-import 'package:biblio/screens/book_detail_page.dart';
-import 'package:biblio/utils/connectivity.dart';
+import 'package:tsundoku/config/env.dart';
+import 'package:tsundoku/db/db.dart';
+import 'package:tsundoku/models/api_book.dart';
+import 'package:tsundoku/models/book.dart';
+import 'package:tsundoku/screens/barcode_scanner_page.dart';
+import 'package:tsundoku/screens/book_detail_page.dart';
+import 'package:tsundoku/utils/connectivity.dart';
 
 class FloatingButton extends StatelessWidget {
   const FloatingButton({super.key});
@@ -51,14 +51,16 @@ class FloatingButton extends StatelessWidget {
         final snackBar = SnackBar(content: Text('Looking up book with ISBN $isbn…'));
         messenger.showSnackBar(snackBar);
 
-        final biblioApiUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
-        if (biblioApiUrl.isEmpty) {
+        final apiUrl = apiBaseUrl;
+        if (apiUrl.isEmpty) {
           messenger.showSnackBar(
-            const SnackBar(content: Text('BIBLIO_API_URL is not set in .env')),
+            const SnackBar(
+              content: Text('TSUNDOKU_API_URL is not set in .env'),
+            ),
           );
           return;
         }
-        final url = '$biblioApiUrl/books/getBookByIsbn?isbn=$isbn';
+        final url = '$apiUrl/books/getBookByIsbn?isbn=$isbn';
         http.Response? response;
         try {
           response = await http.get(

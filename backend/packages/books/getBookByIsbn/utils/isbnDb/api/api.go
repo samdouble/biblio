@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"os"
 
-	isbnDbTypes "biblio-api/utils/isbnDb"
+	isbnDbTypes "tsundoku-api/utils/isbnDb"
 )
 
 const isbnDbBaseURL = "https://api2.isbndb.com"

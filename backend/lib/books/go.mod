@@ -1,15 +1,15 @@
-module biblio-api/books
+module tsundoku-api/books
 
 go 1.25
 
 replace (
-	biblio-api/authors => ../authors
-	biblio-api/isbndb => ../isbndb
+	tsundoku-api/authors => ../authors
+	tsundoku-api/isbndb => ../isbndb
 )
 
 require (
-	biblio-api/authors v0.0.0
-	biblio-api/isbndb v0.0.0
+	tsundoku-api/authors v0.0.0
+	tsundoku-api/isbndb v0.0.0
 	github.com/google/uuid v1.6.0
 	go.mongodb.org/mongo-driver/v2 v2.5.0
 )

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:tsundoku/config/env.dart';
 
 class SendOtpResult {
   SendOtpResult({required this.sent, this.error});
@@ -18,7 +18,7 @@ class VerifyOtpResult {
 }
 
 Future<SendOtpResult> sendOtp(String email) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) {
     return SendOtpResult(sent: false, error: 'API not configured');
   }
@@ -53,7 +53,7 @@ Future<SendOtpResult> sendOtp(String email) async {
 }
 
 Future<VerifyOtpResult> verifyOtp(String email, String otp) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) {
     return VerifyOtpResult(error: 'API not configured');
   }

@@ -9,8 +9,8 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 
-	"biblio-api/auth"
-	"biblio-api/types"
+	"tsundoku-api/auth"
+	"tsundoku-api/types"
 )
 
 func authHeaderForTest(t *testing.T) string {

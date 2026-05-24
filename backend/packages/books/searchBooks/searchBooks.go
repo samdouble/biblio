@@ -10,8 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 
-	"biblio-api/db"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/types"
 )
 
 const defaultLimit = 20

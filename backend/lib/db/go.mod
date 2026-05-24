@@ -1,4 +1,4 @@
-module biblio-api/db
+module tsundoku-api/db
 
 go 1.25
 

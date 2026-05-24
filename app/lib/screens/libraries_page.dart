@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:biblio/l10n/app_localizations.dart';
-import 'package:biblio/models/library.dart';
-import 'package:biblio/screens/home_page.dart';
-import 'package:biblio/screens/library_detail_page.dart';
-import 'package:biblio/services/library_api_service.dart';
-import 'package:biblio/widgets/main_drawer.dart';
+import 'package:tsundoku/l10n/app_localizations.dart';
+import 'package:tsundoku/models/library.dart';
+import 'package:tsundoku/screens/home_page.dart';
+import 'package:tsundoku/screens/library_detail_page.dart';
+import 'package:tsundoku/services/library_api_service.dart';
+import 'package:tsundoku/widgets/main_drawer.dart';
 
 final _uuid = Uuid();
 

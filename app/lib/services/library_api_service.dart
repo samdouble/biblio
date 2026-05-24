@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:biblio/models/library.dart';
+import 'package:tsundoku/config/env.dart';
+import 'package:tsundoku/models/library.dart';
 
 class CreateLibraryResult {
   CreateLibraryResult({this.library, this.error});
@@ -31,7 +31,7 @@ Map<String, String> _jsonAuthHeaders(String token) {
 }
 
 Future<CreateLibraryResult> createLibrary(String token, String name, {int? color}) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) return CreateLibraryResult(error: 'API not configured');
 
   final url = Uri.parse('$baseUrl/libraries');
@@ -73,7 +73,7 @@ Future<CreateLibraryResult> createLibrary(String token, String name, {int? color
 }
 
 Future<GetLibrariesResult> getLibraries(String token) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) return GetLibrariesResult(error: 'API not configured');
 
   final url = Uri.parse('$baseUrl/libraries');
@@ -115,7 +115,7 @@ Future<GetLibrariesResult> getLibraries(String token) async {
 }
 
 Future<String?> updateLibrary(String token, String libraryId, String name, {int? color}) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/$libraryId');
@@ -141,7 +141,7 @@ Future<String?> updateLibrary(String token, String libraryId, String name, {int?
 }
 
 Future<String?> deleteLibraryApi(String token, String libraryId) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/$libraryId');
@@ -164,7 +164,7 @@ Future<List<LibraryBookAssociation>?> getLibraryBookAssociations(
   String token,
   String libraryId,
 ) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) return null;
 
   final url = Uri.parse('$baseUrl/libraries/$libraryId/books');
@@ -206,7 +206,7 @@ Future<List<String>?> getLibraryBooks(String token, String libraryId) async {
 }
 
 Future<String?> setLibraryBooks(String token, String libraryId, List<String> bookIds) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty) return 'API not configured';
 
   final url = Uri.parse('$baseUrl/libraries/$libraryId/books');

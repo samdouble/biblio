@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:tsundoku/config/env.dart';
 
 class ApiBook {
   ApiBook({
@@ -126,7 +126,7 @@ List<ApiBook> parseSearchBooksResponse(String responseBody) {
 }
 
 Future<List<ApiBook>> searchBooksFromApi(String query, {int limit = 20}) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty || query.trim().isEmpty) return [];
 
   final url = Uri.parse('$baseUrl/books/searchBooks');
@@ -143,7 +143,7 @@ Future<List<ApiBook>> searchBooksFromApi(String query, {int limit = 20}) async {
 }
 
 Future<ApiBook?> getBookByIsbn(String isbn) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty || isbn.trim().isEmpty) return null;
   final url = Uri.parse(
     '$baseUrl/books/getBookByIsbn?isbn=${Uri.encodeQueryComponent(isbn.trim())}',
@@ -157,7 +157,7 @@ Future<ApiBook?> getBookByIsbn(String isbn) async {
 }
 
 Future<List<ApiBook>> getBooksByAuthor(String author) async {
-  final baseUrl = dotenv.env['BIBLIO_API_URL'] ?? '';
+  final baseUrl = apiBaseUrl;
   if (baseUrl.isEmpty || author.trim().isEmpty) return [];
 
   final url = Uri.parse('$baseUrl/books/getBooksByAuthor');

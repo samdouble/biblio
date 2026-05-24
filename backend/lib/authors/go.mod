@@ -1,4 +1,4 @@
-module biblio-api/authors
+module tsundoku-api/authors
 
 go 1.25
 

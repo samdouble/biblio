@@ -10,9 +10,9 @@ import (
 
 	"github.com/google/uuid"
 
-	"biblio-api/db"
-	"biblio-api/feedback"
-	"biblio-api/types"
+	"tsundoku-api/db"
+	"tsundoku-api/feedback"
+	"tsundoku-api/types"
 )
 
 func Main(ctx context.Context, event types.SubmitFeedbackEvent) (types.SubmitFeedbackResponse, error) {

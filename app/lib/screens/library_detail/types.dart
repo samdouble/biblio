@@ -1,4 +1,4 @@
-import 'package:biblio/models/library.dart';
+import 'package:tsundoku/models/library.dart';
 
 enum LibraryBookListSort { title, author, dateAdded }
 

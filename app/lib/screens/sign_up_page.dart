@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:biblio/l10n/app_localizations.dart';
-import 'package:biblio/screens/home_page.dart';
-import 'package:biblio/services/auth_service.dart';
+import 'package:tsundoku/l10n/app_localizations.dart';
+import 'package:tsundoku/screens/home_page.dart';
+import 'package:tsundoku/services/auth_service.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});

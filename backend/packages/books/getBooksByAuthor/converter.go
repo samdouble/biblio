@@ -1,7 +1,7 @@
 package main
 
 import (
-	"biblio-api/types"
+	"tsundoku-api/types"
 )
 
 func isbnDbBookToOutput(b *isbnDbBook) types.BookOutput {

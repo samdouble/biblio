@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"biblio-api/utils/googleBooks/isbnSearch"
-	isbnDbTypes "biblio-api/utils/isbnDb"
+	"tsundoku-api/utils/googleBooks/isbnSearch"
+	isbnDbTypes "tsundoku-api/utils/isbnDb"
 )
 
 func IsbnDbBookToVolumeInfo(b *isbnDbTypes.IsbnDbBook) isbnSearch.VolumeInfo {

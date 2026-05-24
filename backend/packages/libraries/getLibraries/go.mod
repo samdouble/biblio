@@ -1,20 +1,20 @@
-module biblio-api
+module tsundoku-api
 
 go 1.25
 
-replace biblio-api/db => ../../../lib/db
+replace tsundoku-api/db => ../../../lib/db
 
-replace biblio-api/auth => ../../../lib/auth
+replace tsundoku-api/auth => ../../../lib/auth
 
-replace biblio-api/libraries => ../../../lib/libraries
+replace tsundoku-api/libraries => ../../../lib/libraries
 
-replace biblio-api/testutil => ../../../internal/testutil
+replace tsundoku-api/testutil => ../../../internal/testutil
 
 require (
-	biblio-api/auth v0.0.0
-	biblio-api/db v0.0.0
-	biblio-api/libraries v0.0.0
-	biblio-api/testutil v0.0.0
+	tsundoku-api/auth v0.0.0
+	tsundoku-api/db v0.0.0
+	tsundoku-api/libraries v0.0.0
+	tsundoku-api/testutil v0.0.0
 	github.com/aws/aws-lambda-go v1.47.0
 )
 

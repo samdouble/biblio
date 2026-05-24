@@ -1,10 +1,10 @@
-name: biblio
+name: tsundoku
 
-description: A cross-platform mobileapp to keep track of your books.
+description: Tsundoku — a cross-platform app to keep track of your books.
 
 publish_to: 'none'
 
-version: 0.4.0+6
+version: 0.4.0+7
 
 environment:
   sdk: '>=3.6.0 <4.0.0'
