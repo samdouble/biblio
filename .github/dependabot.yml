@@ -1,0 +1,63 @@
+version: 2
+
+updates:
+  - package-ecosystem: pub
+    directory: /app
+    schedule:
+      interval: weekly
+    groups:
+      pub-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: gomod
+    directories:
+      - /backend/internal/testutil
+      - /backend/lib/auth
+      - /backend/lib/authors
+      - /backend/lib/books
+      - /backend/lib/db
+      - /backend/lib/feedback
+      - /backend/lib/ingest
+      - /backend/lib/isbndb
+      - /backend/lib/libraries
+      - /backend/lib/otps
+      - /backend/packages/auth/sendOtp
+      - /backend/packages/auth/verifyOtp
+      - /backend/packages/books/getBookByIsbn
+      - /backend/packages/books/getBooksByAuthor
+      - /backend/packages/books/ingestCatalog
+      - /backend/packages/books/searchBooks
+      - /backend/packages/feedback/submitFeedback
+      - /backend/packages/libraries/createLibrary
+      - /backend/packages/libraries/deleteLibrary
+      - /backend/packages/libraries/getLibraries
+      - /backend/packages/libraries/getLibraryBooks
+      - /backend/packages/libraries/setLibraryBooks
+      - /backend/packages/libraries/updateLibrary
+    schedule:
+      interval: weekly
+    groups:
+      go-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  - package-ecosystem: docker
+    directories:
+      - /backend
+      - /db
+    schedule:
+      interval: weekly
+    groups:
+      docker-images:
+        patterns:
+          - "*"

@@ -26,12 +26,10 @@ A cross-platform mobile app to keep track of your books.
 
 ```mermaid
 
-sequenceDiagram
-    App->>Backend: GET /books/searchBooks
-    Backend->>ISBNdb: GET /search/books
-    ISBNdb->>Backend: JSON response
-    Backend->>App: JSON response
-
+architecture-beta
+    service: backend
+    service: app
+    service: database
 ```
 
 ### App
@@ -130,12 +128,12 @@ The token is returned by `POST /auth/verifyOtp`.
 
 Libraries:
 
-- `POST /libraries` (create)
-- `GET /libraries` (list)
-- `PATCH /libraries/{id}` (update)
-- `DELETE /libraries/{id}` (delete)
-- `GET /libraries/{id}/books` (get books in library)
-- `PUT /libraries/{id}/books` (set books in library)
+- `POST /libraries`
+- `GET /libraries`
+- `PATCH /libraries/{id}`
+- `DELETE /libraries/{id}`
+- `GET /libraries/{id}/books`
+- `PUT /libraries/{id}/books`
 
 Library routes require `Authorization: Bearer <token>`.  
 The token is returned by `POST /auth/verifyOtp`.
