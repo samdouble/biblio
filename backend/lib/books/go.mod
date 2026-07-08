@@ -8,10 +8,10 @@ replace (
 )
 
 require (
+	github.com/google/uuid v1.6.0
+	go.mongodb.org/mongo-driver/v2 v2.7.0
 	tsunbooku-api/authors v0.0.0
 	tsunbooku-api/isbndb v0.0.0
-	github.com/google/uuid v1.6.0
-	go.mongodb.org/mongo-driver/v2 v2.5.0
 )
 
 require (
