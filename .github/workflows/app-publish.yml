@@ -19,7 +19,7 @@ jobs:
         flutter-version: ['3.41.2']
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up Flutter
         uses: subosito/flutter-action@v2.23.0
         with:
@@ -75,7 +75,7 @@ jobs:
         flutter-version: ['3.41.2']
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up Flutter
         uses: subosito/flutter-action@v2.23.0
         with:
@@ -92,7 +92,7 @@ jobs:
           echo "NEW_RELIC_ANDROID_APP_TOKEN=${{ secrets.APP_ANDROID_NEW_RELIC_TOKEN }}" >> .env
           echo "NEW_RELIC_IOS_APP_TOKEN=${{ secrets.APP_IOS_NEW_RELIC_TOKEN }}" >> .env
       - name: Import code-signing certificate
-        uses: Apple-Actions/import-codesign-certs@v4
+        uses: Apple-Actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.APP_IOS_CERTIFICATES_P12_BASE64 }}
           p12-password: ${{ secrets.APP_IOS_CERTIFICATES_P12_PASSWORD }}
@@ -227,7 +227,7 @@ jobs:
         env:
           FLUTTER_CODE_SIGNING: true
       - name: Upload to TestFlight
-        uses: Apple-Actions/upload-testflight-build@v4.1.0
+        uses: Apple-Actions/upload-testflight-build@v5.2.1
         with:
           app-path: ${{ steps.ipa.outputs.path }}
           app-type: ios
