@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/samdouble/tsunbooku/compare/app-v0.4.0...app-v0.5.0) (2026-07-08)
+
+
+### Features
+
+* **app:** add sort toolbar to the My Books page ([538f9b2](https://github.com/samdouble/tsunbooku/commit/538f9b2e663d61dee96506633b60c1a7f8348cac))
+* **app:** adjust app to the new REST-style backend routes ([8c69fd3](https://github.com/samdouble/tsunbooku/commit/8c69fd3e1b2ce0f17133a7190cff4ece69596752))
+* **app:** make banner for sorting and toggling the display of books ([37d715e](https://github.com/samdouble/tsunbooku/commit/37d715e3f0a076369b1568d3c48dc325b61a55fa))
+* **app:** toggle grid and list display on list of books view ([bafb420](https://github.com/samdouble/tsunbooku/commit/bafb420f6857ba630144dae6d2c08856a1d51574))
+* **backend:** go to REST-style routes for libraries ([0f6aefc](https://github.com/samdouble/tsunbooku/commit/0f6aefc16f901459d6fc568375d95a6d4937f996))
+* **backend:** ingest books when idle ([84b9afb](https://github.com/samdouble/tsunbooku/commit/84b9afbdc8c059ef5e54abdbba6d8a14cb014a63))
+* rename app from Biblio to Tsundoku ([ded44ba](https://github.com/samdouble/tsunbooku/commit/ded44ba20ed4117f3653681e187313255772ca6b))
+* rename app from Tsundoku to Tsunbooku ([4df685c](https://github.com/samdouble/tsunbooku/commit/4df685ca29236d20ead13fc0a284cb570a6415d9))
+
 ## [0.4.0](https://github.com/samdouble/tsunbooku/compare/app-v0.3.0...app-v0.4.0) (2026-04-24)
 
 
