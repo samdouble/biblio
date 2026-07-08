@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.8.0](https://github.com/samdouble/tsunbooku/compare/backend-v0.7.0...backend-v0.8.0) (2026-07-08)
+
+
+### Features
+
+* **app:** adjust app to the new REST-style backend routes ([8c69fd3](https://github.com/samdouble/tsunbooku/commit/8c69fd3e1b2ce0f17133a7190cff4ece69596752))
+* **backend:** add submitFeedback route ([8ecb5e0](https://github.com/samdouble/tsunbooku/commit/8ecb5e0bdbb9d14ad6fdcb3b97f93abe1189118a))
+* **backend:** go to REST-style routes for libraries ([0f6aefc](https://github.com/samdouble/tsunbooku/commit/0f6aefc16f901459d6fc568375d95a6d4937f996))
+* **backend:** improve authentication for API routes ([059cf5c](https://github.com/samdouble/tsunbooku/commit/059cf5c10566cf15ce591f86e8c75b6498b0dfe6))
+* **backend:** ingest books when idle ([84b9afb](https://github.com/samdouble/tsunbooku/commit/84b9afbdc8c059ef5e54abdbba6d8a14cb014a63))
+* **backend:** save author information when fetching books ([216beee](https://github.com/samdouble/tsunbooku/commit/216beee077ebe7cdd67e4e6ab88e872d4e9aeaaf))
+* rename app from Biblio to Tsundoku ([ded44ba](https://github.com/samdouble/tsunbooku/commit/ded44ba20ed4117f3653681e187313255772ca6b))
+* rename app from Tsundoku to Tsunbooku ([4df685c](https://github.com/samdouble/tsunbooku/commit/4df685ca29236d20ead13fc0a284cb570a6415d9))
+
+
+### Bug Fixes
+
+* **backend:** make search case-insensitive and insensitive to diacritics ([0b12e41](https://github.com/samdouble/tsunbooku/commit/0b12e417f3ba863d1794c12afaef0344bdc08ce0))
+
 ## [0.7.0](https://github.com/samdouble/tsunbooku/compare/backend-v0.6.1...backend-v0.7.0) (2026-03-09)
 
 
