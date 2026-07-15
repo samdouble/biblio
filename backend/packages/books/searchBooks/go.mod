@@ -5,9 +5,9 @@ go 1.25
 replace tsunbooku-api/db => ../../../lib/db
 
 require (
+	github.com/aws/aws-lambda-go v1.54.0
+	go.mongodb.org/mongo-driver/v2 v2.8.0
 	tsunbooku-api/db v0.0.0
-	github.com/aws/aws-lambda-go v1.47.0
-	go.mongodb.org/mongo-driver/v2 v2.5.0
 )
 
 require (
