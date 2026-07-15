@@ -8,11 +8,11 @@ replace (
 )
 
 require (
+	github.com/aws/aws-lambda-go v1.54.0
+	github.com/google/uuid v1.6.0
+	go.mongodb.org/mongo-driver/v2 v2.8.0
 	tsunbooku-api/authors v0.0.0
 	tsunbooku-api/db v0.0.0
-	github.com/aws/aws-lambda-go v1.47.0
-	github.com/google/uuid v1.6.0
-	go.mongodb.org/mongo-driver/v2 v2.5.0
 )
 
 require (
