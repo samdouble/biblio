@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 1
     steps:
       - name: Release Please
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         id: release
         with:
           token: ${{ secrets.PAT }}
@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 1
     steps:
       - name: Release Please App
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
@@ -51,7 +51,7 @@ jobs:
     timeout-minutes: 1
     steps:
       - name: Release Please Backend
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
           token: ${{ secrets.PAT }}
           config-file: release-please-config.json
